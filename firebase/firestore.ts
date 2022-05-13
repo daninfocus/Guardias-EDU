@@ -52,21 +52,19 @@ export const getCollegeDataById = async (collegeId: string) => {
 
 export const updateTeacherArray = async (collegeId: string, teacherid: string) => {
     const ref = await getCollegeById(collegeId);
+    const docSnap = await getDoc(ref);
+
     if (ref != null) {
         //add teachers to array
         await updateDoc(ref, {
             teachers: arrayUnion(teacherid)
         });
-        console.log('no here');
     }
-    const docSnap = await getDoc(ref);
     if (docSnap.exists()) {
         // Convert to object
-        const college = docSnap.data();
-        return college;
-    } else {
-        return null;
+        return docSnap.data();
     }
+    return null;
 }
 
 

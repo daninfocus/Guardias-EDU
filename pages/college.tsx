@@ -8,7 +8,7 @@ import React, {
 import { logOut } from "../firebase/auth";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
-import College from "../models/College";
+import CollegeModel from "../models/College";
 import AuthContext from "../store/auth.context";
 import {
   addDocument,
@@ -22,9 +22,9 @@ const College = () => {
   i++;
   const router = useRouter();
 
-  const [colleges, setColleges] = useState(Array);
+  const [colleges, setColleges] = useState<Array<CollegeModel>>([]);
   const { user } = useContext(AuthContext);
-  const [selectedOption, setSelectedOption] = useState((colleges as Array<College>)[0]);
+  const [selectedOption, setSelectedOption] = useState("");
 
   useEffect(() => {}, [selectedOption]);
   let nameRef = useRef(null);
@@ -39,18 +39,16 @@ const College = () => {
     fetchData();
   }, []);
 
-  function addTeacherToCollege(
+  async function addTeacherToCollege(
     event: FormEvent,
     collegeId: string,
     teacherId: string
   ) {
     event.preventDefault();
-    console.log(selectedOption);
-    console.log("yoyoyoyoyoyoyoyoy");
-    console.log(collegeId);
-    const college = updateTeacherArray(collegeId, teacherId);
+    const college = await updateTeacherArray(collegeId, teacherId);
 
     if (college != null) {
+
       toast.success("Te has registrado correctamente en " + college.name, {
         icon: "✅",
       });
@@ -67,7 +65,7 @@ const College = () => {
   function newCollege(event: FormEvent) {
     event.preventDefault();
 
-    const college: College = {
+    const college: CollegeModel = {
       //@ts-ignore
       name: nameRef?.current?.value,
       //@ts-ignore
