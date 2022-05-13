@@ -50,7 +50,6 @@ export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
                 onChange={onChange}
                 value={value}
                 minDate={new Date()}
-                placeholderText="Select a day"
                 className="m-auto rounded-2xl"
               />
 
