@@ -1,5 +1,6 @@
 import { getAuth, GoogleAuthProvider, setPersistence, browserSessionPersistence, onAuthStateChanged, signInAnonymously, signInWithPopup, signOut } from 'firebase/auth';
 import firebase from './firebase';
+import {User} from '@firebase/auth-types';
 import { addDocument,saveUser } from "./firestore";
 
 export const auth = getAuth(firebase);
@@ -17,7 +18,7 @@ var provider = new GoogleAuthProvider();
 export const signInWithGoogle = () => setPersistence(auth, browserSessionPersistence)
     .then(async () => {
         const res = await signInWithPopup(auth, provider);
-        saveUser(res.user);
+        saveUser(res.user as User);
         return res.user;
     });
 
