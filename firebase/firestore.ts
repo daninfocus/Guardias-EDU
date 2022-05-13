@@ -1,4 +1,5 @@
 import firebase from './firebase';
+import {User} from '@firebase/auth-types';
 import { addDoc, collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
 
 const firestore = getFirestore(firebase);
@@ -8,7 +9,7 @@ export const addDocument = async <T>(collectionName: string, data: T) => {
     return id;
 }
 
-export const saveUser = async <T>(user: T) => {
+export const saveUser = async (user: User) => {
     const q = query(collection(firestore, "users"), where("uid", "==", user.uid));
     const docs = await getDocs(q);
     if (docs.docs.length === 0) {
@@ -38,8 +39,6 @@ export const getColleges = async () => {
 }
 
 export const getCollegeById = async (collegeId: string) => {
-    console.log('COLLEG ISD')
-    console.log(collegeId);
     const ref = await doc(firestore, "colleges", collegeId);
     return ref;
 }
@@ -52,9 +51,7 @@ export const getCollegeDataById = async (collegeId: string) => {
 }
 
 export const updateTeacherArray = async (collegeId: string, teacherid: string) => {
-    console.log(collegeId);
     const ref = await getCollegeById(collegeId);
-    console.log('yoyoy');
     if (ref != null) {
         console.log('in here');
         //add teachers to array
