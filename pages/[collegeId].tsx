@@ -4,11 +4,13 @@ import { getCollegeDataById } from "../firebase/firestore";
 import MainCalendar from "../components/calendar/MainCalendar";
 import Nav from "../components/Nav";
 import AuthCheck from "../components/AuthCheck";
+import College from "../models/College";
 
+const newCollege = new College();
 const Home = () => {
   const router = useRouter();
   const { collegeId } = router.query;
-  const [college, setCollege] = useState<Object>("Waiting...");
+  const [college, setCollege] = useState<College>(newCollege);
   const collegeObject = useRef<Object>("Waiting...");
   //TODO finsh useRef to persist college foreach render
 
@@ -19,7 +21,9 @@ const Home = () => {
       // You can await here
       if (collegeId != undefined) {
         const response = await getCollegeDataById(collegeId.toString());
-        setCollege(response);
+        if (response != undefined) {
+          setCollege(response as College);
+        }
         return response;
       }
     }

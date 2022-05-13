@@ -53,7 +53,6 @@ export const getCollegeDataById = async (collegeId: string) => {
 export const updateTeacherArray = async (collegeId: string, teacherid: string) => {
     const ref = await getCollegeById(collegeId);
     if (ref != null) {
-        console.log('in here');
         //add teachers to array
         await updateDoc(ref, {
             teachers: arrayUnion(teacherid)

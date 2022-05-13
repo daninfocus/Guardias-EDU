@@ -1,9 +1,16 @@
 import Teacher from "./Teacher";
-export default interface College {
-    id?: string,
+class College {
+    id?: string;
     name: string;
-    createdAt: Date;
-    updatedAt: Date | null;
+    createdAt: Date | undefined;
+    updatedAt: Date | undefined;
     uidAdmin: string;
-    teachers:  Array<Teacher> | null
+    teachers:  Array<Teacher> | undefined
+
+    constructor() {
+        this.name = "Cargando...";
+        this.uidAdmin = "0";
+      }
 }
+
+export default College;
