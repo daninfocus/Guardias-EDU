@@ -1,6 +1,6 @@
 This is my Final Project for CFGS de Desarrollo de Aplicaciones Multiplataforma, it is a web-app for college profesors/teachers to organize their free time, around absentees, so the absentee's classroom doesn't go unattended, with tasks, notes and schedules.
 
-Here is the live [demo](https://guardias-mi3w2q21y-daninfocus.vercel.app/).
+Here is the live [demo](guardias-edu.vercel.app).
 
 This is a [Next.js](https://nextjs.org/) project bootstrapped with [`create-next-app`](https://github.com/vercel/next.js/tree/canary/packages/create-next-app).
 
