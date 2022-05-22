@@ -5,21 +5,85 @@ import MainCalendar from "../components/calendar/MainCalendar";
 import Nav from "../components/Nav";
 import AuthCheck from "../components/AuthCheck";
 import CollegeModel from "../models/College";
+import NewGuardia from "../components/guardias/NewGuardia";
+import GuardiaModel from "../models/Guardia";
+import { getGuardias } from "../firebase/firestore";
 
 const newCollege = new CollegeModel();
 const Home = () => {
-  const router = useRouter();
-  const { collegeId } = router.query;
-  const [college, setCollege] = useState<CollegeModel>(newCollege);
-  const collegeObject = useRef<Object>("Waiting...");
-  //TODO finsh useRef to persist college foreach render
-  //TODO any logged in user can access another college with the id
+  const COLS = 6;
 
-  const [value, onChange] = useState(new Date());
+  const ROWS = 6;
+
+  const router = useRouter();
+
+  const { collegeId } = router.query;
+
+  const [college, setCollege] = useState<CollegeModel>(newCollege);
+
+  const [showNewGuardia, setShowNewGuardia] = useState(false);
+
+  const [guardias, setGuardias] = useState<Array<Array<Array<GuardiaModel>>>>(
+    Array(ROWS)
+      .fill(null)
+      .map(() =>
+        Array(COLS - 1)
+          .fill(null)
+          .map(() => [{ id: "empty" }] as Array<GuardiaModel>)
+      )
+  );
+
+  const addGuardia = (guardia: GuardiaModel) => {
+    if (
+      guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0].id ==
+      "empty"
+    ) {
+      guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0] =
+        guardia;
+    } else {
+      guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1].push(
+        guardia
+      );
+    }
+
+    setGuardias([...guardias]);
+  };
+
+  const getAndSetGuardias = async () => {
+    var guardiaResponse = await getGuardias();
+
+    var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
+      Array(ROWS)
+        .fill(null)
+        .map(() =>
+          Array(COLS - 1)
+            .fill(null)
+            .map(() => [{ id: "empty" }] as Array<GuardiaModel>)
+        );
+    guardiaResponse.forEach((element) => {
+      if (
+        sortedArrayOfGuardiasResponse[element.hour - 1][
+          element.dayOfGuardia.getDay() - 1
+        ][0].id == "empty"
+      ) {
+        sortedArrayOfGuardiasResponse[element.hour - 1][
+          element.dayOfGuardia.getDay() - 1
+        ][0] = element;
+      } else {
+        sortedArrayOfGuardiasResponse[element.hour - 1][
+          element.dayOfGuardia.getDay() - 1
+        ].push(element);
+      }
+    });
+    setGuardias(sortedArrayOfGuardiasResponse);
+  };
+
+  useEffect(() => {
+    getAndSetGuardias();
+  }, []);
 
   useEffect(() => {
     async function fetchData() {
-      // You can await here
       if (collegeId != undefined) {
         const response = await getCollegeDataById(collegeId.toString());
         if (response != undefined) {
@@ -32,15 +96,26 @@ const Home = () => {
   }, [collegeId]);
 
   return (
-    <AuthCheck className="h-screen ">
-      <div className="h-full overflow-y-auto overflow-x-hidden">
+    <AuthCheck>
+      <div className="h-screen flex flex-col overflow-y-auto overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
-        <Nav  college={college}/>
-        <div className="first-column text-xl font-bold font-josefin w-full flex flex-row justify-center">
-          {college.name}
-        </div>
+        <Nav college={college} />
 
-        <MainCalendar/>
+        <button
+          className="m-auto w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
+          type="button"
+          onClick={() => setShowNewGuardia(true)}
+        >
+          Registrar Falta
+        </button>
+        {showNewGuardia ? (
+          <NewGuardia
+            college={college}
+            closeModal={() => setShowNewGuardia(false)}
+            addGuardia={addGuardia}
+          />
+        ) : null}
+        <MainCalendar guardias={guardias} />
       </div>
     </AuthCheck>
   );

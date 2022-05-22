@@ -3,53 +3,17 @@ import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import Guardia from "../guardias/Guardia";
 import GuardiaModel from "../../models/Guardia";
-const MainCalendar = () => {
+import * as days from "../../shared/dates";
+
+const MainCalendar = (props: {
+  guardias: Array<Array<Array<GuardiaModel>>>;
+}) => {
   const COLS = 6;
   const ROWS = 6;
   const TODAY = new Date();
   const [week, setWeek] = useState<Array<Date>>([TODAY]);
   const [day, setDay] = useState<Date>(TODAY);
   const [weekPos, setWeekPos] = useState<number>(0);
-  const [guardias, setGuardias] = useState<Array<Array<GuardiaModel>>>(
-    Array(ROWS)
-      .fill(null)
-      .map(() =>
-        Array(COLS - 1)
-          .fill(null)
-          .map(() => ({} as GuardiaModel))
-      )
-  );
-  const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
-  const monthNames = [
-    "January",
-    "February",
-    "March",
-    "April",
-    "May",
-    "June",
-    "July",
-    "August",
-    "September",
-    "October",
-    "November",
-    "December",
-  ];
-
-  const weekDaysES = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SAB", "DOM"];
-  const monthNamesES = [
-    "Enero",
-    "Febrero",
-    "Marzo",
-    "Abril",
-    "Mayo",
-    "Junio",
-    "Julio",
-    "Agosto",
-    "Septiembre",
-    "Octubre",
-    "Noviembre",
-    "Diciembre",
-  ];
 
   const createWeek = (daysInWeek = COLS - 1) => {
     let week = [];
@@ -124,20 +88,21 @@ const MainCalendar = () => {
         </button>
       </div>
 
-      <div className="sm:-mx-6 lg:-mx-8">
-        <div className="py-2 inline-block min-w-full sm:px-6 lg:px-8">
+      <div className="sm:-mx-6 lg:-mx-8 h-full">
+        <div className="inline-block min-w-full h-full sm:px-6 lg:px-8">
           <table className="min-w-full table-auto h-full w-full">
             <thead className="border-b">
               <tr className="h-10">
                 <th
                   scope="col"
                   className={
-                    week[0].getMonth() === day.getMonth() && week[0].getFullYear()==day.getFullYear()
+                    week[0].getMonth() === day.getMonth() &&
+                    week[0].getFullYear() == day.getFullYear()
                       ? "rounded-2xl w-[4%] bg-[#09a290] text-xs font-medium text-white first-column"
                       : "border-r w-[4%] text-xs font-medium text-gray-900 first-column"
                   }
                 >
-                  {monthNamesES[week[0].getMonth()]}
+                  {days.monthNamesES[week[0].getMonth()]}
                   <div>{week[0].getFullYear()}</div>
                 </th>
                 {week.map((item, index) => {
@@ -147,7 +112,7 @@ const MainCalendar = () => {
                       scope="col"
                       className="border-r w-1/12 text-xs font-medium text-gray-900 px-6 h-20"
                     >
-                      {weekDaysES[index]}
+                      {days.weekDaysShortES[index]}
                       <div
                         className={
                           day.getDate() === item.getDate() &&
@@ -164,12 +129,12 @@ const MainCalendar = () => {
                 })}
               </tr>
             </thead>
-            <tbody>
-              {guardias.map((row, indexRow) => {
+            <tbody className="h-full">
+              {props.guardias.map((row, indexRow) => {
                 return (
                   <tr className="border-b" key={indexRow}>
                     <td className=" first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {indexRow}
+                      {indexRow + 1}
                     </td>
                     {row.map((col, indexCol) => {
                       return (
@@ -177,7 +142,7 @@ const MainCalendar = () => {
                           key={indexCol}
                           className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
                         >
-                          <Guardia />
+                          <Guardia guardias={col} />
                         </td>
                       );
                     })}

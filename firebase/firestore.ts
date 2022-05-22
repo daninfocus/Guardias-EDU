@@ -1,6 +1,7 @@
 import firebase from './firebase';
-import {User} from '@firebase/auth-types';
-import { addDoc, collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
+import { User } from '@firebase/auth-types';
+import { addDoc, Timestamp, collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
+import Guardia from '../models/Guardia';
 
 const firestore = getFirestore(firebase);
 
@@ -18,6 +19,8 @@ export const saveUser = async (user: User) => {
             name: user.displayName,
             authProvider: "google",
             email: user.email,
+            photo: user.photoURL,
+
         });
     }
     return user;
@@ -65,6 +68,25 @@ export const updateTeacherArray = async (collegeId: string, teacherid: string) =
         return docSnap.data();
     }
     return null;
+}
+
+export const getGuardias = async () => {
+    var curr = new Date; // get current date
+    var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+    var last = first + 6; // last day is the first day + 6
+    var firstday = new Date(curr.setDate(first))
+    var lastday = new Date(curr.setDate(last))
+
+    const q = query(collection(firestore, "guardias"), where("dayOfGuardia", ">", firstday), where("dayOfGuardia", "<", lastday));
+    const docs = await getDocs(q);
+    var guardiaArray: Array<Guardia> = [];
+    docs.docs.forEach(element => {
+        var guardia = element.data();
+        var guardiaDate = guardia.dayOfGuardia.toDate();
+        guardia.dayOfGuardia = guardiaDate;
+        guardiaArray.push(guardia as Guardia);
+    });
+    return guardiaArray;
 }
 
 
