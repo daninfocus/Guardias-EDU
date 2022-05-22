@@ -1,11 +1,20 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
+import { useRouter } from "next/router";
 import Calendar from "react-calendar";
 
-interface dataFormProps {
-  closeModal: () => void;
-}
-export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
-  const [value, onChange] = useState(new Date());
+
+
+export default function NewGuardia(props:{ closeModal:Function,classes:Array<String> }) {
+  
+
+  const [date, setDate] = useState(new Date());
+
+  const [tasks, setTasks] = useState("");
+
+  const [moreInfo, setMoreInfo] = useState("");
+
+
+  
 
   return (
     <>
@@ -19,7 +28,7 @@ export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
                   </h3> */}
             <button
               className="ml-auto bg-transparent border-0 text-slate-700 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-              onClick={() => closeModal()}
+              onClick={() => props.closeModal()}
             >
               <span className="bg-transparent text-slate-700 h-8 w-8 text-2xl block outline-none focus:outline-none">
                 <svg
@@ -43,12 +52,12 @@ export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
           <div className="relative px-5 flex flex-col items-center justify-center w-full ">
             <form className="p-5">
               <p className="flex flex-row items-center justify-center text-lg ">
-                {value.getDate().toString()}/{(value.getMonth() + 1).toString()}
-                /{value.getFullYear().toString()}
+                {date.getDate().toString()}/{(date.getMonth() + 1).toString()}/
+                {date.getFullYear().toString()}
               </p>
               <Calendar
-                onChange={onChange}
-                value={value}
+                onChange={setDate}
+                value={date}
                 minDate={new Date()}
                 className="m-auto rounded-2xl"
               />
@@ -58,33 +67,50 @@ export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
                   <label htmlFor="hour" className="text-sm">
                     Hora:
                   </label>
-                  <input
-                    id="hour"
-                    className="border-2 rounded-md w-full"
-                  ></input>
+                  <select id="hour" className="border-2 rounded-md w-full">
+                    <option value="first">1ª Primera</option>
+                    <option value="second">2ª Segunda</option>
+                    <option value="third">3ª Tercera</option>
+                    <option value="fourth">4ª Cuarta</option>
+                    <option value="fifth">5ª Quinta</option>
+                    <option value="sixth">6ª Sexta</option>
+                    <option value="sixth">
+                      <p className="font-extrabold">Todo el dia</p>
+                    </option>
+                  </select>
                 </div>
-                <div>
+                <div className=" overflow-hidden">
                   <label htmlFor="class" className="text-sm">
                     Clase
                   </label>
-                  <input
-                    id="class"
-                    className="border-2 rounded-md w-full"
-                  ></input>
+                  <select id="class" className="border-2 rounded-md w-full h-7">
+                    {
+                      props.classes.map((value,index)=>{
+                        return(<option key={index} value={value.toString()}>{value}</option>);
+                      })
+                    }
+                    <option value="all-day">
+                      <p className="font-extrabold">Todo el dia</p>
+                    </option>
+                  </select>
                 </div>
               </div>
               <label htmlFor="tasks" className="text-sm">
                 Tareas
               </label>
               <textarea
+                value={tasks}
+                onChange={(e) => setTasks(e.target.value)}
                 id="tasks"
                 className="border-2 rounded-md w-full resize-none"
               ></textarea>
               <label htmlFor="more_info" className="text-sm">
-                Informacion de Interes
+                Información de Interés
               </label>
               <input
                 id="more_info"
+                value={moreInfo}
+                onChange={(e) => setMoreInfo(e.target.value)}
                 className="border-2 rounded-md w-full"
               ></input>
             </form>
@@ -94,14 +120,14 @@ export default function NewGuardia({ closeModal = () => {} }: dataFormProps) {
             <button
               className="hover:shadow-md hover:bg-red-200 rounded-lg text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
               type="button"
-              onClick={() => closeModal()}
+              onClick={() => props.closeModal()}
             >
               Close
             </button>
             <button
               className="bg-[#09a290] rounded-lg text-white active:bg-emerald-600 font-bold uppercase text-sm px-6 py-3 shadow hover:shadow-lg outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
               type="button"
-              onClick={() => closeModal()}
+              onClick={() => props.closeModal()}
             >
               Save Changes
             </button>

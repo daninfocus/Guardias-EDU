@@ -10,7 +10,7 @@ function AuthCheck({children}: any) {
     
     useEffect(() => {
       if(user && !loading && router.pathname === '/') {
-        router.replace('/Home');
+        router.replace('/');
       }
     
     }, [loading]);

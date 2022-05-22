@@ -68,3 +68,4 @@ export const updateTeacherArray = async (collegeId: string, teacherid: string) =
 }
 
 
+

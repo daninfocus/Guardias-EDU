@@ -74,8 +74,6 @@ const MainCalendar = () => {
     setWeekPos(weekPos - 1);
   };
 
-  const onCalendarChange = () => {};
-
   useEffect(() => {
     createWeek();
   }, [weekPos]);
@@ -134,9 +132,9 @@ const MainCalendar = () => {
                 <th
                   scope="col"
                   className={
-                    week[0].getMonth() === day.getMonth()
-                      ? "rounded-2xl w-1/12 bg-[#09a290] text-xs font-medium text-white first-column"
-                      : "border-r w-1/12 text-xs font-medium text-gray-900 first-column"
+                    week[0].getMonth() === day.getMonth() && week[0].getFullYear()==day.getFullYear()
+                      ? "rounded-2xl w-[4%] bg-[#09a290] text-xs font-medium text-white first-column"
+                      : "border-r w-[4%] text-xs font-medium text-gray-900 first-column"
                   }
                 >
                   {monthNamesES[week[0].getMonth()]}
@@ -170,7 +168,7 @@ const MainCalendar = () => {
               {guardias.map((row, indexRow) => {
                 return (
                   <tr className="border-b" key={indexRow}>
-                    <td className=" first-column border-r w-1/12 px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className=" first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indexRow}
                     </td>
                     {row.map((col, indexCol) => {

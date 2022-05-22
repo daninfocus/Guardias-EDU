@@ -13,7 +13,6 @@ export const currentUser = () => {
 
 var provider = new GoogleAuthProvider();
 
-
 //TODO set persistence not working 
 export const signInWithGoogle = () => setPersistence(auth, browserSessionPersistence)
     .then(async () => {

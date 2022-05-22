@@ -1,16 +1,18 @@
 import Teacher from "./Teacher";
 class College {
-    id?: string;
-    name: string;
-    createdAt: Date | undefined;
-    updatedAt: Date | undefined;
-    uidAdmin: string;
-    teachers:  Array<Teacher> | undefined
+  id?: string;
+  name: string;
+  createdAt: Date | undefined;
+  updatedAt: Date | undefined;
+  uidAdmin: string;
+  teachers: Array<Teacher> | undefined;
+  classes: string[];
 
-    constructor() {
-        this.name = "Cargando...";
-        this.uidAdmin = "0";
-      }
+  constructor() {
+    this.name = "Cargando...";
+    this.uidAdmin = "0";
+    this.classes = [];
+  }
 }
 
 export default College;

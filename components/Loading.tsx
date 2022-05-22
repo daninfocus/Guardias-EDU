@@ -1,12 +1,17 @@
-import { motion } from "framer-motion"
 import React from 'react'
+import Box from '@mui/material/Box';
+import Skeleton from '@mui/material/Skeleton';
 
 function Loading() {
-
+  //https://mui.com/material-ui/react-skeleton/#animations
   return (
-    <div className='h-screen w-screen flex flex-col items-center justify-center'>
-      <iframe src="https://embed.lottiefiles.com/animation/99833"></iframe>
-    </div>
+    <Box sx={{ width: '100%',height: 100 }}>
+      <Skeleton />
+      <Skeleton animation="wave" />
+      <Skeleton animation={false} />
+      
+    </Box>
+    
   )
 }
 

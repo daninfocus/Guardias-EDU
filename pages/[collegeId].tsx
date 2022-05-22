@@ -13,6 +13,7 @@ const Home = () => {
   const [college, setCollege] = useState<CollegeModel>(newCollege);
   const collegeObject = useRef<Object>("Waiting...");
   //TODO finsh useRef to persist college foreach render
+  //TODO any logged in user can access another college with the id
 
   const [value, onChange] = useState(new Date());
 
@@ -34,12 +35,12 @@ const Home = () => {
     <AuthCheck className="h-screen ">
       <div className="h-full overflow-y-auto overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
-        <Nav />
+        <Nav  college={college}/>
         <div className="first-column text-xl font-bold font-josefin w-full flex flex-row justify-center">
           {college.name}
         </div>
 
-        <MainCalendar />
+        <MainCalendar/>
       </div>
     </AuthCheck>
   );
