@@ -1,9 +1,9 @@
 import React, { useEffect, useState } from "react";
 import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
-import Guardia from "../guardias/Guardia";
 import GuardiaModel from "../../models/Guardia";
 import * as days from "../../shared/dates";
+import Guardia from "../guardias/Guardia";
 
 const MainCalendar = (props: {
   guardias: Array<Array<Array<GuardiaModel>>>;
@@ -30,6 +30,32 @@ const MainCalendar = (props: {
     setWeek([...week]);
   };
 
+  const isGuardiaInCurrentWeek = (guardia: GuardiaModel) => {
+    if (guardia.id != "empty") {
+      //if year is with-in the week
+      if (
+        guardia.dayOfGuardia.getFullYear() == week[0].getFullYear() ||
+        guardia.dayOfGuardia.getFullYear() ==
+          week[week.length - 1].getFullYear()
+      ) {
+        //if the month is with-in the week
+        if (
+          guardia.dayOfGuardia.getMonth() == week[0].getMonth() ||
+          guardia.dayOfGuardia.getMonth() == week[week.length - 1].getMonth()
+        ) {
+          //if date in month is with-in the week
+          if (
+            guardia.dayOfGuardia.getDate() >= week[0].getDate() &&
+            guardia.dayOfGuardia.getDate() <= week[week.length - 1].getDate()
+          ) {
+            return true;
+          }
+        }
+      }
+    }
+    return false;
+  };
+
   const incrementWeek = () => {
     setWeekPos(weekPos + 1);
   };
@@ -44,7 +70,7 @@ const MainCalendar = (props: {
 
   return (
     <div className="flex flex-col w-full h-full">
-      <div className="w-full flex flex-row justify-between">
+      <div className="w-full flex flex-row justify-between items-center">
         <button
           className="text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => decrementWeek()}
@@ -65,7 +91,16 @@ const MainCalendar = (props: {
           </svg>
           Anterior
         </button>
-
+        <div
+          className={
+            week[0].getMonth() === day.getMonth() &&
+            week[0].getFullYear() == day.getFullYear()
+              ? "sm:hidden rounded-2xl  p-1 bg-[#09a290] text-xs font-medium text-white"
+              : "sm:hidden border-r text-xs font-medium text-gray-900"
+          }
+        >
+          {days.monthNamesES[week[0].getMonth()]}-{week[0].getFullYear()}
+        </div>
         <button
           className="text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => incrementWeek()}
@@ -137,14 +172,18 @@ const MainCalendar = (props: {
                       {indexRow + 1}
                     </td>
                     {row.map((col, indexCol) => {
-                      return (
-                        <td
-                          key={indexCol}
-                          className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
-                        >
-                          <Guardia guardias={col} />
-                        </td>
-                      );
+                      if (isGuardiaInCurrentWeek(col[0])) {
+                        return (
+                          <td
+                            key={col[0].id}
+                            className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
+                          >
+                            <Guardia guardias={col} />
+                          </td>
+                        );
+                      } else {
+                        return <></>;
+                      }
                     })}
                   </tr>
                 );

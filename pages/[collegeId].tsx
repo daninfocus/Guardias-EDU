@@ -96,8 +96,8 @@ const Home = () => {
   }, [collegeId]);
 
   return (
-    <AuthCheck>
-      <div className="h-screen flex flex-col overflow-y-auto overflow-x-hidden">
+    <AuthCheck >
+      <div className="h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
         <Nav college={college} />
 

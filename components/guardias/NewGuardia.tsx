@@ -86,7 +86,7 @@ export default function NewGuardia(props: {
               </span>
             </button>
             <form
-              className="p-5 h-full flex flex-col justify-between"
+              className="h-full flex flex-col justify-between"
               onSubmit={(e) => saveGuardia(e)}
             >
               <Calendar
@@ -96,7 +96,7 @@ export default function NewGuardia(props: {
                 className="m-auto rounded-2xl "
               />
 
-              <div className="flex flex-row justify-between mt-auto mb-3">
+              <div className="flex flex-row justify-between mb-3">
                 <div>
                   <label htmlFor="hour" className="text-sm">
                     Hora:
@@ -145,7 +145,7 @@ export default function NewGuardia(props: {
               <textarea
                 required
                 id="tasks"
-                className="h-40 border-2 rounded-md w-full resize-none"
+                className="h-1/12 border-2 rounded-md w-full resize-none"
               ></textarea>
               <label htmlFor="moreInfo" className="text-sm mt-3">
                 Información de Interés
