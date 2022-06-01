@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import Calendar from "react-calendar";
 import "react-calendar/dist/Calendar.css";
 import GuardiaModel from "../../models/Guardia";
 import * as days from "../../shared/dates";
@@ -11,7 +10,13 @@ const MainCalendar = (props: {
   const COLS = 6;
   const ROWS = 6;
   const TODAY = new Date();
-  const [week, setWeek] = useState<Array<Date>>([TODAY]);
+  const [week, setWeek] = useState<Array<Date>>([
+    TODAY,
+    TODAY,
+    TODAY,
+    TODAY,
+    TODAY,
+  ]);
   const [day, setDay] = useState<Date>(TODAY);
   const [weekPos, setWeekPos] = useState<number>(0);
 
@@ -31,7 +36,7 @@ const MainCalendar = (props: {
   };
 
   const isGuardiaInCurrentWeek = (guardia: GuardiaModel) => {
-    if (guardia.id != "empty") {
+    if (!guardia.isEmpty) {
       //if year is with-in the week
       if (
         guardia.dayOfGuardia.getFullYear() == week[0].getFullYear() ||
@@ -44,16 +49,38 @@ const MainCalendar = (props: {
           guardia.dayOfGuardia.getMonth() == week[week.length - 1].getMonth()
         ) {
           //if date in month is with-in the week
-          if (
-            guardia.dayOfGuardia.getDate() >= week[0].getDate() &&
-            guardia.dayOfGuardia.getDate() <= week[week.length - 1].getDate()
-          ) {
-            return true;
+          var isInWeek = false;
+          for (let i = 0; i < COLS - 1; i++) {
+            if (guardia.dayOfGuardia.getDate() >= week[i].getDate()) {
+              isInWeek = true;
+            }
           }
+          return isInWeek;
         }
       }
     }
     return false;
+  };
+
+  const getMonthLabel = () => {
+    if (week[0].getMonth() != week[COLS - 2].getMonth()) {
+      return (
+        days.monthNamesES[week[0].getMonth()] +
+        "-" +
+        days.monthNamesES[week[4].getMonth()]
+      );
+    } else {
+      return days.monthNamesES[week[0].getMonth()];
+    }
+  };
+
+  const monthLabelStyle = () => {
+    return (
+      (week[0].getMonth() === day.getMonth() &&
+        week[0].getFullYear() == day.getFullYear()) ||
+      (week[COLS - 2].getMonth() === day.getMonth() &&
+        week[COLS - 2].getFullYear() == day.getFullYear())
+    );
   };
 
   const incrementWeek = () => {
@@ -67,6 +94,10 @@ const MainCalendar = (props: {
   useEffect(() => {
     createWeek();
   }, [weekPos]);
+
+  const generateKey = (pre: any) => {
+    return `${pre}_${new Date().getTime()}`;
+  };
 
   return (
     <div className="flex flex-col w-full h-full">
@@ -93,13 +124,12 @@ const MainCalendar = (props: {
         </button>
         <div
           className={
-            week[0].getMonth() === day.getMonth() &&
-            week[0].getFullYear() == day.getFullYear()
+            monthLabelStyle()
               ? "sm:hidden rounded-2xl  p-1 bg-[#09a290] text-xs font-medium text-white"
               : "sm:hidden border-r text-xs font-medium text-gray-900"
           }
         >
-          {days.monthNamesES[week[0].getMonth()]}-{week[0].getFullYear()}
+          {getMonthLabel()}-{week[0].getFullYear()}
         </div>
         <button
           className="text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
@@ -131,19 +161,18 @@ const MainCalendar = (props: {
                 <th
                   scope="col"
                   className={
-                    week[0].getMonth() === day.getMonth() &&
-                    week[0].getFullYear() == day.getFullYear()
+                    monthLabelStyle()
                       ? "rounded-2xl w-[4%] bg-[#09a290] text-xs font-medium text-white first-column"
                       : "border-r w-[4%] text-xs font-medium text-gray-900 first-column"
                   }
                 >
-                  {days.monthNamesES[week[0].getMonth()]}
+                  {getMonthLabel()}
                   <div>{week[0].getFullYear()}</div>
                 </th>
                 {week.map((item, index) => {
                   return (
                     <th
-                      key={index.toString()}
+                      key={generateKey(index)}
                       scope="col"
                       className="border-r w-1/12 text-xs font-medium text-gray-900 px-6 h-20"
                     >
@@ -167,23 +196,23 @@ const MainCalendar = (props: {
             <tbody className="h-full">
               {props.guardias.map((row, indexRow) => {
                 return (
-                  <tr className="border-b" key={indexRow}>
+                  <tr className="border-b" key={generateKey(indexRow)}>
                     <td className=" first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indexRow + 1}
                     </td>
-                    {row.map((col, indexCol) => {
-                      if (isGuardiaInCurrentWeek(col[0])) {
-                        return (
-                          <td
-                            key={col[0].id}
-                            className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
-                          >
+                    {row.map((col, colIndex) => {
+                      return (
+                        <td
+                          key={generateKey(colIndex)}
+                          className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
+                        >
+                          {isGuardiaInCurrentWeek(col[0]) ? (
                             <Guardia guardias={col} />
-                          </td>
-                        );
-                      } else {
-                        return <></>;
-                      }
+                          ) : (
+                            <></>
+                          )}
+                        </td>
+                      );
                     })}
                   </tr>
                 );

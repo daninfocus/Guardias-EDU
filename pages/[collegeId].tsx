@@ -3,7 +3,7 @@ import React, { useEffect, useState, useRef } from "react";
 import { getCollegeDataById } from "../firebase/firestore";
 import MainCalendar from "../components/calendar/MainCalendar";
 import Nav from "../components/Nav";
-import AuthCheck from "../components/AuthCheck";
+import AuthCheck from "../components/auth/AuthCheck";
 import CollegeModel from "../models/College";
 import NewGuardia from "../components/guardias/NewGuardia";
 import GuardiaModel from "../models/Guardia";
@@ -29,14 +29,13 @@ const Home = () => {
       .map(() =>
         Array(COLS - 1)
           .fill(null)
-          .map(() => [{ id: "empty" }] as Array<GuardiaModel>)
+          .map(() => [{ isEmpty: true }] as Array<GuardiaModel>)
       )
   );
 
   const addGuardia = (guardia: GuardiaModel) => {
     if (
-      guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0].id ==
-      "empty"
+      guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0].isEmpty
     ) {
       guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0] =
         guardia;
@@ -50,37 +49,38 @@ const Home = () => {
   };
 
   const getAndSetGuardias = async () => {
-    var guardiaResponse = await getGuardias();
-
-    var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
-      Array(ROWS)
-        .fill(null)
-        .map(() =>
-          Array(COLS - 1)
-            .fill(null)
-            .map(() => [{ id: "empty" }] as Array<GuardiaModel>)
-        );
-    guardiaResponse.forEach((element) => {
-      if (
-        sortedArrayOfGuardiasResponse[element.hour - 1][
-          element.dayOfGuardia.getDay() - 1
-        ][0].id == "empty"
-      ) {
-        sortedArrayOfGuardiasResponse[element.hour - 1][
-          element.dayOfGuardia.getDay() - 1
-        ][0] = element;
-      } else {
-        sortedArrayOfGuardiasResponse[element.hour - 1][
-          element.dayOfGuardia.getDay() - 1
-        ].push(element);
-      }
-    });
-    setGuardias(sortedArrayOfGuardiasResponse);
+    if (collegeId != null) {
+      var guardiaResponse = await getGuardias(collegeId.toString());
+      var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
+        Array(ROWS)
+          .fill(null)
+          .map(() =>
+            Array(COLS - 1)
+              .fill(null)
+              .map(() => [{ isEmpty: true }] as Array<GuardiaModel>)
+          );
+      guardiaResponse.forEach((element) => {
+        if (
+          sortedArrayOfGuardiasResponse[element.hour - 1][
+            element.dayOfGuardia.getDay() -1 
+          ][0].isEmpty
+        ) {
+          sortedArrayOfGuardiasResponse[element.hour - 1][
+            element.dayOfGuardia.getDay() -1 
+          ][0] = element;
+        } else {
+          sortedArrayOfGuardiasResponse[element.hour - 1][
+            element.dayOfGuardia.getDay() -1 
+          ].push(element);
+        }
+      });
+      setGuardias(sortedArrayOfGuardiasResponse);
+    }
   };
 
   useEffect(() => {
     getAndSetGuardias();
-  }, []);
+  }, [collegeId]);
 
   useEffect(() => {
     async function fetchData() {
@@ -96,7 +96,7 @@ const Home = () => {
   }, [collegeId]);
 
   return (
-    <AuthCheck >
+    <AuthCheck>
       <div className="h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
         <Nav college={college} />

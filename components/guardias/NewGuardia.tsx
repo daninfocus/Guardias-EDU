@@ -8,18 +8,28 @@ import toast from "react-hot-toast";
 import router, { useRouter } from "next/router";
 import AuthContext from "../../store/auth.context";
 import * as days from "../../shared/dates";
+import ColorPicker from "../ColorPicker";
 
 export default function NewGuardia(props: {
   closeModal: Function;
   college: College;
-  addGuardia:Function
+  addGuardia: Function;
 }) {
+  const [selectedColor, setSelectedColor] = useState(Number);
+
   const { collegeId } = router.query;
 
   const { user } = useContext(AuthContext);
 
   const [date, setDate] = useState(new Date());
-
+  const colors = [
+    "#2196F3",
+    "#009688",
+    "#FFEB3B",
+    "#4CAF50",
+    "#f56565",
+    "#ed64a6",
+  ];
   const saveGuardia = (e: React.SyntheticEvent) => {
     e.preventDefault();
     const target = e.target as typeof e.target & {
@@ -40,6 +50,8 @@ export default function NewGuardia(props: {
         moreInfo: target.moreInfo.value,
         classroom: target.classroom.value,
         hour: parseInt(target.hour.value),
+        color: selectedColor,
+        isEmpty: false
       };
 
       props.addGuardia(guardia);
@@ -58,12 +70,19 @@ export default function NewGuardia(props: {
     }
   };
 
+  const generateKey = (pre: any) => {
+    return `${pre}_${new Date().getTime()}`;
+  };
+
+  const changeColor = (number: number) => {
+    setSelectedColor(number);
+  };
   return (
     <>
-      <div className="sm:w-[600px] w-full sm:h-auto h-screen sm:my-6 mx-auto overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
+      <div className="sm:w-[600px] w-full  h-screen mx-auto overflow-x-hidden overflow-y-auto fixed inset-0 z-50 outline-none focus:outline-none">
         {/*content*/}
-        <div className="border-0 rounded-lg shadow-lg relative  sm:h-auto h-full w-full bg-white outline-none focus:outline-none">
-          <div className="relative px-5 flex flex-col items-center justify-start h-full">
+        <div className="border-0 rounded-lg shadow-lg relative h-full w-full bg-white outline-none focus:outline-none">
+          <div className="relative px-5 pb-5 flex flex-col items-center justify-start h-full">
             <button
               className="ml-auto bg-transparent border-0 mt-3 text-slate-700 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
               onClick={() => props.closeModal()}
@@ -93,68 +112,86 @@ export default function NewGuardia(props: {
                 onChange={setDate}
                 value={date}
                 minDate={new Date()}
-                className="m-auto rounded-2xl "
+                className="rounded-2xl "
               />
-
-              <div className="flex flex-row justify-between mb-3">
-                <div>
-                  <label htmlFor="hour" className="text-sm">
-                    Hora:
-                  </label>
-                  <select
-                    id="hour"
-                    className="border-2 rounded-md w-full"
-                    required
-                  >
-                    <option value="1">1ª Primera</option>
-                    <option value="2">2ª Segunda</option>
-                    <option value="3">3ª Tercera</option>
-                    <option value="4">4ª Cuarta</option>
-                    <option value="5">5ª Quinta</option>
-                    <option value="6">6ª Sexta</option>
-                    <option value="All-day" className="font-bold">
-                      Todo el dia
-                    </option>
-                  </select>
+              <div className="flex flex-row items-center justify-between w-full">
+                Color:
+                <ColorPicker
+                  setSelectedColor={changeColor}
+                  selectedColor={selectedColor}
+                  colors={colors}
+                />
+              </div>
+              <div className="max-h-80 h-full flex flex-col justify-between">
+                <div className="flex flex-row justify-between mb-3">
+                  <div>
+                    <label htmlFor="hour" className="text-sm">
+                      Hora:
+                    </label>
+                    <select
+                      id="hour"
+                      className="border-2 rounded-md w-full"
+                      required
+                    >
+                      <option value="1">1ª Primera</option>
+                      <option value="2">2ª Segunda</option>
+                      <option value="3">3ª Tercera</option>
+                      <option value="4">4ª Cuarta</option>
+                      <option value="5">5ª Quinta</option>
+                      <option value="6">6ª Sexta</option>
+                      <option value="All-day" className="font-bold">
+                        Todo el dia
+                      </option>
+                    </select>
+                  </div>
+                  <div className=" overflow-hidden">
+                    <label htmlFor="classroom" className="text-sm">
+                      Clase
+                    </label>
+                    <select
+                      id="classroom"
+                      className="border-2 rounded-md w-full h-7"
+                      required
+                    >
+                      {props.college.classes.map((value, index) => {
+                        return (
+                          <option
+                            key={generateKey(index)}
+                            value={value.toString()}
+                          >
+                            {value}
+                          </option>
+                        );
+                      })}
+                      <option value="special-day" className="font-bold">
+                        Otro
+                      </option>
+                    </select>
+                  </div>
                 </div>
-                <div className=" overflow-hidden">
-                  <label htmlFor="classroom" className="text-sm">
-                    Clase
+                <div>
+                  <label htmlFor="tasks" className="text-sm  my-3">
+                    Tareas
                   </label>
-                  <select
-                    id="classroom"
-                    className="border-2 rounded-md w-full h-7"
+                  <textarea
                     required
-                  >
-                    {props.college.classes.map((value, index) => {
-                      return (
-                        <option key={index} value={value.toString()}>
-                          {value}
-                        </option>
-                      );
-                    })}
-                    <option value="special-day" className="font-bold">
-                      Otro
-                    </option>
-                  </select>
+                    id="tasks"
+                    className="border-2 rounded-md w-full resize-none"
+                    style={{ minHeight: "38px" }}
+                  ></textarea>
+                </div>
+                <div>
+                  <label htmlFor="moreInfo" className="text-sm my-3">
+                    Información de Interés
+                  </label>
+                  <textarea
+                    required
+                    id="moreInfo"
+                    className="border-2 rounded-md w-full resize-none"
+                    style={{ minHeight: "38px" }}
+                  ></textarea>
                 </div>
               </div>
-              <label htmlFor="tasks" className="text-sm">
-                Tareas
-              </label>
-              <textarea
-                required
-                id="tasks"
-                className="h-1/12 border-2 rounded-md w-full resize-none"
-              ></textarea>
-              <label htmlFor="moreInfo" className="text-sm mt-3">
-                Información de Interés
-              </label>
-              <textarea
-                required
-                id="moreInfo"
-                className="border-2 rounded-md w-full resize-none"
-              ></textarea>
               <p className="flex p-3 flex-row items-center justify-center text-base font-light">
                 Día seleccionado: {date.getDate().toString()}/
                 {(date.getMonth() + 1).toString()}/
@@ -171,6 +208,7 @@ export default function NewGuardia(props: {
                 >
                   Close
                 </button>
+
                 <button
                   disabled={date.getDay() === 6 || date.getDay() === 0}
                   className={

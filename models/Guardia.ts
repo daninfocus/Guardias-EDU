@@ -7,10 +7,12 @@ export default interface Guardia {
     updatedAt: Date | null;
     teacherId: string;
     teacherName: string;
-    collegeId:  string;
+    collegeId: string;
     tasks: string;
     moreInfo: string;
-    classroom:string;
+    classroom: string;
     hour: number;
     dayOfGuardia: Date;
+    isEmpty: boolean;
+    color: number;
 }

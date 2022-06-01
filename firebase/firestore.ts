@@ -70,14 +70,15 @@ export const updateTeacherArray = async (collegeId: string, teacherid: string) =
     return null;
 }
 
-export const getGuardias = async () => {
+export const getGuardias = async (collegeId: string) => {
     var curr = new Date; // get current date
     var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
     var last = first + 6; // last day is the first day + 6
     var firstday = new Date(curr.setDate(first))
     var lastday = new Date(curr.setDate(last))
-
-    const q = query(collection(firestore, "guardias"), where("dayOfGuardia", ">", firstday), where("dayOfGuardia", "<", lastday));
+    firstday.setHours(0, 0, 0, 0);
+    lastday.setHours(0, 0, 0, 0);
+    const q = query(collection(firestore, "guardias"), where('collegeId', '==', collegeId), where("dayOfGuardia", ">", firstday));
     const docs = await getDocs(q);
     var guardiaArray: Array<Guardia> = [];
     docs.docs.forEach(element => {
@@ -86,8 +87,14 @@ export const getGuardias = async () => {
         guardia.dayOfGuardia = guardiaDate;
         guardiaArray.push(guardia as Guardia);
     });
+    console.log(guardiaArray)
     return guardiaArray;
 }
 
+export const getProfilePhotoWithTeacherid = async (teacherId: string) => {
+    const q = query(collection(firestore, "users",), where("uid", "==", teacherId));
+    const docs = await getDocs(q);
+    return docs.docs[0].data().photo;
+}
 
 

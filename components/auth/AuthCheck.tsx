@@ -1,7 +1,7 @@
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react'
-import AuthContext from '../store/auth.context'
-import Loading from './Loading';
+import AuthContext from '../../store/auth.context'
+import Loading from '../Loading';
 import Login from './Login';
 
 function AuthCheck({children}: any) {

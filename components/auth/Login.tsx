@@ -1,6 +1,6 @@
 import React, { useState } from "react";
-import { signInAnonymous, signInWithGoogle } from "../firebase/auth";
-import { doesUserHaveCollegeAssigned } from "../firebase/firestore";
+import { signInAnonymous, signInWithGoogle } from "../../firebase/auth";
+import { doesUserHaveCollegeAssigned } from "../../firebase/firestore";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
 import LoadingButton from "@mui/lab/LoadingButton";
