@@ -12,6 +12,8 @@ const MainCalendar = (props: {
   week: Array<Date>;
   setWeek: Function;
   isGuardiaInCurrentWeek: Function;
+  deleteGuardia:Function;
+  editGuardia:Function;
 }) => {
   const [day, setDay] = useState<Date>(props.TODAY);
   const [weekPos, setWeekPos] = useState<number>(0);
@@ -69,10 +71,10 @@ const MainCalendar = (props: {
   };
 
   return (
-    <div className="flex flex-col w-full h-full overflow-y-scroll md:overflow-hidden">
+    <div className="flex flex-col w-full h-full overflow-y-scroll sm:overflow-hidden">
       <div className="w-full flex flex-row justify-between items-center">
         <button
-          className="text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
+          className="transition ease-in-out delay-150  hover:translate-y-1 hover:translate-x-2  hover:scale-110  duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => decrementWeek()}
         >
           <svg
@@ -101,7 +103,7 @@ const MainCalendar = (props: {
           {getMonthLabel()}-{props.week[0].getFullYear()}
         </div>
         <button
-          className="text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
+          className="transition ease-in-out delay-150  hover:translate-y-1 hover:-translate-x-2  hover:scale-110  duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => incrementWeek()}
         >
           Siguiente
@@ -176,7 +178,7 @@ const MainCalendar = (props: {
                           className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
                         >
                           {props.isGuardiaInCurrentWeek(col[0]) ? (
-                            <Guardia guardias={col} />
+                            <Guardia guardias={col} deleteGuardia={props.deleteGuardia} editGuardia={props.editGuardia}/>
                           ) : (
                             <></>
                           )}

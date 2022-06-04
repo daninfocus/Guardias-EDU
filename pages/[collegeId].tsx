@@ -1,14 +1,23 @@
 import { useRouter } from "next/router";
-import React, { useEffect, useState } from "react";
-import { getCollegeDataById,getGuardias } from "../firebase/firestore";
+import React, { useContext, useEffect, useState } from "react";
+import {
+  getCollegeDataById,
+  getGuardias,
+  deleteGuardia,
+  editGuardia,
+} from "../firebase/firestore";
 import MainCalendar from "../components/calendar/MainCalendar";
 import Nav from "../components/Nav";
 import AuthCheck from "../components/auth/AuthCheck";
 import CollegeModel from "../models/College";
 import NewGuardia from "../components/guardias/NewGuardia";
 import GuardiaModel from "../models/Guardia";
+import AuthContext from "../store/auth.context";
+import toast, { Toaster } from "react-hot-toast";
 
 const Home = () => {
+  const { user } = useContext(AuthContext);
+
   const newCollege = new CollegeModel();
 
   const COLS = 6;
@@ -86,6 +95,24 @@ const Home = () => {
     }
   };
 
+  const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
+    if (
+      user.uid == guardia.teacherId &&
+      confirm("¿Quieres borrar esta guardia?")
+    ) {
+      deleteGuardia(guardia).then(() => getAndSetGuardias());
+    }
+  };
+
+  const editSelectedGuardia = async (guardia: GuardiaModel) => {
+    setShowNewGuardia(true);
+    // var data = await editGuardia(guardia);
+    // console.log(data);
+    // toast.success("Guardia guardado correctamente", {
+    //   icon: "✅",
+    // });
+  };
+
   const getAndSetGuardias = async () => {
     if (collegeId != null) {
       var guardiaResponse = await getGuardias(collegeId.toString());
@@ -138,12 +165,23 @@ const Home = () => {
 
   return (
     <AuthCheck>
-      <div className="h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
+      <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          duration: 5000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+        }}
+      />
+      <div className="bg-gray-100 h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
         <Nav college={college} showNewGuardia={() => setShowNewGuardia(true)} />
 
         <button
-          className="hidden md:visible m-auto w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
+          className="sm:block sm:visible hidden invisible transition-all m-auto w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl duration-200"
           type="button"
           onClick={() => setShowNewGuardia(true)}
         >
@@ -157,6 +195,8 @@ const Home = () => {
           />
         ) : null}
         <MainCalendar
+          editGuardia={editSelectedGuardia}
+          deleteGuardia={deleteSelectedGuardia}
           guardias={guardias}
           COLS={COLS}
           ROWS={ROWS}

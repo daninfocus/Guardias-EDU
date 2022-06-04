@@ -1,16 +1,18 @@
 import React, { useState } from "react";
 
-const ColorPicker = (props:{setSelectedColor:Function,selectedColor:number,colors:Array<String>}) => {
-  const [isOpen, setIsOpen] = useState(false);
-  
+const ColorPicker = (props: {
+  setSelectedColor: Function;
+  selectedColor: number;
+  colors: Array<String>;
+  childClick: Function;
+  isOpen: boolean;
+}) => {
   return (
     <div className="flex items-center">
       <div className="relative ">
         <button
           type="button"
-          onClick={() => {
-            setIsOpen(!isOpen);
-          }}
+          onClick={(e) => props.childClick(e)}
           className={
             props.selectedColor != undefined
               ? "text-white w-10 h-10 rounded-full focus:outline-none focus:shadow-outline inline-flex p-2 shadow"
@@ -31,7 +33,7 @@ const ColorPicker = (props:{setSelectedColor:Function,selectedColor:number,color
           </svg>
         </button>
 
-        {isOpen ? (
+        {props.isOpen ? (
           <div className="ease-in duration-100 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg">
             <div className="rounded-md bg-white shadow-xs px-4 py-3">
               <div className="flex flex-wrap -mx-2">

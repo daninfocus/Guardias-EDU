@@ -99,8 +99,20 @@ export const getProfilePhotoWithTeacherid = async (teacherId: string) => {
     return docs.docs[0].data().photo;
 }
 
-
 export const deleteGuardia = async(guardia: Guardia)=>{
-    console.log(guardia.id!);
     await deleteDoc(doc(firestore, "guardias", guardia.id!));
+}
+
+export const editGuardia = async(guardia: Guardia)=>{
+    const ref = doc(firestore, "guardias", guardia.id!);
+    var data = await updateDoc(ref,{
+        updatedAt:new Date(),
+        tasks:guardia.tasks,
+        moreInfo:guardia.moreInfo,
+        classroom:guardia.classroom,
+        hour:guardia.hour,
+        dayOfGuardia:guardia.dayOfGuardia,
+        color:guardia.color
+    });
+    return data;
 }

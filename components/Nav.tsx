@@ -3,7 +3,7 @@ import { logOut } from "../firebase/auth";
 import { useRouter } from "next/router";
 import College from "../models/College";
 
-const Nav = (props: { college: College,showNewGuardia:Function }) => {
+const Nav = (props: { college: College; showNewGuardia: Function }) => {
   const router = useRouter();
   const [isNavOpen, setIsNavOpen] = useState(false);
 
@@ -13,7 +13,7 @@ const Nav = (props: { college: College,showNewGuardia:Function }) => {
 
   return (
     <div className="bg-blue-500 w-full">
-      <nav className="relative px-3 py-2 flex justify-between items-center bg-white">
+      <nav className="relative px-3 py-2 flex justify-between items-center bg-gray-100">
         <a className="text-3xl font-bold leading-none" href="#">
           <svg
             className="h-10"
@@ -78,9 +78,12 @@ const Nav = (props: { college: College,showNewGuardia:Function }) => {
               </button>
             </div>
             <button
-              className="visible md:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
+              className="visible sm:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
               type="button"
-              onClick={() => props.showNewGuardia(true)}
+              onClick={() => {
+                props.showNewGuardia(true);
+                setIsNavOpen(false);
+              }}
             >
               Registrar Falta
             </button>
