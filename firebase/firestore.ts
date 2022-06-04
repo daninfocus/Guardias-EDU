@@ -1,6 +1,6 @@
 import firebase from './firebase';
 import { User } from '@firebase/auth-types';
-import { addDoc, Timestamp, collection, doc, getDoc, getDocs, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
+import { addDoc, Timestamp, collection, doc, getDoc, getDocs,deleteDoc , getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
 import Guardia from '../models/Guardia';
 
 const firestore = getFirestore(firebase);
@@ -78,16 +78,18 @@ export const getGuardias = async (collegeId: string) => {
     var lastday = new Date(curr.setDate(last))
     firstday.setHours(0, 0, 0, 0);
     lastday.setHours(0, 0, 0, 0);
-    const q = query(collection(firestore, "guardias"), where('collegeId', '==', collegeId), where("dayOfGuardia", ">", firstday));
+    const q = query(collection(firestore, "guardias"), where('collegeId', '==', collegeId));
     const docs = await getDocs(q);
     var guardiaArray: Array<Guardia> = [];
     docs.docs.forEach(element => {
+        
         var guardia = element.data();
         var guardiaDate = guardia.dayOfGuardia.toDate();
+        guardia.id=element.id;
         guardia.dayOfGuardia = guardiaDate;
         guardiaArray.push(guardia as Guardia);
     });
-    console.log(guardiaArray)
+
     return guardiaArray;
 }
 
@@ -98,3 +100,7 @@ export const getProfilePhotoWithTeacherid = async (teacherId: string) => {
 }
 
 
+export const deleteGuardia = async(guardia: Guardia)=>{
+    console.log(guardia.id!);
+    await deleteDoc(doc(firestore, "guardias", guardia.id!));
+}

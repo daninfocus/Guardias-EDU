@@ -22,13 +22,14 @@ export default function NewGuardia(props: {
   const { user } = useContext(AuthContext);
 
   const [date, setDate] = useState(new Date());
+  
   const colors = [
-    "#2196F3",
-    "#009688",
-    "#FFEB3B",
-    "#4CAF50",
-    "#f56565",
-    "#ed64a6",
+    "#7DD3FC",
+    "#FDA4AF",
+    "#6EE7B7",
+    "#FDE68A",
+    "#C4B5FD",
+    "#CBD5E1",
   ];
   const saveGuardia = (e: React.SyntheticEvent) => {
     e.preventDefault();

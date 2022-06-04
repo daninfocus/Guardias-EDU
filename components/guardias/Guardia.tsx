@@ -1,10 +1,17 @@
-import React, { useEffect, useState, Fragment } from "react";
+import React, { useEffect, useState, Fragment, useContext } from "react";
 import GuardiaModel from "../../models/Guardia";
-import { getProfilePhotoWithTeacherid } from "../../firebase/firestore";
+import {
+  getProfilePhotoWithTeacherid,
+  deleteGuardia,
+} from "../../firebase/firestore";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
+import Dropdown from "../Dropdown";
+import AuthContext from "../../store/auth.context";
 
 const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
+  const { user } = useContext(AuthContext);
+
   const [images, setImage] = useState<Array<string>>([]);
 
   const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>();
@@ -37,6 +44,12 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     getTeacherProfileIcons();
   }, []);
 
+  const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
+    if (user.uid == guardia.teacherId) {
+      await deleteGuardia(guardia);
+    }
+  };
+
   const generateKey = (pre: any) => {
     return `${pre}_${new Date().getTime()}`;
   };
@@ -68,19 +81,21 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
           {images.map((element, index) => {
             return (
               <Image
-                width={28}
-                height={28}
+                width="20"
+                height="20"
+                placeholder="blur"
+                blurDataURL="/profile_placeholder.png"
                 alt="icon"
                 key={generateKey(index)}
                 src={element}
-                className="-left-3 rounded-2xl border-2 border-white"
+                className="-left-3 rounded-2xl border-2 border-white ease-in duration-300 sm:w-2 md:w-4 sm:h-2 md:h-4"
               ></Image>
             );
           })}
         </div>
-        <div className="text-white font-bold flex flex-row justify-end items-center text-xs h-7">
-          <div className=" bg-red-400 rounded-full w-7 h-7">
-            <div className="top-[5px] left-[10px] relative">
+        <div className="text-white font-bold flex flex-row justify-end items-center text-xs h-5">
+          <div className=" bg-red-400 rounded-full w-5 h-5">
+            <div className="top-[2px] left-[7px] relative">
               {prop.guardias.length}
             </div>
           </div>
@@ -90,7 +105,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
             return (
               <div
                 key={generateKey(index)}
-                className="flex flex-row justify-between "
+                className="relative text-sm md:text-base flex flex-row justify-between link link-underline link-underline-black "
                 onClick={() => openGuardia(element)}
               >
                 <p>{element.classroom}</p>
@@ -131,8 +146,23 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         as="h3"
                         className="text-lg font-medium leading-6 text-gray-900 flex flex-row justify-between"
                       >
-                        <div>{selectedGuardia?.teacherName}</div>
-                        <div>{selectedGuardia?.classroom}</div>
+                        <div>
+                          {selectedGuardia?.teacherName}
+
+                          <div className="text-sm">
+                            {selectedGuardia?.classroom}
+                          </div>
+                        </div>
+
+                        {user.uid == selectedGuardia?.teacherId ? (
+                          <Dropdown
+                            deleteSelectedGuardia={() =>
+                              deleteSelectedGuardia(selectedGuardia!)
+                            }
+                          />
+                        ) : (
+                          <></>
+                        )}
                       </Dialog.Title>
                       <div className="mt-2">
                         Tareas:
@@ -143,19 +173,10 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                       <div className="mt-2 h-full">
                         Información adicional:
                         <p className="text-sm text-gray-500 ">
-                          sdasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasddasdasdasd
+                          {selectedGuardia?.moreInfo}
                         </p>
+                        {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </div>
-
-                      {/* <div className="mt-4">
-                    <button
-                      type="button"
-                      className="inline-flex justify-center rounded-md border border-transparent bg-blue-100 px-4 py-2 text-sm font-medium text-blue-900 hover:bg-blue-200 focus:outline-none focus-visible:ring-2 focus-visible:ring-blue-500 focus-visible:ring-offset-2"
-                      onClick={closeModal}
-                    >
-                      Got it, thanks!
-                    </button>
-                  </div> */}
                     </Dialog.Panel>
                   </Transition.Child>
                 </div>
