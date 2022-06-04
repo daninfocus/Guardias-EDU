@@ -123,7 +123,7 @@ export default function NewGuardia(props: {
       />
       <Transition appear show={true}>
         <Dialog
-          onClick={(e) => handleClickOutside(e)}
+          onClick={(e:React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClickOutside(e)}
           as="div"
           className="relative z-10"
           onClose={() => props.closeModal()}

@@ -38,7 +38,7 @@ const CreateCollegeForm = (props: any) => {
     }
     setHasErrorClasses(false);
     setHasErrorCollege(false);
-  }, [classes, college, user]);
+  }, [classes, college, user,router]);
 
   const addClass = () => {
     var classSanitized = removeExtraSpace(classInput);

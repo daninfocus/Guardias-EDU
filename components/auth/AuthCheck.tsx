@@ -13,7 +13,7 @@ function AuthCheck({children}: any) {
         router.replace('/');
       }
     
-    }, [loading]);
+    }, [loading,router,user]);
     
 
     if(user && !loading && router.pathname !== '/') {
