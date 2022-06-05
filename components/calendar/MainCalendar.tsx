@@ -64,17 +64,17 @@ const MainCalendar = (props: {
 
   useEffect(() => {
     createWeek();
-  }, [weekPos,createWeek]);
+  }, [weekPos]);
 
   const generateKey = (pre: any) => {
     return `${pre}_${new Date().getTime()}`;
   };
 
   return (
-    <div className="flex flex-col w-full h-full overflow-y-scroll sm:overflow-hidden">
+    <div className="flex flex-col w-full h-full overflow-y-scroll sm:overflow-x-hidden sm:overflow-y-hidden">
       <div className="w-full flex flex-row justify-between items-center">
         <button
-          className="transition ease-in-out delay-150  hover:translate-y-1 hover:translate-x-2  hover:scale-110  duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
+          className="transition ease-in-out duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => decrementWeek()}
         >
           <svg
@@ -103,7 +103,7 @@ const MainCalendar = (props: {
           {getMonthLabel()}-{props.week[0].getFullYear()}
         </div>
         <button
-          className="transition ease-in-out delay-150  hover:translate-y-1 hover:-translate-x-2  hover:scale-110  duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
+          className="transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
           onClick={() => incrementWeek()}
         >
           Siguiente
@@ -127,8 +127,8 @@ const MainCalendar = (props: {
       <div className="sm:-mx-6 lg:-mx-8 h-full">
         <div className="inline-block min-w-full h-full sm:px-6 lg:px-8">
           <table className="min-w-full table-auto h-full w-full">
-            <thead className="border-b">
-              <tr className="h-6">
+            <thead className="border-b border-t">
+              <tr className="h-6 ">
                 <th
                   scope="col"
                   className={

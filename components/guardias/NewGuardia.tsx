@@ -22,6 +22,8 @@ export default function NewGuardia(props: {
   closeModal: Function;
   college: College;
   addGuardia: Function;
+  editGuardia: Function;
+  edit: Guardia | undefined;
 }) {
   const [selectedColor, setSelectedColor] = useState(
     Math.floor(Math.random() * 5)
@@ -41,6 +43,10 @@ export default function NewGuardia(props: {
 
   const [selectedHour, setSelectedHour] = useState(hours[0]);
 
+  const [tasks, setTasks] = useState("");
+
+  const [moreInfo, setMoreInfo] = useState("");
+
   const colors = [
     "#7DD3FC",
     "#FDA4AF",
@@ -49,14 +55,30 @@ export default function NewGuardia(props: {
     "#C4B5FD",
     "#CBD5E1",
   ];
+
+  useEffect(() => {
+    if (props.edit != undefined) {
+      
+      setSelectedClass(props.edit.classroom);
+      setSelectedHour(props.edit.hour.toString());
+      setSelectedColor(props.edit.color);
+      setDate(props.edit.dayOfGuardia);
+      setTasks(props.edit.tasks);
+      setMoreInfo(props.edit.moreInfo);
+    }else{
+      setSelectedClass(props.college.classes[0]);
+      setSelectedHour(hours[0]);
+      setSelectedColor( Math.floor(Math.random() * 5));
+      setDate(new Date());
+      setTasks("");
+      setMoreInfo("");
+    }
+
+  }, []);
+
   const saveGuardia = (e: React.SyntheticEvent) => {
     e.preventDefault();
-    const target = e.target as typeof e.target & {
-      hour: { value: string };
-      classroom: { value: string };
-      tasks: { value: string };
-      moreInfo: { value: string };
-    };
+
     if (collegeId != undefined) {
       const guardia: Guardia = {
         dayOfGuardia: date,
@@ -65,26 +87,31 @@ export default function NewGuardia(props: {
         teacherName: user.displayName,
         collegeId: collegeId.toString(),
         updatedAt: null,
-        tasks: target.tasks.value,
-        moreInfo: target.moreInfo.value,
+        tasks: tasks,
+        moreInfo: moreInfo,
         classroom: selectedClass,
         hour: parseInt(selectedHour),
         color: selectedColor,
         isEmpty: false,
       };
 
-      props.addGuardia(guardia);
+      if (props.edit != undefined) {
+        guardia.id=props.edit.id;
+        props.editGuardia(guardia);
+      } else {
+        props.addGuardia(guardia);
 
-      var newGuardia = addDocument("guardias", guardia).then((id) => {
-        toast.success("Guardia guardado correctamente", {
-          icon: "✅",
+        var newGuardia = addDocument("guardias", guardia).then((id) => {
+          toast.success("Guardia guardado correctamente", {
+            icon: "✅",
+          });
+          props.closeModal();
         });
-        props.closeModal();
-      });
-      if (newGuardia == null) {
-        toast("Error guardando la guardia", {
-          icon: "⛔️",
-        });
+        if (newGuardia == null) {
+          toast("Error guardando la guardia", {
+            icon: "⛔️",
+          });
+        }
       }
     }
   };
@@ -111,7 +138,7 @@ export default function NewGuardia(props: {
   return (
     <>
       <Toaster
-        position="top-center"
+        position="bottom-center"
         toastOptions={{
           // Define default options
           duration: 5000,
@@ -123,7 +150,9 @@ export default function NewGuardia(props: {
       />
       <Transition appear show={true}>
         <Dialog
-          onClick={(e:React.MouseEvent<HTMLDivElement, MouseEvent>) => handleClickOutside(e)}
+          onClick={(e: React.MouseEvent<HTMLDivElement, MouseEvent>) =>
+            handleClickOutside(e)
+          }
           as="div"
           className="relative z-10"
           onClose={() => props.closeModal()}
@@ -245,6 +274,8 @@ export default function NewGuardia(props: {
                             id="tasks"
                             className="resize-none outline-0 w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 "
                             style={{ minHeight: "38px" }}
+                            value={tasks}
+                            onChange={(e) => setTasks(e.target.value)}
                           ></textarea>
                         </div>
                         <div className="mb-3  p-2 w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -256,6 +287,8 @@ export default function NewGuardia(props: {
                             id="moreInfo"
                             className="resize-none outline-0 w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 "
                             style={{ minHeight: "38px" }}
+                            value={moreInfo}
+                            onChange={(e) => setMoreInfo(e.target.value)}
                           ></textarea>
                         </div>
                       </div>

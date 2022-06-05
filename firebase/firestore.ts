@@ -87,6 +87,7 @@ export const getGuardias = async (collegeId: string) => {
         var guardiaDate = guardia.dayOfGuardia.toDate();
         guardia.id=element.id;
         guardia.dayOfGuardia = guardiaDate;
+        console.log(guardia);
         guardiaArray.push(guardia as Guardia);
     });
 
@@ -104,6 +105,7 @@ export const deleteGuardia = async(guardia: Guardia)=>{
 }
 
 export const editGuardia = async(guardia: Guardia)=>{
+    console.log(guardia.id!);
     const ref = doc(firestore, "guardias", guardia.id!);
     var data = await updateDoc(ref,{
         updatedAt:new Date(),

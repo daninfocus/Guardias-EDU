@@ -15,7 +15,9 @@ function Login() {
       .then(async (data) => {
         const college = await doesUserHaveCollegeAssigned(data.uid);
         setLoading(false);
+        
         if (college != undefined) {
+          console.log(college.id);
           router.replace("/" + college.id);
         } else {
           router.replace("/college");
@@ -43,7 +45,6 @@ function Login() {
         <LoadingButton
           size="small"
           loading={loading}
-          loadingPosition="start"
           variant="contained"
           onClick={LoginWithGoogle}
           className="hover:bg-red-500 rounded-xl p-2.5 hover:text-white text-gray-700 font-bold"

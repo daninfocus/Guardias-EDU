@@ -69,11 +69,10 @@ const Guardia = (prop: {
 
   return (
     <div className={backgroundColor()}>
-      <div className="col-span-2 h-7 relative "></div>
-      <div className="text-white font-bold flex flex-row justify-end items-center text-xs h-5">
+      <div className="text-white font-bold flex flex-row justify-start items-center text-xs h-5">
         <div className=" bg-red-400 rounded-full w-5 h-5">
           <div className="top-[2px] left-[6.5px] relative">
-            {prop.guardias.length}
+            {prop.guardias.length} <span className="font-medium text-slate-600 underline ml-2">Guardia{prop.guardias.length>1?'s':''}</span>
           </div>
         </div>
       </div>

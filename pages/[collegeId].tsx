@@ -52,6 +52,8 @@ const Home = () => {
       )
   );
 
+  const [editedGuardia, setEditGuardia] = useState<GuardiaModel>();
+
   const isGuardiaInCurrentWeek = (guardia: GuardiaModel) => {
     if (!guardia.isEmpty) {
       //if year is with-in the week
@@ -106,11 +108,15 @@ const Home = () => {
 
   const editSelectedGuardia = async (guardia: GuardiaModel) => {
     setShowNewGuardia(true);
-    // var data = await editGuardia(guardia);
-    // console.log(data);
-    // toast.success("Guardia guardado correctamente", {
-    //   icon: "✅",
-    // });
+    setEditGuardia(guardia);
+  };
+
+  const saveEditedGuardia = async (guardia: GuardiaModel) => {
+    var data = await editGuardia(guardia);
+    console.log(data);
+    toast.success("Guardia guardado correctamente", {
+      icon: "✅",
+    });
   };
 
   const getAndSetGuardias = async () => {
@@ -180,18 +186,13 @@ const Home = () => {
         <title>{"Guardias - " + college.name}</title>
         <Nav college={college} showNewGuardia={() => setShowNewGuardia(true)} />
 
-        <button
-          className="sm:block sm:visible hidden invisible transition-all m-auto w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl duration-200"
-          type="button"
-          onClick={() => setShowNewGuardia(true)}
-        >
-          Registrar Falta
-        </button>
         {showNewGuardia ? (
           <NewGuardia
             college={college}
             closeModal={() => setShowNewGuardia(false)}
             addGuardia={addGuardia}
+            editGuardia={saveEditedGuardia}
+            edit={editedGuardia}
           />
         ) : null}
         <MainCalendar
