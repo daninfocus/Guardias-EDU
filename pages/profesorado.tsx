@@ -3,16 +3,21 @@ import Nav from "../components/Nav";
 import GuardiasContext from "../context/GuardiasContext";
 
 const Profesorado = () => {
-
   const { college } = useContext(GuardiasContext);
 
   return (
-    <div>
+    <div className="h-screen">
       <Nav simpleNav={true} />
-      {college.teachers?.map((teacher, index) => {
-        console.log(teacher);
-        return <h1 key={index}><p>{teacher}</p></h1>;
-      })}
+      <div className="mt-auto w-full h-full">
+        {college.teachers?.map((teacher, index) => {
+          return (
+            <h1 key={index}>
+              <p className="items-center text-center">{teacher.email}<button> Borrar</button></p>
+              
+            </h1>
+          );
+        })}
+      </div>
     </div>
   );
 };

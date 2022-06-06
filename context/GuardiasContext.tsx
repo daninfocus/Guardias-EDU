@@ -45,13 +45,7 @@ export function GuardiasContextProvider({ children }: any) {
   //context
   const { user } = useContext(AuthContext);
   var collegeId = router.query.collegeId;
-
-  useEffect(() => {
-    if (router.asPath.indexOf("collegeid") != -1) {
-      collegeId=router.asPath.substring(router.asPath.indexOf("collegeid") + 10);
-    }
-  }, [collegeId]);
-
+  
   //state
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [college, setCollege] = useState<CollegeModel>(newCollege);
@@ -131,7 +125,7 @@ export function GuardiasContextProvider({ children }: any) {
   const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
     if (
       user &&
-      user.uid == guardia.teacherId &&
+      user.uid == guardia.teacher.id &&
       confirm("¿Quieres borrar esta guardia?")
     ) {
       deleteGuardia(guardia).then(() => getAndSetGuardias());

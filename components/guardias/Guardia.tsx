@@ -16,22 +16,10 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   //state
-  const [image, setImage] = useState<string>("/loading.gif");
   const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>();
   const [isOpen, setIsOpen] = useState(false);
 
   //functions
-
-  const getTeacherProfileIcon = (guardia: GuardiaModel | undefined) => {
-    if (guardia != null) {
-      getProfilePhotoWithTeacherid(guardia.teacherId).then((data) =>
-        setImage(data)
-      );
-    }
-
-    return image;
-  };
-
   function closeModal() {
     setIsOpen(false);
   }
@@ -91,7 +79,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
             >
               <p>{element.classroom}</p>
               <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-              <p>{element.teacherName}</p>
+              <p>{element.teacher.name}</p>
             </div>
           );
         })}
@@ -131,7 +119,12 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           placeholder="blur"
                           blurDataURL="/profile_placeholder.png"
                           alt="icon"
-                          src={getTeacherProfileIcon(selectedGuardia)}
+                          src={
+                            
+                            selectedGuardia != undefined
+                              ?  selectedGuardia.teacher.photo
+                              : "/loading.gif"
+                          }
                           className="-left-3 fixed rounded-2xl border-2 border-white ease-in duration-300"
                         />
                       </div>
@@ -144,7 +137,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {user.uid == selectedGuardia?.teacherId || isUserAdmin ? (
+                      {user.uid == selectedGuardia?.teacher.id! ||
+                      isUserAdmin ? (
                         <DropdownOptions
                           deleteGuardia={() =>
                             deleteSelectedGuardia(selectedGuardia!)
@@ -164,7 +158,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                     >
                       <div>
                         <span className=" font-thin">Profesor/a: &nbsp;</span>
-                        {selectedGuardia?.teacherName}
+                        {selectedGuardia?.teacher.name}
                       </div>
                       <div className="text-base self-end">
                         <span className=" font-thin">Clase: &nbsp;</span>

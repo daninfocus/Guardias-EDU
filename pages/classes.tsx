@@ -2,11 +2,11 @@ import React, { useContext, useEffect, useState } from "react";
 import Nav from "../components/Nav";
 import GuardiasContext from "../context/GuardiasContext";
 import CollegeModel from "../@types/College";
-import toast from "react-hot-toast";
+import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
 import AuthContext from "../context/AuthContext";
 import { FormHelperText } from "@mui/material";
-import { addDocument } from "../firebase/firestore";
+import { updateClassesForCollege } from "../firebase/firestore";
 import Box from "@mui/material/Box";
 import { TextField } from "@mui/material";
 import Button from "@mui/material/Button";
@@ -50,6 +50,14 @@ const Classes = () => {
     }
   };
 
+  const saveClasses = async () => {
+    updateClassesForCollege(college.id!, classes).then((data)=>{
+      toast.success("Classes guardado correctamente", {
+        icon: "✅",
+      });
+    });
+  };
+
   useEffect(() => {
     setClasses(college.classes);
   }, [college]);
@@ -58,6 +66,17 @@ const Classes = () => {
 
   return (
     <div>
+       <Toaster
+        position="bottom-center"
+        toastOptions={{
+          // Define default options
+          duration: 5000,
+          style: {
+            background: "#363636",
+            color: "#fff",
+          },
+        }}
+      />
       <Nav simpleNav={true} />
       <div className="static w-full max-h-screen">
         <Box
@@ -131,7 +150,12 @@ const Classes = () => {
             spacing={2}
             className="flex flex-row items-center justify-center mt-4"
           >
-            <Button variant="outlined" color="success" endIcon={<SendIcon />}>
+            <Button
+              variant="outlined"
+              color="success"
+              endIcon={<SendIcon />}
+              onClick={() => saveClasses()}
+            >
               Send
             </Button>
           </Stack>
