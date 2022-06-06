@@ -285,7 +285,7 @@ export default function Form() {
                         <button
                           className="hover:shadow-md hover:bg-red-200 rounded-lg text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
-                          onClick={() => prop.closeModal()}
+                          onClick={() =>setShowNewGuardia(false)}
                         >
                           Close
                         </button>
