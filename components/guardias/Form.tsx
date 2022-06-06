@@ -52,15 +52,18 @@ export default function Form() {
   const [moreInfo, setMoreInfo] = useState("");
 
   useEffect(() => {
-    if (!pressedNewGuardia) {
+
+    //TODOODODODO NEW GUARDIA STILL DISPLAYS LAST EDITED ONE
+    if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
+      console.log(guardiaToEdit);
       setSelectedClass(guardiaToEdit.classroom);
       setSelectedHour(guardiaToEdit.hour.toString());
       setSelectedColor(guardiaToEdit.color);
       setDate(guardiaToEdit.dayOfGuardia);
       setTasks(guardiaToEdit.tasks);
       setMoreInfo(guardiaToEdit.moreInfo);
-    } 
-  }, []);
+    }
+  }, [pressedNewGuardia]);
 
   const saveGuardia = (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -85,8 +88,6 @@ export default function Form() {
         guardia.id = guardiaToEdit.id;
         saveEditedGuardia(guardia);
       } else {
-        
-
         var newGuardia = addDocument("guardias", guardia).then((id) => {
           toast.success("Guardia guardado correctamente", {
             icon: "✅",
@@ -285,7 +286,7 @@ export default function Form() {
                         <button
                           className="hover:shadow-md hover:bg-red-200 rounded-lg text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
-                          onClick={() =>setShowNewGuardia(false)}
+                          onClick={() => setShowNewGuardia(false)}
                         >
                           Close
                         </button>
