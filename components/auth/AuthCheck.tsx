@@ -1,6 +1,6 @@
 import { useRouter } from 'next/router';
 import { useContext, useEffect } from 'react'
-import AuthContext from '../../store/auth.context'
+import AuthContext from '../../context/AuthContext'
 import Loading from '../Loading';
 import Login from './Login';
 
@@ -10,7 +10,7 @@ function AuthCheck({children}: any) {
     
     useEffect(() => {
       if(user && !loading && router.pathname === '/') {
-        router.replace('/Home');
+        router.replace('/login');
       }
 
     }, [loading]);

@@ -1,24 +1,26 @@
 import React, { useEffect, useState, Fragment, useContext } from "react";
-import GuardiaModel from "../../models/Guardia";
+import GuardiaModel from "../../@types/Guardia";
 import { getProfilePhotoWithTeacherid } from "../../firebase/firestore";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import DropdownOptions from "../DropdownOptions";
-import AuthContext from "../../store/auth.context";
+import AuthContext from "../../context/AuthContext";
+import GuardiasContext from "../../context/GuardiasContext";
 import * as days from "../../shared/dates";
 
-const Guardia = (prop: {
-  guardias: Array<GuardiaModel>;
-  deleteGuardia: Function;
-  editGuardia: Function;
-}) => {
+const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
+  //context
   const { user } = useContext(AuthContext);
-
+  const { deleteSelectedGuardia } = useContext(GuardiasContext);
+  const { editSelectedGuardia } = useContext(GuardiasContext);
+  const { setPressedNewGuardia } = useContext(GuardiasContext);
+  const { isUserAdmin } = useContext(GuardiasContext);
+  //state
   const [image, setImage] = useState<string>("/loading.gif");
-
   const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>();
+  const [isOpen, setIsOpen] = useState(false);
 
-  let [isOpen, setIsOpen] = useState(false);
+  //functions
 
   const getTeacherProfileIcon = (guardia: GuardiaModel | undefined) => {
     if (guardia != null) {
@@ -72,7 +74,10 @@ const Guardia = (prop: {
       <div className="text-white font-bold flex flex-row justify-start items-center text-xs h-5">
         <div className=" bg-red-400 rounded-full w-5 h-5">
           <div className="top-[2px] left-[6.5px] relative">
-            {prop.guardias.length} <span className="font-medium text-slate-600 underline ml-2">Guardia{prop.guardias.length>1?'s':''}</span>
+            {prop.guardias.length}{" "}
+            <span className="font-medium text-slate-600 underline ml-2">
+              Guardia{prop.guardias.length > 1 ? "s" : ""}
+            </span>
           </div>
         </div>
       </div>
@@ -139,14 +144,15 @@ const Guardia = (prop: {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {user.uid == selectedGuardia?.teacherId ? (
+                      {user.uid == selectedGuardia?.teacherId || isUserAdmin ? (
                         <DropdownOptions
                           deleteGuardia={() =>
-                            prop.deleteGuardia(selectedGuardia!)
+                            deleteSelectedGuardia(selectedGuardia!)
                           }
-                          editGuardia={() =>
-                            prop.editGuardia(selectedGuardia!)
-                          }
+                          editGuardia={() => {
+                            editSelectedGuardia(selectedGuardia!);
+                            setPressedNewGuardia(false);
+                          }}
                         />
                       ) : (
                         <></>

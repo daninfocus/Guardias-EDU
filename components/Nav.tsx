@@ -1,33 +1,68 @@
-import React, { useState } from "react";
+import React, { useContext, useState } from "react";
 import { logOut } from "../firebase/auth";
 import { useRouter } from "next/router";
-import College from "../models/College";
+import GuardiasContext from "../context/GuardiasContext";
+import College from "../@types/College";
 
-const Nav = (props: { college: College; showNewGuardia: Function }) => {
+const Nav = (prop: { simpleNav: boolean }) => {
   const router = useRouter();
+
+  //context
+
+  const { college } = useContext(GuardiasContext);
+  const { setShowNewGuardia } = useContext(GuardiasContext);
+  const { setPressedNewGuardia } = useContext(GuardiasContext);
+  const { isUserAdmin } = useContext(GuardiasContext);
+
+  //state
   const [isNavOpen, setIsNavOpen] = useState(false);
 
+  //functions
   const Logout = () => {
     logOut().then(() => router.push("/"));
+  };
+
+  const classes = () => {
+    router.push("/classes?collegeId=" + college.id);
+  };
+
+  const home = () => {
+    router.push("/" + college.id, undefined, { scroll: true });
+  };
+
+  const profesorado = () => {
+    router.push("/profesorado?collegeId=" + college.id, undefined, {
+      scroll: true,
+    });
+  };
+
+  const selectedStyle = (pathname: string) => {
+    return router.pathname == pathname
+      ? "cursor-pointer text-md text-blue-600 font-bold hover:text-blue-400"
+      : "cursor-pointer text-md text-gray-400 hover:text-gray-500 ";
   };
 
   return (
     <div className="w-full ">
       <nav className="relative px-3 py-2 grid grid-cols-3 justify-between items-center bg-gray-100 shadow-xl rounded-2xl">
         <div className=" md:text-xl text-sm font-bold font-josefin ">
-          {props.college.name}
+          {college.name}
         </div>
         <div className="flex flex-row justify-center">
-          <button
-            className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
-            type="button"
-            onClick={() => {
-              props.showNewGuardia(true);
-              setIsNavOpen(false);
-            }}
-          >
-            Registrar Falta
-          </button>
+          {!prop.simpleNav ? (
+            <button
+              className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
+              type="button"
+              onClick={() => {
+                setShowNewGuardia(true);
+                setIsNavOpen(false);
+              }}
+            >
+              Registrar Falta
+            </button>
+          ) : (
+            <></>
+          )}
         </div>
         <div className="flex flex-row justify-end">
           <button
@@ -83,19 +118,20 @@ const Nav = (props: { college: College; showNewGuardia: Function }) => {
               className="visible sm:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
-                props.showNewGuardia(true);
+                setShowNewGuardia(true);
                 setIsNavOpen(false);
               }}
             >
               Registrar Falta
             </button>
+
             <hr className="visible md:hidden mb-9"></hr>
             <div>
               <ul>
                 <li>
                   <a
-                    className="text-md text-blue-600 font-bold hover:text-blue-400"
-                    href="#"
+                    className={selectedStyle("/[collegeId]")}
+                    onClick={() => home()}
                   >
                     Calendario
                   </a>
@@ -118,12 +154,42 @@ const Nav = (props: { college: College; showNewGuardia: Function }) => {
                 </li>
                 <li>
                   <a
-                    className="text-md text-gray-400 hover:text-gray-500 "
-                    href="#"
+                    className={selectedStyle("/profesorado")}
+                    onClick={() => profesorado()}
                   >
                     Profesorado
                   </a>
                 </li>
+                {isUserAdmin ? (
+                  <>
+                    <li className="text-gray-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        stroke="currentColor"
+                        className="w-4 h-4 current-fill"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                        />
+                      </svg>
+                    </li>
+                    <li>
+                      <a
+                        className={selectedStyle("/classes")}
+                        onClick={() => classes()}
+                      >
+                        Editar Clases
+                      </a>
+                    </li>
+                  </>
+                ) : (
+                  <></>
+                )}
               </ul>
             </div>
 

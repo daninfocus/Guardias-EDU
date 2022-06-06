@@ -1,7 +1,7 @@
 import firebase from './firebase';
 import { User } from '@firebase/auth-types';
 import { addDoc, Timestamp, collection, doc, getDoc, getDocs,deleteDoc , getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where } from 'firebase/firestore';
-import Guardia from '../models/Guardia';
+import Guardia from '../@types/Guardia';
 
 const firestore = getFirestore(firebase);
 
@@ -87,7 +87,6 @@ export const getGuardias = async (collegeId: string) => {
         var guardiaDate = guardia.dayOfGuardia.toDate();
         guardia.id=element.id;
         guardia.dayOfGuardia = guardiaDate;
-        console.log(guardia);
         guardiaArray.push(guardia as Guardia);
     });
 
@@ -105,7 +104,6 @@ export const deleteGuardia = async(guardia: Guardia)=>{
 }
 
 export const editGuardia = async(guardia: Guardia)=>{
-    console.log(guardia.id!);
     const ref = doc(firestore, "guardias", guardia.id!);
     var data = await updateDoc(ref,{
         updatedAt:new Date(),

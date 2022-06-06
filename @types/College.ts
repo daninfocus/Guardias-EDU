@@ -5,7 +5,7 @@ class College {
   createdAt: Date | undefined;
   updatedAt: Date | undefined;
   uidAdmin: string;
-  teachers: Array<Teacher> | undefined;
+  teachers: Array<String> | undefined;
   classes: string[];
 
   constructor() {

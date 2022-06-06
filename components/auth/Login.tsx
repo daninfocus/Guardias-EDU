@@ -17,10 +17,9 @@ function Login() {
         setLoading(false);
         
         if (college != undefined) {
-          console.log(college.id);
-          router.replace("/" + college.id);
+          router.push("/" + college.id);
         } else {
-          router.replace("/college");
+          router.push("/college");
         }
       })
       .catch((error) => {

@@ -8,45 +8,18 @@ import React, {
 } from "react";
 import Calendar from "react-calendar";
 import { addDocument } from "../../firebase/firestore";
-import College from "../../models/College";
-import Guardia from "../../models/Guardia";
+import College from "../../@types/College";
+import Guardia from "../../@types/Guardia";
 import toast, { Toaster } from "react-hot-toast";
 import router, { useRouter } from "next/router";
-import AuthContext from "../../store/auth.context";
+import AuthContext from "../../context/AuthContext";
 import * as days from "../../shared/dates";
 import ColorPicker from "../ColorPicker";
 import SelectDialog from "../SelectDialog";
 import { Dialog, Transition } from "@headlessui/react";
+import GuardiasContext from "../../context/GuardiasContext";
 
-export default function NewGuardia(props: {
-  closeModal: Function;
-  college: College;
-  addGuardia: Function;
-  editGuardia: Function;
-  edit: Guardia | undefined;
-}) {
-  const [selectedColor, setSelectedColor] = useState(
-    Math.floor(Math.random() * 5)
-  );
-
-  const { collegeId } = router.query;
-
-  const { user } = useContext(AuthContext);
-
-  const [date, setDate] = useState(new Date());
-
-  const [isOpen, setIsOpen] = useState(false);
-
-  const [selectedClass, setSelectedClass] = useState(props.college.classes[0]);
-
-  const hours = ["1", "2", "3", "4", "5", "6"];
-
-  const [selectedHour, setSelectedHour] = useState(hours[0]);
-
-  const [tasks, setTasks] = useState("");
-
-  const [moreInfo, setMoreInfo] = useState("");
-
+export default function Form() {
   const colors = [
     "#7DD3FC",
     "#FDA4AF",
@@ -56,24 +29,37 @@ export default function NewGuardia(props: {
     "#CBD5E1",
   ];
 
-  useEffect(() => {
-    if (props.edit != undefined) {
-      
-      setSelectedClass(props.edit.classroom);
-      setSelectedHour(props.edit.hour.toString());
-      setSelectedColor(props.edit.color);
-      setDate(props.edit.dayOfGuardia);
-      setTasks(props.edit.tasks);
-      setMoreInfo(props.edit.moreInfo);
-    }else{
-      setSelectedClass(props.college.classes[0]);
-      setSelectedHour(hours[0]);
-      setSelectedColor( Math.floor(Math.random() * 5));
-      setDate(new Date());
-      setTasks("");
-      setMoreInfo("");
-    }
+  //context
+  const { collegeId } = router.query;
+  const { user } = useContext(AuthContext);
+  const { addGuardia } = useContext(GuardiasContext);
+  const { guardiaToEdit } = useContext(GuardiasContext);
+  const { saveEditedGuardia } = useContext(GuardiasContext);
+  const { setShowNewGuardia } = useContext(GuardiasContext);
+  const { college } = useContext(GuardiasContext);
+  const { pressedNewGuardia } = useContext(GuardiasContext);
 
+  //state
+  const [selectedColor, setSelectedColor] = useState(
+    Math.floor(Math.random() * 5)
+  );
+  const [date, setDate] = useState(new Date());
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(college.classes[0]);
+  const hours = ["1", "2", "3", "4", "5", "6"];
+  const [selectedHour, setSelectedHour] = useState(hours[0]);
+  const [tasks, setTasks] = useState("");
+  const [moreInfo, setMoreInfo] = useState("");
+
+  useEffect(() => {
+    if (!pressedNewGuardia) {
+      setSelectedClass(guardiaToEdit.classroom);
+      setSelectedHour(guardiaToEdit.hour.toString());
+      setSelectedColor(guardiaToEdit.color);
+      setDate(guardiaToEdit.dayOfGuardia);
+      setTasks(guardiaToEdit.tasks);
+      setMoreInfo(guardiaToEdit.moreInfo);
+    } 
   }, []);
 
   const saveGuardia = (e: React.SyntheticEvent) => {
@@ -95,17 +81,18 @@ export default function NewGuardia(props: {
         isEmpty: false,
       };
 
-      if (props.edit != undefined) {
-        guardia.id=props.edit.id;
-        props.editGuardia(guardia);
+      if (!pressedNewGuardia) {
+        guardia.id = guardiaToEdit.id;
+        saveEditedGuardia(guardia);
       } else {
-        props.addGuardia(guardia);
+        
 
         var newGuardia = addDocument("guardias", guardia).then((id) => {
           toast.success("Guardia guardado correctamente", {
             icon: "✅",
           });
-          props.closeModal();
+          addGuardia(guardia);
+          setShowNewGuardia(false);
         });
         if (newGuardia == null) {
           toast("Error guardando la guardia", {
@@ -155,7 +142,7 @@ export default function NewGuardia(props: {
           }
           as="div"
           className="relative z-10"
-          onClose={() => props.closeModal()}
+          onClose={() => setShowNewGuardia(false)}
         >
           <Transition.Child
             as={Fragment}
@@ -194,7 +181,7 @@ export default function NewGuardia(props: {
 
                     <button
                       className="ml-auto bg-transparent border-0 text-slate-700 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                      onClick={() => props.closeModal()}
+                      onClick={() => setShowNewGuardia(false)}
                     >
                       <span className="bg-transparent hover:text-slate-700  text-slate-500 h-8 w-8 text-2xl block outline-none focus:outline-none">
                         <svg
@@ -257,7 +244,7 @@ export default function NewGuardia(props: {
                               Clase
                             </label>
                             <SelectDialog
-                              elements={props.college.classes}
+                              elements={college.classes}
                               hours={false}
                               selected={selectedClass}
                               setSelected={setSelectedClass}
@@ -298,7 +285,7 @@ export default function NewGuardia(props: {
                         <button
                           className="hover:shadow-md hover:bg-red-200 rounded-lg text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
-                          onClick={() => props.closeModal()}
+                          onClick={() => prop.closeModal()}
                         >
                           Close
                         </button>

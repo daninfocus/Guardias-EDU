@@ -7,8 +7,8 @@ import React, {
 } from "react";
 import toast, { Toaster } from "react-hot-toast";
 import { useRouter } from "next/router";
-import CollegeModel from "../models/College";
-import AuthContext from "../store/auth.context";
+import CollegeModel from "../@types/College";
+import AuthContext from "../context/AuthContext";
 import {
   getColleges,
   updateTeacherArray,
