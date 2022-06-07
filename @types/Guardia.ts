@@ -5,7 +5,8 @@ export default interface Guardia {
     id?: string,
     createdAt: Date;
     updatedAt: Date | null;
-    teacher: Teacher;
+    teacher: Teacher | null;
+    teacherId: string | null;
     collegeId: string;
     tasks: string;
     moreInfo: string;

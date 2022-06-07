@@ -57,6 +57,7 @@ export const getCollegeDataById = async (collegeId: string) => {
     var teachers: Array<Teacher> = [];
     college.teachers?.map(async (item) => {
         var teacher = await getTeacherById(item.toString());
+        teacher.id = item;
         teachers.push(teacher as Teacher);
     });
     college.teachers = teachers;
@@ -114,14 +115,13 @@ export const getGuardias = async (collegeId: string) => {
         var guardia = element.data();
         var guardiaDate = guardia.dayOfGuardia.toDate();
         guardia.teacher = await getTeacherById(guardia.teacherId);
+        guardia.teacher.id = guardia.teacherId;
         delete guardia.teacherId;
         delete guardia.teacherName;
         guardia.id = element.id;
         guardia.dayOfGuardia = guardiaDate;
-        console.log(guardia);
         guardiaArray.push(guardia as Guardia);
     };
-    console.log(guardiaArray)
     return guardiaArray;
 }
 

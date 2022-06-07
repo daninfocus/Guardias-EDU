@@ -16,7 +16,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   //state
-  const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>();
+  const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>(prop.guardias[0]);
   const [isOpen, setIsOpen] = useState(false);
 
   //functions
@@ -79,7 +79,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
             >
               <p>{element.classroom}</p>
               <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-              <p>{element.teacher.name}</p>
+              <p>{element.teacher!.name}</p>
             </div>
           );
         })}
@@ -122,7 +122,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           src={
                             
                             selectedGuardia != undefined
-                              ?  selectedGuardia.teacher.photo
+                              ?  selectedGuardia.teacher!.photo
                               : "/loading.gif"
                           }
                           className="-left-3 fixed rounded-2xl border-2 border-white ease-in duration-300"
@@ -137,7 +137,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {user.uid == selectedGuardia?.teacher.id! ||
+                      {user.uid == selectedGuardia.teacher!.id! ||
                       isUserAdmin ? (
                         <DropdownOptions
                           deleteGuardia={() =>
@@ -158,7 +158,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                     >
                       <div>
                         <span className=" font-thin">Profesor/a: &nbsp;</span>
-                        {selectedGuardia?.teacher.name}
+                        {selectedGuardia.teacher!.name}
                       </div>
                       <div className="text-base self-end">
                         <span className=" font-thin">Clase: &nbsp;</span>

@@ -10,6 +10,8 @@ import GuardiaModel from "../@types/Guardia";
 import CollegeModel from "../@types/College";
 import AuthContext from "./AuthContext";
 import toast from "react-hot-toast";
+import { addDocument } from "../firebase/firestore";
+
 
 interface GuardiasContextInterface {
   guardias: Array<Array<Array<GuardiaModel>>>;
@@ -32,6 +34,8 @@ interface GuardiasContextInterface {
   setPressedNewGuardia: Function;
   pressedNewGuardia: Boolean;
   isUserAdmin: Boolean;
+  setCollege: Function;
+  saveGuardia: Function;
 }
 const GuardiasContext = createContext({} as GuardiasContextInterface);
 
@@ -45,7 +49,7 @@ export function GuardiasContextProvider({ children }: any) {
   //context
   const { user } = useContext(AuthContext);
   var collegeId = router.query.collegeId;
-  
+
   //state
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [college, setCollege] = useState<CollegeModel>(newCollege);
@@ -70,6 +74,7 @@ export function GuardiasContextProvider({ children }: any) {
   const [guardiaToEdit, setGuardiaToEdit] = useState({} as GuardiaModel);
   const [pressedNewGuardia, setPressedNewGuardia] = useState(false);
   const [showNewGuardia, setShowNewGuardia] = useState(false);
+  const [guardiaStorageChanged, setGuardiaStorageChanged] = useState(false);
 
   //functions
   const createWeek = (daysInWeek = COLS - 1) => {
@@ -125,10 +130,17 @@ export function GuardiasContextProvider({ children }: any) {
   const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
     if (
       user &&
-      user.uid == guardia.teacher.id &&
+      user.uid == guardia.teacher!.id &&
       confirm("¿Quieres borrar esta guardia?")
     ) {
-      deleteGuardia(guardia).then(() => getAndSetGuardias());
+      deleteGuardia(guardia).then(() => {
+        getGuardiasReponse();
+        toast.success("Guardia borrado correctamente", {
+          icon: "✅",
+        });
+
+        getAndSetGuardias();
+      });
     }
   };
 
@@ -139,10 +151,26 @@ export function GuardiasContextProvider({ children }: any) {
 
   const saveEditedGuardia = async (guardia: GuardiaModel) => {
     await editGuardia(guardia).then((data) => {
+      getGuardiasReponse();
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
     });
+  };
+
+  const saveGuardia = (guardia: GuardiaModel) => {
+    var newGuardia = addDocument("guardias", guardia).then((id) => {
+      toast.success("Guardia guardado correctamente", {
+        icon: "✅",
+      });
+      getGuardiasReponse();
+      setShowNewGuardia(false);
+    });
+    if (newGuardia == null) {
+      toast("Error guardando la guardia", {
+        icon: "⛔️",
+      });
+    }
   };
 
   const addGuardia = (guardia: GuardiaModel) => {
@@ -163,7 +191,6 @@ export function GuardiasContextProvider({ children }: any) {
 
   const getAndSetGuardias = async () => {
     if (collegeId != null) {
-      var guardiaResponse = await getGuardias(collegeId.toString());
       var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
         Array(ROWS)
           .fill(null)
@@ -172,33 +199,54 @@ export function GuardiasContextProvider({ children }: any) {
               .fill(null)
               .map(() => [{ isEmpty: true }] as Array<GuardiaModel>)
           );
-
-      guardiaResponse.forEach((element) => {
-        if (isGuardiaInCurrentWeek(element)) {
-          if (
-            sortedArrayOfGuardiasResponse[element.hour - 1][
-              element.dayOfGuardia.getDay() - 1
-            ][0].isEmpty
-          ) {
-            sortedArrayOfGuardiasResponse[element.hour - 1][
-              element.dayOfGuardia.getDay() - 1
-            ][0] = element;
-          } else {
-            sortedArrayOfGuardiasResponse[element.hour - 1][
-              element.dayOfGuardia.getDay() - 1
-            ].push(element);
+      var localStorageGuardiaResponse = localStorage.getItem("guardiaResponse");
+      if (localStorageGuardiaResponse != null) {
+        const guardiaResponse = JSON.parse(
+          localStorageGuardiaResponse
+        ) as Array<GuardiaModel>;
+        guardiaResponse.forEach((element) => {
+          element.dayOfGuardia = new Date(element.dayOfGuardia);
+          if (isGuardiaInCurrentWeek(element)) {
+            if (
+              sortedArrayOfGuardiasResponse[element.hour - 1][
+                element.dayOfGuardia.getDay() - 1
+              ][0].isEmpty
+            ) {
+              sortedArrayOfGuardiasResponse[element.hour - 1][
+                element.dayOfGuardia.getDay() - 1
+              ][0] = element;
+            } else {
+              sortedArrayOfGuardiasResponse[element.hour - 1][
+                element.dayOfGuardia.getDay() - 1
+              ].push(element);
+            }
           }
-        }
-      });
-      setGuardias([...sortedArrayOfGuardiasResponse]);
+        });
+        setGuardias([...sortedArrayOfGuardiasResponse]);
+        setGuardiaStorageChanged(false);
+      }
+    }
+  };
+
+  const getGuardiasReponse = async () => {
+    if (collegeId != undefined) {
+      var guardiaResponse = await getGuardias(collegeId.toString());
+      localStorage.setItem("guardiaResponse", JSON.stringify(guardiaResponse));
+      setGuardiaStorageChanged(true);
     }
   };
 
   useEffect(() => {
-    if (user && college.uidAdmin == user.uid) {
+    if (user != null && college.uidAdmin == user.uid) {
       setIsUserAdmin(true);
+    } else {
+      setIsUserAdmin(false);
     }
   }, [college, user]);
+
+  useEffect(() => {
+    getGuardiasReponse();
+  }, [collegeId]);
 
   useEffect(() => {
     createWeek();
@@ -206,7 +254,7 @@ export function GuardiasContextProvider({ children }: any) {
 
   useEffect(() => {
     getAndSetGuardias();
-  }, [collegeId, week]);
+  }, [collegeId, week, guardiaStorageChanged]);
 
   useEffect(() => {
     async function fetchData() {
@@ -226,6 +274,8 @@ export function GuardiasContextProvider({ children }: any) {
   return (
     <GuardiasContext.Provider
       value={{
+        saveGuardia,
+        setCollege,
         guardias,
         college,
         setGuardiaToEdit,

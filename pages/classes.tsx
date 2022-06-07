@@ -1,4 +1,4 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { useContext, useEffect, useRef, useState } from "react";
 import Nav from "../components/Nav";
 import GuardiasContext from "../context/GuardiasContext";
 import CollegeModel from "../@types/College";
@@ -29,8 +29,10 @@ const Classes = () => {
   const [hasErrorClasses, setHasErrorClasses] = useState(false);
   const [classInput, setClassInput] = useState("");
   const [classes, setClasses] = useState<Array<string>>(college.classes);
+  const [buttonEnable, setButtonEnabled] = useState(false);
 
   const addClass = () => {
+    setButtonEnabled(true);
     var classSanitized = removeExtraSpace(classInput);
     setClasses([...classes, classSanitized]);
     setClassInput("");
@@ -51,7 +53,7 @@ const Classes = () => {
   };
 
   const saveClasses = async () => {
-    updateClassesForCollege(college.id!, classes).then((data)=>{
+    updateClassesForCollege(college.id!, classes).then((data) => {
       toast.success("Classes guardado correctamente", {
         icon: "✅",
       });
@@ -62,11 +64,17 @@ const Classes = () => {
     setClasses(college.classes);
   }, [college]);
 
+  const fieldRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    fieldRef.current!.scrollIntoView();
+  }, [classInput]);
+
   const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
 
   return (
     <div>
-       <Toaster
+      <Toaster
         position="bottom-center"
         toastOptions={{
           // Define default options
@@ -78,7 +86,7 @@ const Classes = () => {
         }}
       />
       <Nav simpleNav={true} />
-      <div className="static w-full max-h-screen">
+      <div className="static w-full max-h-screen rounded-xl">
         <Box
           component="form"
           sx={{
@@ -97,8 +105,8 @@ const Classes = () => {
             }}
             className={
               classes.length == 0
-                ? "h-auto"
-                : "h-72 overflow-scroll overflow-x-hidden"
+                ? "h-auto "
+                : "mt-5 h-80 w-full overflow-scroll overflow-x-hidden scroll-auto"
             }
           >
             {classes.map((value, index) => {
@@ -116,6 +124,7 @@ const Classes = () => {
                 </ListItem>
               );
             })}
+            <div style={{ float: "left", clear: "both" }} ref={fieldRef}></div>
           </List>
 
           <hr className="mb-3" />
@@ -127,19 +136,22 @@ const Classes = () => {
             </h2>
           )}
 
-          <Stack direction="row" spacing={1} className="flex items-center p-2">
+          <Stack
+            direction="row"
+            className="flex flex-row justify-center items-center p-2 m-auto"
+          >
             <TextField
-              placeholder="Clases"
+              placeholder="1º ESO"
               value={classInput}
               onChange={(e) => setClassInput(e.target.value)}
               id="outlined-required"
-              label="Clases"
+              label="Añade a la lista una clase"
               onKeyPress={(e) => onKeyUp(e)}
-              className="w-full"
+              className="w-1/2"
             />
             <IconButton
               size="small"
-              className="h-8 w-8"
+              className="h-8 w-8 ml-3"
               onClick={() => addClass()}
             >
               <AddCircleIcon />
@@ -151,12 +163,13 @@ const Classes = () => {
             className="flex flex-row items-center justify-center mt-4"
           >
             <Button
+              disabled={!buttonEnable}
               variant="outlined"
               color="success"
               endIcon={<SendIcon />}
               onClick={() => saveClasses()}
             >
-              Send
+              Guardar Lista
             </Button>
           </Stack>
         </Box>

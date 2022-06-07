@@ -56,6 +56,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               onClick={() => {
                 setShowNewGuardia(true);
                 setIsNavOpen(false);
+                setPressedNewGuardia(true);
               }}
             >
               Registrar Falta
@@ -120,6 +121,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               onClick={() => {
                 setShowNewGuardia(true);
                 setIsNavOpen(false);
+                setPressedNewGuardia(true);
               }}
             >
               Registrar Falta

@@ -7,7 +7,6 @@ import React, {
   useState,
 } from "react";
 import Calendar from "react-calendar";
-import { addDocument } from "../../firebase/firestore";
 import College from "../../@types/College";
 import Guardia from "../../@types/Guardia";
 import toast, { Toaster } from "react-hot-toast";
@@ -36,8 +35,10 @@ export default function Form() {
   const { guardiaToEdit } = useContext(GuardiasContext);
   const { saveEditedGuardia } = useContext(GuardiasContext);
   const { setShowNewGuardia } = useContext(GuardiasContext);
+  const { showNewGuardia } = useContext(GuardiasContext);
   const { college } = useContext(GuardiasContext);
   const { pressedNewGuardia } = useContext(GuardiasContext);
+  const { saveGuardia } = useContext(GuardiasContext);
 
   //state
   const [selectedColor, setSelectedColor] = useState(
@@ -52,7 +53,6 @@ export default function Form() {
   const [moreInfo, setMoreInfo] = useState("");
 
   useEffect(() => {
-
     //TODOODODODO NEW GUARDIA STILL DISPLAYS LAST EDITED ONE
     if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
       console.log(guardiaToEdit);
@@ -65,14 +65,15 @@ export default function Form() {
     }
   }, [pressedNewGuardia]);
 
-  const saveGuardia = (e: React.SyntheticEvent) => {
+  const submitGuardia = (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (collegeId != undefined) {
       const guardia: Guardia = {
         dayOfGuardia: date,
         createdAt: new Date(),
-        teacher: user,
+        teacher: null,
+        teacherId: user.uid,
         collegeId: collegeId.toString(),
         updatedAt: null,
         tasks: tasks,
@@ -83,22 +84,11 @@ export default function Form() {
         isEmpty: false,
       };
 
-      if (!pressedNewGuardia) {
+      if (!pressedNewGuardia || !showNewGuardia) {
         guardia.id = guardiaToEdit.id;
         saveEditedGuardia(guardia);
       } else {
-        var newGuardia = addDocument("guardias", guardia).then((id) => {
-          toast.success("Guardia guardado correctamente", {
-            icon: "✅",
-          });
-          addGuardia(guardia);
-          setShowNewGuardia(false);
-        });
-        if (newGuardia == null) {
-          toast("Error guardando la guardia", {
-            icon: "⛔️",
-          });
-        }
+        saveGuardia(guardia);
       }
     }
   };
@@ -217,7 +207,7 @@ export default function Form() {
                     </div>
                     <form
                       className="h-full flex flex-col justify-between"
-                      onSubmit={(e) => saveGuardia(e)}
+                      onSubmit={(e) => submitGuardia(e)}
                     >
                       <Calendar
                         onChange={setDate}
