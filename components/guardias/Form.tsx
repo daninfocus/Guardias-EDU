@@ -42,7 +42,7 @@ export default function Form() {
 
   //state
   const [selectedColor, setSelectedColor] = useState(
-    Math.floor(Math.random() * 5)
+    Math.floor(Math.random() * 6)
   );
   const [date, setDate] = useState(new Date());
   const [isOpen, setIsOpen] = useState(false);
@@ -53,15 +53,13 @@ export default function Form() {
   const [moreInfo, setMoreInfo] = useState("");
 
   useEffect(() => {
-    //TODOODODODO NEW GUARDIA STILL DISPLAYS LAST EDITED ONE
     if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
-      console.log(guardiaToEdit);
       setSelectedClass(guardiaToEdit.classroom);
       setSelectedHour(guardiaToEdit.hour.toString());
       setSelectedColor(guardiaToEdit.color);
       setDate(guardiaToEdit.dayOfGuardia);
       setTasks(guardiaToEdit.tasks);
-      setMoreInfo(guardiaToEdit.moreInfo);
+      setMoreInfo(guardiaToEdit.moreInfo==null?"":guardiaToEdit.moreInfo);
     }
   }, [pressedNewGuardia]);
 
@@ -103,6 +101,7 @@ export default function Form() {
     event.stopPropagation();
     setIsOpen(false);
   };
+
   const childClick = (event: MouseEvent) => {
     event.stopPropagation();
     setIsOpen(true);
@@ -260,7 +259,6 @@ export default function Form() {
                             Información de Interés
                           </label>
                           <textarea
-                            required
                             id="moreInfo"
                             className="resize-none outline-0 w-full border-none py-2 pl-3 pr-10 text-sm leading-5 text-gray-900 focus:ring-0 "
                             style={{ minHeight: "38px" }}

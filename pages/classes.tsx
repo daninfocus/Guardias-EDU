@@ -39,7 +39,7 @@ const Classes = () => {
   };
 
   const deleteClass = (index: number) => {
-    if (confirm("¿Quieres borrar esta clases?")) {
+    if (confirm("¿Quieres borrar esta clases?") && isUserAdmin) {
       classes.splice(index, 1);
       setClasses([...classes]);
     }
@@ -60,9 +60,6 @@ const Classes = () => {
     });
   };
 
-  useEffect(() => {
-    setClasses(college.classes);
-  }, [college]);
 
   const fieldRef = useRef<HTMLInputElement>(null);
 

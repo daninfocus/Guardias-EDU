@@ -1,11 +1,11 @@
 import firebase from './firebase';
 import { User } from '@firebase/auth-types';
-import { addDoc, Timestamp, collection, doc, getDoc, getDocs, deleteDoc, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where, arrayRemove } from 'firebase/firestore';
+import { addDoc, Timestamp, collection, doc, getDoc, getDocs, deleteDoc, getFirestore, limit, orderBy, query, queryEqual, arrayUnion, startAfter, startAt, updateDoc, where, arrayRemove, onSnapshot } from 'firebase/firestore';
 import Guardia from '../@types/Guardia';
 import College from '../@types/College';
 import Teacher from '../@types/Teacher';
 
-const firestore = getFirestore(firebase);
+export const firestore = getFirestore(firebase);
 
 export const addDocument = async <T>(collectionName: string, data: T) => {
     const { id } = await addDoc(collection(firestore, collectionName), data);
@@ -55,31 +55,63 @@ export const getCollegeDataById = async (collegeId: string) => {
     var college = docSnap.data() as College;
 
     var teachers: Array<Teacher> = [];
-    college.teachers?.map(async (item) => {
-        var teacher = await getTeacherById(item.toString());
-        teacher.id = item;
-        teachers.push(teacher as Teacher);
-    });
+    for (const teacher in college.teachers) {
+        var teacherObject = await getTeacherById(teacher) as Teacher;
+        teacherObject.id = teacher;
+        teachers.push(teacherObject);
+    }
     college.teachers = teachers;
     return college;
 }
 
-const getTeacherById = async (teacherId: string) => {
+export const getTeacherById = async (teacherId: string) => {
+
     const q = query(collection(firestore, "users"), where("uid", "==", teacherId));
-    const docs = await getDocs(q);
-    return docs.docs[0].data();
+    const docSnap = await getDocs(q);
+    var teacher = null;
+    docSnap.forEach((doc) => {
+        teacher = doc.data()
+    });
+    if (teacher != null) {
+        return teacher;
+    } else {
+        return {
+            name: "Borrado",
+            email: "Borrado",
+            photo: "/no_user.png"
+        };
+    }
 }
 
 export const deleteTeacherFromCollege = async (collegeId: string, teacherId: string) => {
 
     const ref = doc(firestore, 'colleges', collegeId);
     const docSnap = await getDoc(ref);
-    await updateDoc(ref, {
-        teachers: arrayRemove(teacherId)
-    });
-
-    return docSnap.data();
+    if (ref != null) {
+        await updateDoc(ref, {
+            teachers: arrayRemove(teacherId)
+        });
+    }
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
+    return null;
 };
+
+export const addAdmin = async (collegeId: string, teacherId: string) => {
+    const ref = await getCollegeById(collegeId);
+    const docSnap = await getDoc(ref);
+
+    if (ref != null) {
+        await updateDoc(ref, {
+            uidAdmins: arrayUnion(teacherId)
+        });
+    }
+    if (docSnap.exists()) {
+        return docSnap.data();
+    }
+    return null;
+}
 
 
 export const updateTeacherArray = async (collegeId: string, teacherid: string) => {
@@ -99,58 +131,26 @@ export const updateTeacherArray = async (collegeId: string, teacherid: string) =
     return null;
 }
 
-export const getGuardias = async (collegeId: string) => {
-    var curr = new Date; // get current date
-    var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-    var last = first + 6; // last day is the first day + 6
-    var firstday = new Date(curr.setDate(first))
-    var lastday = new Date(curr.setDate(last))
-    firstday.setHours(0, 0, 0, 0);
-    lastday.setHours(0, 0, 0, 0);
-    const q = query(collection(firestore, "guardias"), where('collegeId', '==', collegeId));
-    const docs = await getDocs(q);
-    var guardiaArray: Array<Guardia> = [];
-    for (const element of docs.docs) {
-
-        var guardia = element.data();
-        var guardiaDate = guardia.dayOfGuardia.toDate();
-        guardia.teacher = await getTeacherById(guardia.teacherId);
-        guardia.teacher.id = guardia.teacherId;
-        delete guardia.teacherId;
-        delete guardia.teacherName;
-        guardia.id = element.id;
-        guardia.dayOfGuardia = guardiaDate;
-        guardiaArray.push(guardia as Guardia);
-    };
-    return guardiaArray;
-}
 
 export const updateClassesForCollege = async (collegeId: string, className: Array<string>) => {
     const ref = await getCollegeById(collegeId);
     const docSnap = await getDoc(ref);
 
     if (ref != null) {
-        //add teachers to array
         await updateDoc(ref, {
             classes: className
         });
     }
     if (docSnap.exists()) {
-        // Convert to object
         return docSnap.data();
     }
     return null;
 }
 
-export const getProfilePhotoWithTeacherid = async (teacherId: string) => {
-    const q = query(collection(firestore, "users",), where("uid", "==", teacherId));
-    const docs = await getDocs(q);
-    return docs.docs[0].data().photo;
-}
-
 export const deleteGuardia = async (guardia: Guardia) => {
     await deleteDoc(doc(firestore, "guardias", guardia.id!));
 }
+
 
 export const editGuardia = async (guardia: Guardia) => {
     const ref = doc(firestore, "guardias", guardia.id!);

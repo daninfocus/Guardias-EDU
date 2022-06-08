@@ -3,12 +3,13 @@ import { logOut } from "../firebase/auth";
 import { useRouter } from "next/router";
 import GuardiasContext from "../context/GuardiasContext";
 import College from "../@types/College";
+import AuthContext from "../context/AuthContext";
 
 const Nav = (prop: { simpleNav: boolean }) => {
   const router = useRouter();
 
   //context
-
+  const { user } = useContext(AuthContext);
   const { college } = useContext(GuardiasContext);
   const { setShowNewGuardia } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
@@ -194,8 +195,9 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 )}
               </ul>
             </div>
-
+            
             <div className="mt-auto flex flex-col items-center">
+            <div className="m-auto p-5 text-sm text-slate-600">Estás logueado cómo:<p className=" font-medium">{user.email}</p></div>
               <button
                 className="lg:inline-block py-2 px-6 bg-red-500 hover:bg-red-600 text-sm text-white font-bold rounded-xl transition duration-200"
                 onClick={() => Logout()}

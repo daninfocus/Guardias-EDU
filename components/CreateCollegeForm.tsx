@@ -60,7 +60,7 @@ const CreateCollegeForm = (props: any) => {
           name: college,
           createdAt: new Date(),
           updatedAt: new Date(),
-          uidAdmin: user.uid,
+          uidAdmins: [user.uid],
           teachers: [user.uid],
           classes: classes,
         };

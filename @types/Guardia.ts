@@ -9,7 +9,7 @@ export default interface Guardia {
     teacherId: string | null;
     collegeId: string;
     tasks: string;
-    moreInfo: string;
+    moreInfo: string | null;
     classroom: string;
     hour: number;
     dayOfGuardia: Date;

@@ -1,6 +1,5 @@
 import React, { useEffect, useState, Fragment, useContext } from "react";
 import GuardiaModel from "../../@types/Guardia";
-import { getProfilePhotoWithTeacherid } from "../../firebase/firestore";
 import Image from "next/image";
 import { Dialog, Transition } from "@headlessui/react";
 import DropdownOptions from "../DropdownOptions";
@@ -16,7 +15,9 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   //state
-  const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>(prop.guardias[0]);
+  const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>(
+    prop.guardias[0]
+  );
   const [isOpen, setIsOpen] = useState(false);
 
   //functions
@@ -120,9 +121,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           blurDataURL="/profile_placeholder.png"
                           alt="icon"
                           src={
-                            
                             selectedGuardia != undefined
-                              ?  selectedGuardia.teacher!.photo
+                              ? selectedGuardia.teacher!.photo
                               : "/loading.gif"
                           }
                           className="-left-3 fixed rounded-2xl border-2 border-white ease-in duration-300"
@@ -140,13 +140,16 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                       {user.uid == selectedGuardia.teacher!.id! ||
                       isUserAdmin ? (
                         <DropdownOptions
-                          deleteGuardia={() =>
-                            deleteSelectedGuardia(selectedGuardia!)
-                          }
-                          editGuardia={() => {
-                            editSelectedGuardia(selectedGuardia!);
+                          labelFirstButton={"Editar"}
+                          labelSecondButton={"Borrar"}
+                          funcFirstButton={() => {
+                            editSelectedGuardia(selectedGuardia);
                             setPressedNewGuardia(false);
                           }}
+                          funcSecondButton={() => {
+                            deleteSelectedGuardia(selectedGuardia!);
+                          }}
+                          simple={false}
                         />
                       ) : (
                         <></>
@@ -170,12 +173,16 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           {selectedGuardia?.tasks}
                         </p>
                       </div>
-                      <div className="mt-2 font-medium text-base">
-                        Información adicional:
-                        <p className="ml-4 text-sm text-gray-500 ">
-                          {selectedGuardia?.moreInfo}
-                        </p>
-                      </div>
+                      {selectedGuardia!.moreInfo!.length > 0 ? (
+                        <div className="mt-2 font-medium text-base">
+                          Información adicional:
+                          <p className="ml-4 text-sm text-gray-500 ">
+                            {selectedGuardia?.moreInfo}
+                          </p>
+                        </div>
+                      ) : (
+                        <></>
+                      )}
                     </Dialog.Title>
                   </Dialog.Panel>
                 </Transition.Child>

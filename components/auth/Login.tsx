@@ -38,7 +38,7 @@ function Login() {
         src="https://embed.lottiefiles.com/animation/101662"
       ></iframe>
       <p className="text-base my-6">
-        Organiza tu tiempo libre con la de tus compañeros.
+        Organiza tu tiempo libre con el de tus compañeros.
       </p>
       <div className="flex">
         <LoadingButton

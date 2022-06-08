@@ -4,14 +4,20 @@ import {
   deleteGuardia,
   editGuardia,
   getCollegeDataById,
-  getGuardias,
+  firestore,
+  getTeacherById,
+  addDocument,
 } from "../firebase/firestore";
 import GuardiaModel from "../@types/Guardia";
 import CollegeModel from "../@types/College";
 import AuthContext from "./AuthContext";
 import toast from "react-hot-toast";
-import { addDocument } from "../firebase/firestore";
-
+import {
+  collection,
+  query,
+  where,
+  onSnapshot,
+} from "firebase/firestore";
 
 interface GuardiasContextInterface {
   guardias: Array<Array<Array<GuardiaModel>>>;
@@ -130,7 +136,7 @@ export function GuardiasContextProvider({ children }: any) {
   const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
     if (
       user &&
-      user.uid == guardia.teacher!.id &&
+      (user.uid == guardia.teacher!.id || isUserAdmin) &&
       confirm("¿Quieres borrar esta guardia?")
     ) {
       deleteGuardia(guardia).then(() => {
@@ -155,6 +161,7 @@ export function GuardiasContextProvider({ children }: any) {
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
+      setShowNewGuardia(false);
     });
   };
 
@@ -230,14 +237,41 @@ export function GuardiasContextProvider({ children }: any) {
 
   const getGuardiasReponse = async () => {
     if (collegeId != undefined) {
-      var guardiaResponse = await getGuardias(collegeId.toString());
-      localStorage.setItem("guardiaResponse", JSON.stringify(guardiaResponse));
-      setGuardiaStorageChanged(true);
+      var curr = new Date(); // get current date
+      var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
+      var last = first + 6; // last day is the first day + 6
+      var firstday = new Date(curr.setDate(first));
+      var lastday = new Date(curr.setDate(last));
+      firstday.setHours(0, 0, 0, 0);
+      lastday.setHours(0, 0, 0, 0);
+      const q = query(
+        collection(firestore, "guardias"),
+        where("collegeId", "==", collegeId)
+      );
+      const unsubscribe = onSnapshot(q, async (querySnapshot) => {
+        const guardiaArray: Array<GuardiaModel> = [];
+        for(const doc of querySnapshot.docs) {
+          var guardia = doc.data();
+          var guardiaDate = guardia.dayOfGuardia.toDate();
+          guardia.teacher = await getTeacherById(guardia.teacherId);
+          guardia.teacher.id = guardia.teacherId;
+          delete guardia.teacherId;
+          delete guardia.teacherName;
+          guardia.id = doc.id;
+          guardia.dayOfGuardia = guardiaDate;
+          guardiaArray.push(guardia as GuardiaModel);
+        }
+        localStorage.setItem(
+          "guardiaResponse",
+          JSON.stringify(guardiaArray)
+        );
+        setGuardiaStorageChanged(true);
+      });
     }
   };
 
   useEffect(() => {
-    if (user != null && college.uidAdmin == user.uid) {
+    if (user != null && college.uidAdmins.includes(user.uid)) {
       setIsUserAdmin(true);
     } else {
       setIsUserAdmin(false);
