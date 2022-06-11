@@ -4,6 +4,7 @@ import { useRouter } from "next/router";
 import GuardiasContext from "../context/GuardiasContext";
 import College from "../@types/College";
 import AuthContext from "../context/AuthContext";
+import { deleteTeacherFromCollege } from "../firebase/firestore";
 
 const Nav = (prop: { simpleNav: boolean }) => {
   const router = useRouter();
@@ -11,7 +12,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
   //context
   const { user } = useContext(AuthContext);
   const { college } = useContext(GuardiasContext);
-  const { setShowNewGuardia } = useContext(GuardiasContext);
+  const { setShowGuardiaForm } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
 
@@ -19,7 +20,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
   const [isNavOpen, setIsNavOpen] = useState(false);
 
   //functions
-  const Logout = () => {
+  const logout = () => {
     logOut().then(() => router.push("/"));
   };
 
@@ -31,8 +32,8 @@ const Nav = (prop: { simpleNav: boolean }) => {
     router.push("/" + college.id, undefined, { scroll: true });
   };
 
-  const profesorado = () => {
-    router.push("/profesorado?collegeId=" + college.id, undefined, {
+  const professors = () => {
+    router.push("/professors?collegeId=" + college.id, undefined, {
       scroll: true,
     });
   };
@@ -41,6 +42,25 @@ const Nav = (prop: { simpleNav: boolean }) => {
     return router.pathname == pathname
       ? "cursor-pointer text-md text-blue-600 font-bold hover:text-blue-400"
       : "cursor-pointer text-md text-gray-400 hover:text-gray-500 ";
+  };
+
+  const deleteUserFromCollege = async () => {
+    if (college != undefined) {
+      if (college.teachers!.length > 0 || college.uidAdmins!.length > 0) {
+        if (
+          confirm(
+            "Quieres darte de baja en este instituto? Podras unirte otra vez de nuevo."
+          )
+        ) {
+          await deleteTeacherFromCollege(college.id!, user.uid);
+          logout();
+        }
+      } else {
+        alert(
+          "Eres el ultimo admin del instituto, quedara este instituto en limbo!"
+        );
+      }
+    }
   };
 
   return (
@@ -55,7 +75,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
-                setShowNewGuardia(true);
+                setShowGuardiaForm(true);
                 setIsNavOpen(false);
                 setPressedNewGuardia(true);
               }}
@@ -120,7 +140,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               className="visible sm:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
-                setShowNewGuardia(true);
+                setShowGuardiaForm(true);
                 setIsNavOpen(false);
                 setPressedNewGuardia(true);
               }}
@@ -157,8 +177,8 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 </li>
                 <li>
                   <a
-                    className={selectedStyle("/profesorado")}
-                    onClick={() => profesorado()}
+                    className={selectedStyle("/professors")}
+                    onClick={() => professors()}
                   >
                     Profesorado
                   </a>
@@ -195,12 +215,16 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 )}
               </ul>
             </div>
-            
+
             <div className="mt-auto flex flex-col items-center">
-            <div className="m-auto p-5 text-sm text-slate-600">Estás logueado cómo:<p className=" font-medium">{user.email}</p></div>
+              <div className="m-auto p-5 text-sm text-slate-600">
+                Estás logueado cómo:
+                <p className=" font-medium">{user != null ? user.email : ""}</p>
+              </div>
+
               <button
                 className="lg:inline-block py-2 px-6 bg-red-500 hover:bg-red-600 text-sm text-white font-bold rounded-xl transition duration-200"
-                onClick={() => Logout()}
+                onClick={() => logout()}
               >
                 Cerrar Sesión
               </button>
@@ -212,6 +236,12 @@ const Nav = (prop: { simpleNav: boolean }) => {
                   </a>
                 </span>
               </p>
+              <button
+                className="m-auto text-xs text-slate-600"
+                onClick={() => deleteUserFromCollege()}
+              >
+                Darte de baja en este Instituto
+              </button>
             </div>
           </nav>
         </div>

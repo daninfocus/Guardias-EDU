@@ -12,8 +12,8 @@ import Nav from "../components/Nav";
 
 const Home = () => {
   const { college } = useContext(GuardiasContext);
-  const { showNewGuardia } = useContext(GuardiasContext);
-  const { setShowNewGuardia } = useContext(GuardiasContext);
+  const { showGuardiaForm } = useContext(GuardiasContext);
+  const { setShowGuardiaForm } = useContext(GuardiasContext);
   return (
     <AuthCheck>
       <Toaster
@@ -31,7 +31,7 @@ const Home = () => {
         <title>{"Guardias - " + college.name}</title>
         <Nav simpleNav={false} />
 
-        {showNewGuardia ? <Form /> : null}
+        {showGuardiaForm ? <Form /> : null}
         <MainCalendar />
       </div>
     </AuthCheck>

@@ -10,6 +10,7 @@ import * as days from "../../shared/dates";
 const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   //context
   const { user } = useContext(AuthContext);
+  const { TODAY } = useContext(GuardiasContext);
   const { deleteSelectedGuardia } = useContext(GuardiasContext);
   const { editSelectedGuardia } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
@@ -39,18 +40,20 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   };
 
   const backgroundColor = () => {
-    if (prop.guardias[0].color != null) {
-      switch (prop.guardias[0].color) {
-        case 1:
-          return " bg-custom-1 text-custom-7 border-custom-7 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
-        case 2:
-          return " bg-custom-2 text-custom-8 border-custom-8 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
-        case 3:
-          return " bg-custom-3 text-custom-9 border-custom-9 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
-        case 4:
-          return " bg-custom-4 text-custom-10 border-custom-10 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
-        case 5:
-          return " bg-custom-5 text-custom-11 border-custom-11 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+    if (prop.guardias[0].dayOfGuardia >= TODAY) {
+      if (prop.guardias[0].color != null) {
+        switch (prop.guardias[0].color) {
+          case 1:
+            return " bg-custom-1 text-custom-7 border-custom-7 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+          case 2:
+            return " bg-custom-2 text-custom-8 border-custom-8 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+          case 3:
+            return " bg-custom-3 text-custom-9 border-custom-9 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+          case 4:
+            return " bg-custom-4 text-custom-10 border-custom-10 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+          case 5:
+            return " bg-custom-5 text-custom-11 border-custom-11 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+        }
       }
     }
     return "font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 border-slate-500 text-slate-400  grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";

@@ -19,7 +19,6 @@ export const saveUser = async (user: User) => {
         return await addDoc(collection(firestore, "users"), {
             uid: user.uid,
             name: user.displayName,
-            authProvider: "google",
             email: user.email,
             photo: user.photoURL,
 
@@ -38,7 +37,9 @@ export const getColleges = async () => {
     const q = await getDocs(collection(firestore, "colleges"));
     var collegeNames: any = [];
     q.forEach((doc: any) => {
-        collegeNames.push({ 'id': doc.id, 'name': doc.data().name })
+        var college = doc.data();
+        college.id = doc.id;
+        collegeNames.push(college as College)
     });
     return collegeNames;
 }
@@ -53,11 +54,11 @@ export const getCollegeDataById = async (collegeId: string) => {
 
     var docSnap = await getDoc(ref);
     var college = docSnap.data() as College;
-
     var teachers: Array<Teacher> = [];
-    for (const teacher in college.teachers) {
-        var teacherObject = await getTeacherById(teacher) as Teacher;
-        teacherObject.id = teacher;
+    for (const teacher of college.teachers!) {
+        console.log(teacher);
+        var teacherObject = await getTeacherById(teacher.toString()) as Teacher;
+        teacherObject.id = teacher.toString();
         teachers.push(teacherObject);
     }
     college.teachers = teachers;
@@ -65,22 +66,18 @@ export const getCollegeDataById = async (collegeId: string) => {
 }
 
 export const getTeacherById = async (teacherId: string) => {
-
     const q = query(collection(firestore, "users"), where("uid", "==", teacherId));
     const docSnap = await getDocs(q);
     var teacher = null;
-    docSnap.forEach((doc) => {
-        teacher = doc.data()
-    });
-    if (teacher != null) {
+    if (!docSnap.empty) {
+        teacher = docSnap.docs[0].data()
         return teacher;
-    } else {
-        return {
-            name: "Borrado",
-            email: "Borrado",
-            photo: "/no_user.png"
-        };
     }
+    return {
+        name: "Borrado",
+        email: "Borrado",
+        photo: "/no_user.png"
+    };
 }
 
 export const deleteTeacherFromCollege = async (collegeId: string, teacherId: string) => {

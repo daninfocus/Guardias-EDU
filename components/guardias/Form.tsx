@@ -34,8 +34,8 @@ export default function Form() {
   const { addGuardia } = useContext(GuardiasContext);
   const { guardiaToEdit } = useContext(GuardiasContext);
   const { saveEditedGuardia } = useContext(GuardiasContext);
-  const { setShowNewGuardia } = useContext(GuardiasContext);
-  const { showNewGuardia } = useContext(GuardiasContext);
+  const { setShowGuardiaForm } = useContext(GuardiasContext);
+  const { showGuardiaForm } = useContext(GuardiasContext);
   const { college } = useContext(GuardiasContext);
   const { pressedNewGuardia } = useContext(GuardiasContext);
   const { saveGuardia } = useContext(GuardiasContext);
@@ -82,7 +82,7 @@ export default function Form() {
         isEmpty: false,
       };
 
-      if (!pressedNewGuardia || !showNewGuardia) {
+      if (!pressedNewGuardia || !showGuardiaForm) {
         guardia.id = guardiaToEdit.id;
         saveEditedGuardia(guardia);
       } else {
@@ -131,7 +131,7 @@ export default function Form() {
           }
           as="div"
           className="relative z-10"
-          onClose={() => setShowNewGuardia(false)}
+          onClose={() => setShowGuardiaForm(false)}
         >
           <Transition.Child
             as={Fragment}
@@ -170,7 +170,7 @@ export default function Form() {
 
                     <button
                       className="ml-auto bg-transparent border-0 text-slate-700 float-right text-3xl leading-none font-semibold outline-none focus:outline-none"
-                      onClick={() => setShowNewGuardia(false)}
+                      onClick={() => setShowGuardiaForm(false)}
                     >
                       <span className="bg-transparent hover:text-slate-700  text-slate-500 h-8 w-8 text-2xl block outline-none focus:outline-none">
                         <svg
@@ -273,7 +273,7 @@ export default function Form() {
                         <button
                           className="hover:shadow-md hover:bg-red-200 rounded-lg text-red-500 background-transparent font-bold uppercase px-6 py-3 text-sm outline-none focus:outline-none mr-1 mb-1 ease-linear transition-all duration-150"
                           type="button"
-                          onClick={() => setShowNewGuardia(false)}
+                          onClick={() => setShowGuardiaForm(false)}
                         >
                           Close
                         </button>

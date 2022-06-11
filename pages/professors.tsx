@@ -1,12 +1,12 @@
-import React, { useContext, useState } from "react";
+import React, { useContext, useEffect, useState } from "react";
 import Teacher from "../@types/Teacher";
 import Nav from "../components/Nav";
 import AuthContext from "../context/AuthContext";
 import GuardiasContext from "../context/GuardiasContext";
-import { deleteTeacherFromCollege,addAdmin } from "../firebase/firestore";
+import { deleteTeacherFromCollege, addAdmin } from "../firebase/firestore";
 import DropdownOptions from "../components/DropdownOptions";
 
-const Profesorado = () => {
+const Professors = () => {
   const { user } = useContext(AuthContext);
   const { college } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
@@ -34,45 +34,53 @@ const Profesorado = () => {
   };
 
   const makeAdmin = async (teacher: Teacher) => {
-   college.uidAdmins.push(teacher.id!);
-   await addAdmin(college.id!,teacher.id!);
-   setCollege({ ...college })
+    college.uidAdmins.push(teacher.id!);
+    await addAdmin(college.id!, teacher.id!);
+    setCollege({ ...college });
   };
+
+  useEffect(() => {
+    if (college.teachers != null) {
+      // console.log(college.teachers);
+    }
+  }, [college]);
 
   return (
     <div className="h-screen bg-gray-200 w-full">
       <Nav simpleNav={true} />
       <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
         {college.teachers?.map((teacher, index) => {
-          return (
-            <h1 key={index}>
-              <div className="flex flex-row justify-between text-xs items-start mb-5">
-                {teacher.email}
-                {!college.uidAdmins.includes(teacher.id!) ? (
-                  isUserAdmin ? (
-                    <div>
-                      <DropdownOptions
-                        simple={true}
-                        labelFirstButton="Admin"
-                        labelSecondButton="Borrar"
-                        funcFirstButton={() => makeAdmin(teacher)}
-                        funcSecondButton={() => {
-                          deleteTeacher(teacher);
-                        }}
-                      />
-                    </div>
+          if (teacher.email != "Borrado") {
+            return (
+              <h1 key={index}>
+                <div className="flex flex-row justify-between text-xs items-start mb-5">
+                  {teacher.email}
+                  {!college.uidAdmins.includes(teacher.id!) ? (
+                    isUserAdmin ? (
+                      <div>
+                        <DropdownOptions
+                          simple={true}
+                          labelFirstButton="Admin"
+                          labelSecondButton="Borrar"
+                          funcFirstButton={() => makeAdmin(teacher)}
+                          funcSecondButton={() => {
+                            deleteTeacher(teacher);
+                          }}
+                        />
+                      </div>
+                    ) : (
+                      <></>
+                    )
                   ) : (
-                    <></>
-                  )
-                ) : (
-                  <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
-                    {" "}
-                    Admin
-                  </div>
-                )}
-              </div>
-            </h1>
-          );
+                    <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
+                      {" "}
+                      Admin
+                    </div>
+                  )}
+                </div>
+              </h1>
+            );
+          }
         })}
         <hr></hr>
         <div className="text-center w-full ">
@@ -97,4 +105,4 @@ const Profesorado = () => {
   );
 };
 
-export default Profesorado;
+export default Professors;

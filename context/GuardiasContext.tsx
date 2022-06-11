@@ -30,8 +30,8 @@ interface GuardiasContextInterface {
   TODAY: Date;
   week: Array<Date>;
   isGuardiaInCurrentWeek: Function;
-  showNewGuardia: Boolean;
-  setShowNewGuardia: Function;
+  showGuardiaForm: Boolean;
+  setShowGuardiaForm: Function;
   editSelectedGuardia: Function;
   deleteSelectedGuardia: Function;
   decrementWeek: Function;
@@ -68,18 +68,11 @@ export function GuardiasContextProvider({ children }: any) {
           .map(() => [{ isEmpty: true }] as Array<GuardiaModel>)
       )
   );
-  const [week, setWeek] = useState<Array<Date>>([
-    TODAY,
-    TODAY,
-    TODAY,
-    TODAY,
-    TODAY,
-  ]);
-  const [day, setDay] = useState<Date>(TODAY);
+  const [week, setWeek] = useState<Array<Date>>([TODAY,TODAY,TODAY,TODAY,TODAY,]);
   const [weekPos, setWeekPos] = useState<number>(0);
   const [guardiaToEdit, setGuardiaToEdit] = useState({} as GuardiaModel);
   const [pressedNewGuardia, setPressedNewGuardia] = useState(false);
-  const [showNewGuardia, setShowNewGuardia] = useState(false);
+  const [showGuardiaForm, setShowGuardiaForm] = useState(false);
   const [guardiaStorageChanged, setGuardiaStorageChanged] = useState(false);
 
   //functions
@@ -88,7 +81,7 @@ export function GuardiasContextProvider({ children }: any) {
     var nextWeekDate = new Date(TODAY.getTime());
     var today =
       weekPos != 0
-        ? new Date(nextWeekDate.setDate(day.getDate() + weekPos * 7))
+        ? new Date(nextWeekDate.setDate(TODAY.getDate() + weekPos * 7))
         : new Date(TODAY.getTime());
     for (let i = 1; i < daysInWeek + 1; i++) {
       const dayNum = today.getDate() - today.getDay() + i;
@@ -151,7 +144,7 @@ export function GuardiasContextProvider({ children }: any) {
   };
 
   const editSelectedGuardia = async (guardia: GuardiaModel) => {
-    setShowNewGuardia(true);
+    setShowGuardiaForm(true);
     setGuardiaToEdit(guardia);
   };
 
@@ -161,7 +154,7 @@ export function GuardiasContextProvider({ children }: any) {
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
-      setShowNewGuardia(false);
+      setShowGuardiaForm(false);
     });
   };
 
@@ -171,7 +164,7 @@ export function GuardiasContextProvider({ children }: any) {
         icon: "✅",
       });
       getGuardiasReponse();
-      setShowNewGuardia(false);
+      setShowGuardiaForm(false);
     });
     if (newGuardia == null) {
       toast("Error guardando la guardia", {
@@ -320,8 +313,8 @@ export function GuardiasContextProvider({ children }: any) {
         TODAY: new Date(),
         week,
         isGuardiaInCurrentWeek,
-        showNewGuardia,
-        setShowNewGuardia,
+        showGuardiaForm,
+        setShowGuardiaForm,
         editSelectedGuardia,
         deleteSelectedGuardia,
         decrementWeek,
