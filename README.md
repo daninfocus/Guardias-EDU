@@ -71,5 +71,8 @@ Only the administrator can open the classes, and he can edit the teachers list, 
 The administrator, as said previously, can edit the teachers:
 ![Teacher edit list](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/13.jpg?raw=true)
 
+And edit the classes:
+![Teacher edit list](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/15.png?raw=true)
+
 A normal user will view it like this:
 ![Teacher edit list](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/12.png?raw=true)
