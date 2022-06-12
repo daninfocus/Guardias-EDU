@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { signInAnonymous, signInWithGoogle } from "../../firebase/auth";
 import { doesUserHaveCollegeAssigned } from "../../firebase/firestore";
 import { useRouter } from "next/router";
@@ -8,6 +8,7 @@ import LoadingButton from "@mui/lab/LoadingButton";
 function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
+  const [buttonStyle, setButtonStyle]=useState("");
 
   const LoginWithGoogle = async () => {
     setLoading(true);
@@ -30,6 +31,11 @@ function Login() {
       });
   };
 
+  useEffect(() => {
+    setButtonStyle("hover:bg-red-500 bg-white rounded-xl p-2.5 hover:text-white text-gray-700 font-bold");
+  }, [])
+  
+
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-green ">
       <p className="font-normal text-5xl mb-16">Guardias-EDU</p>
@@ -46,7 +52,7 @@ function Login() {
           loading={loading}
           variant="contained"
           onClick={LoginWithGoogle}
-          className="hover:bg-red-500 rounded-xl p-2.5 hover:text-white text-gray-700 font-bold"
+          className={buttonStyle}
         >
           <span className="flex flex-row items-center justify-between ">
             {!loading ? (
