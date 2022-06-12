@@ -38,7 +38,7 @@ function Login() {
 
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-green ">
-      <p className="font-normal text-5xl mb-16">Guardias-EDU</p>
+      <p className="font-normal text-5xl mb-16">Guardias-EDU <span className="text-xs">v.1 beta</span></p>
       <iframe
         className="h-3/6"
         src="https://embed.lottiefiles.com/animation/101662"
@@ -46,7 +46,7 @@ function Login() {
       <p className="text-base my-6">
         Organiza tu tiempo libre con el de tus compañeros.
       </p>
-      <div className="flex">
+      <div className="flex bg-white rounded-xl p-2.5 hover:text-white text-gray-700 font-bold">
         <LoadingButton
           size="small"
           loading={loading}
