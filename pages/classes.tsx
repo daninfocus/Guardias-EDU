@@ -42,6 +42,7 @@ const Classes = () => {
     if (confirm("¿Quieres borrar esta clases?") && isUserAdmin) {
       classes.splice(index, 1);
       setClasses([...classes]);
+      setButtonEnabled(true);
     }
   };
 

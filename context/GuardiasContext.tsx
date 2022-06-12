@@ -32,7 +32,7 @@ interface GuardiasContextInterface {
   isGuardiaInCurrentWeek: Function;
   showGuardiaForm: Boolean;
   setShowGuardiaForm: Function;
-  editSelectedGuardia: Function;
+  openGuardiaToEdit: Function;
   deleteSelectedGuardia: Function;
   decrementWeek: Function;
   incrementWeek: Function;
@@ -143,7 +143,7 @@ export function GuardiasContextProvider({ children }: any) {
     }
   };
 
-  const editSelectedGuardia = async (guardia: GuardiaModel) => {
+  const openGuardiaToEdit = async (guardia: GuardiaModel) => {
     setShowGuardiaForm(true);
     setGuardiaToEdit(guardia);
   };
@@ -222,6 +222,8 @@ export function GuardiasContextProvider({ children }: any) {
             }
           }
         });
+        
+      console.log(guardias);
         setGuardias([...sortedArrayOfGuardiasResponse]);
         setGuardiaStorageChanged(false);
       }
@@ -315,7 +317,8 @@ export function GuardiasContextProvider({ children }: any) {
         isGuardiaInCurrentWeek,
         showGuardiaForm,
         setShowGuardiaForm,
-        editSelectedGuardia,
+        openGuardiaToEdit
+    ,
         deleteSelectedGuardia,
         decrementWeek,
         incrementWeek,

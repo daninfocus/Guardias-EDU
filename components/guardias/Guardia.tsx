@@ -43,6 +43,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     if (prop.guardias[0].dayOfGuardia >= TODAY) {
       if (prop.guardias[0].color != null) {
         switch (prop.guardias[0].color) {
+          case 0:
+            return " bg-custom-0 text-custom-6 border-custom-6 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
           case 1:
             return " bg-custom-1 text-custom-7 border-custom-7 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
           case 2:

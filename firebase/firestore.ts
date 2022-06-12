@@ -55,14 +55,16 @@ export const getCollegeDataById = async (collegeId: string) => {
     var docSnap = await getDoc(ref);
     var college = docSnap.data() as College;
     var teachers: Array<Teacher> = [];
-    for (const teacher of college.teachers!) {
-        console.log(teacher);
-        var teacherObject = await getTeacherById(teacher.toString()) as Teacher;
-        teacherObject.id = teacher.toString();
-        teachers.push(teacherObject);
+    if (college != undefined) {
+        for (const teacher of college.teachers!) {
+            console.log(teacher);
+            var teacherObject = await getTeacherById(teacher.toString()) as Teacher;
+            teacherObject.id = teacher.toString();
+            teachers.push(teacherObject);
+        }
+        college.teachers = teachers;
+        return college;
     }
-    college.teachers = teachers;
-    return college;
 }
 
 export const getTeacherById = async (teacherId: string) => {
