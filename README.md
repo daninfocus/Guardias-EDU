@@ -33,10 +33,10 @@ When logged in to the application for the first time, you have to be registered 
 You can select your college from the list.
 ![College dropdown](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/2.png?raw=true)
 
-Or create a new one, this will make you de admin for this college.
+Or create a new one, this will make you the admin for this college.
 ![Create college](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/3.png?raw=true)
 
-In this section you introduce the name of your college and the classes there are,these classes can be edited later.
+In this section you introduce the name of your college and the classes there are, these classes can be edited later.
 ![College Created before save](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/4.png?raw=true)
 
 Now your college has been created and you can start to use the calendar.
@@ -56,11 +56,20 @@ Once created we can see on the calendar the new event:
 ![Created event](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/8.png?raw=true)
 
 You can click on the event and see all the information for it.
-You can edit it, as well as the administrator.
 ![Event info](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/9.png?raw=true)
+
+You can edit it, or delete it, as well as the administrator.
+![Event info](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/14.png?raw=true)
 
 The navigation.
 With the hamburger icon in the top right, you can open the navigation drawer.
 This has 5 options, the calendar, the list of teachers in the college, the classes, logout button and drop out of the college.
 Only the administrator can open the classes, and he can edit the teachers list, a normal user or teacher can only see the calendar and the list of professors with-out the ability to edit them.
-![Event info](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/9.png?raw=true)
+![Event info](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/10.jpg?raw=true)
+
+
+The administrator, as said previously, can edit the teachers:
+![Teacher edit list](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/13.jpg?raw=true)
+
+A normal user will view it like this:
+![Teacher edit list](https://github.com/daninfocus/Guardias-EDU/blob/main/readme-images/12.jpg?raw=true)
