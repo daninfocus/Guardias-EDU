@@ -15,7 +15,19 @@ function AuthCheck({ children }: any) {
         const college = await doesUserHaveCollegeAssigned(user.uid);
 
         if (college != undefined) {
-          router.push("/" + college.id);
+          if (router.pathname.includes("professors")) {
+            router.push("/professors?collegeId=" + college.id, undefined, {
+              scroll: true,
+            });
+          } else {
+            if (router.pathname.includes("classes")) {
+              router.push("/classes?collegeId=" + college.id, undefined, {
+                scroll: true,
+              });
+            } else {
+              router.push("/" + college.id);
+            }
+          }
         } else {
           router.push("/college");
         }
@@ -23,6 +35,7 @@ function AuthCheck({ children }: any) {
     }
     checkLogin();
   }, [loading]);
+  
 
   if (user && !loading && router.pathname !== "/") {
     return children;

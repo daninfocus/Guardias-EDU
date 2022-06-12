@@ -57,7 +57,6 @@ export const getCollegeDataById = async (collegeId: string) => {
     var teachers: Array<Teacher> = [];
     if (college != undefined) {
         for (const teacher of college.teachers!) {
-            console.log(teacher);
             var teacherObject = await getTeacherById(teacher.toString()) as Teacher;
             teacherObject.id = teacher.toString();
             teachers.push(teacherObject);

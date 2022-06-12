@@ -26,7 +26,6 @@ const Classes = () => {
   const { college } = useContext(GuardiasContext);
 
   //state
-  const [hasErrorClasses, setHasErrorClasses] = useState(false);
   const [classInput, setClassInput] = useState("");
   const [classes, setClasses] = useState<Array<string>>(college.classes);
   const [buttonEnable, setButtonEnabled] = useState(false);
@@ -61,8 +60,13 @@ const Classes = () => {
     });
   };
 
-
   const fieldRef = useRef<HTMLInputElement>(null);
+
+  useEffect(() => {
+    if (college != undefined) {
+      setClasses(college.classes);
+    }
+  }, [college]);
 
   useEffect(() => {
     fieldRef.current!.scrollIntoView();
@@ -71,108 +75,116 @@ const Classes = () => {
   const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
 
   return (
-    <div>
-      <Toaster
-        position="bottom-center"
-        toastOptions={{
-          // Define default options
-          duration: 5000,
-          style: {
-            background: "#363636",
-            color: "#fff",
-          },
-        }}
-      />
-      <Nav simpleNav={true} />
-      <div className="static w-full max-h-screen rounded-xl">
-        <Box
-          component="form"
-          sx={{
-            minWidth: 220,
+    <AuthCheck>
+      <div>
+        <Toaster
+          position="bottom-center"
+          toastOptions={{
+            // Define default options
+            duration: 5000,
+            style: {
+              background: "#363636",
+              color: "#fff",
+            },
           }}
-          noValidate
-          autoComplete="off"
-        >
-          <hr className="mt-3" />
-          <List
+        />
+        <Nav simpleNav={true} />
+        <div className="static w-full max-h-screen rounded-xl">
+          <Box
+            component="form"
             sx={{
-              width: "100%",
               minWidth: 220,
-              bgcolor: "background.paper",
-              marginBottom: "15px",
             }}
-            className={
-              classes.length == 0
-                ? "h-auto "
-                : "mt-5 h-80 w-full overflow-scroll overflow-x-hidden scroll-auto"
-            }
+            noValidate
+            autoComplete="off"
           >
-            {classes.map((value, index) => {
-              return (
-                <ListItem
-                  key={index}
-                  secondaryAction={
-                    <IconButton size="large" onClick={() => deleteClass(index)}>
-                      <DeleteIcon color="error" />
-                    </IconButton>
-                  }
-                >
-                  <div className="break-all">{value}</div>
-                  <ListItemIcon></ListItemIcon>
-                </ListItem>
-              );
-            })}
-            <div style={{ float: "left", clear: "both" }} ref={fieldRef}></div>
-          </List>
-
-          <hr className="mb-3" />
-          {classes.length == 0 ? (
-            <></>
-          ) : (
-            <h2 className="w-full flex flex-row justify-end p-2">
-              Classes: {classes.length}
-            </h2>
-          )}
-
-          <Stack
-            direction="row"
-            className="flex flex-row justify-center items-center p-2 m-auto"
-          >
-            <TextField
-              placeholder="1º ESO"
-              value={classInput}
-              onChange={(e) => setClassInput(e.target.value)}
-              id="outlined-required"
-              label="Añade a la lista una clase"
-              onKeyPress={(e) => onKeyUp(e)}
-              className="w-1/2"
-            />
-            <IconButton
-              size="small"
-              className="h-8 w-8 ml-3"
-              onClick={() => addClass()}
+            <hr className="mt-3" />
+            <List
+              sx={{
+                width: "100%",
+                minWidth: 220,
+                bgcolor: "background.paper",
+                marginBottom: "15px",
+              }}
+              className={
+                classes.length == 0
+                  ? "h-auto "
+                  : "mt-5 h-80 w-full overflow-scroll overflow-x-hidden scroll-auto"
+              }
             >
-              <AddCircleIcon />
-            </IconButton>
-          </Stack>
-          <Stack
-            direction="row"
-            spacing={2}
-            className="flex flex-row items-center justify-center mt-4"
-          >
-            <Button
-              disabled={!buttonEnable}
-              variant="outlined"
-              color="success"
-              endIcon={<SendIcon />}
-              onClick={() => saveClasses()}
+              {classes.map((value, index) => {
+                return (
+                  <ListItem
+                    key={index}
+                    secondaryAction={
+                      <IconButton
+                        size="large"
+                        onClick={() => deleteClass(index)}
+                      >
+                        <DeleteIcon color="error" />
+                      </IconButton>
+                    }
+                  >
+                    <div className="break-all">{value}</div>
+                    <ListItemIcon></ListItemIcon>
+                  </ListItem>
+                );
+              })}
+              <div
+                style={{ float: "left", clear: "both" }}
+                ref={fieldRef}
+              ></div>
+            </List>
+
+            <hr className="mb-3" />
+            {classes.length == 0 ? (
+              <></>
+            ) : (
+              <h2 className="w-full flex flex-row justify-end p-2">
+                Classes: {classes.length}
+              </h2>
+            )}
+
+            <Stack
+              direction="row"
+              className="flex flex-row justify-center items-center p-2 m-auto"
             >
-              Guardar Lista
-            </Button>
-          </Stack>
-        </Box>
+              <TextField
+                placeholder="1º ESO"
+                value={classInput}
+                onChange={(e) => setClassInput(e.target.value)}
+                id="outlined-required"
+                label="Añade a la lista una clase"
+                onKeyPress={(e) => onKeyUp(e)}
+                className="w-1/2"
+              />
+              <IconButton
+                size="small"
+                className="h-8 w-8 ml-3"
+                onClick={() => addClass()}
+              >
+                <AddCircleIcon />
+              </IconButton>
+            </Stack>
+            <Stack
+              direction="row"
+              spacing={2}
+              className="flex flex-row items-center justify-center mt-4"
+            >
+              <Button
+                disabled={!buttonEnable}
+                variant="outlined"
+                color="success"
+                endIcon={<SendIcon />}
+                onClick={() => saveClasses()}
+              >
+                Guardar Lista
+              </Button>
+            </Stack>
+          </Box>
+        </div>
       </div>
-    </div>
+    </AuthCheck>
   );
 };
 

@@ -5,6 +5,7 @@ import AuthContext from "../context/AuthContext";
 import GuardiasContext from "../context/GuardiasContext";
 import { deleteTeacherFromCollege, addAdmin } from "../firebase/firestore";
 import DropdownOptions from "../components/DropdownOptions";
+import AuthCheck from "../components/auth/AuthCheck";
 
 const Professors = () => {
   const { user } = useContext(AuthContext);
@@ -46,45 +47,46 @@ const Professors = () => {
   }, [college]);
 
   return (
-    <div className="h-screen bg-gray-200 w-full">
-      <Nav simpleNav={true} />
-      <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
-        {college.teachers?.map((teacher, index) => {
-          if (teacher.email != "Borrado") {
-            return (
-              <h1 key={index}>
-                <div className="flex flex-row justify-between text-xs items-start mb-5">
-                  {teacher.email}
-                  {!college.uidAdmins.includes(teacher.id!) ? (
-                    isUserAdmin ? (
-                      <div>
-                        <DropdownOptions
-                          simple={true}
-                          labelFirstButton="Admin"
-                          labelSecondButton="Borrar"
-                          funcFirstButton={() => makeAdmin(teacher)}
-                          funcSecondButton={() => {
-                            deleteTeacher(teacher);
-                          }}
-                        />
-                      </div>
+    <AuthCheck>
+      <div className="h-screen bg-gray-200 w-full">
+        <Nav simpleNav={true} />
+        <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
+          {college.teachers?.map((teacher, index) => {
+            if (teacher.email != "Borrado") {
+              return (
+                <h1 key={index}>
+                  <div className="flex flex-row justify-between text-xs items-start mb-5">
+                    {teacher.email}
+                    {!college.uidAdmins.includes(teacher.id!) ? (
+                      isUserAdmin ? (
+                        <div>
+                          <DropdownOptions
+                            simple={true}
+                            labelFirstButton="Admin"
+                            labelSecondButton="Borrar"
+                            funcFirstButton={() => makeAdmin(teacher)}
+                            funcSecondButton={() => {
+                              deleteTeacher(teacher);
+                            }}
+                          />
+                        </div>
+                      ) : (
+                        <></>
+                      )
                     ) : (
-                      <></>
-                    )
-                  ) : (
-                    <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
-                      {" "}
-                      Admin
-                    </div>
-                  )}
-                </div>
-              </h1>
-            );
-          }
-        })}
-        <hr></hr>
-        <div className="text-center w-full ">
-          {/* {isUserAdmin ? (
+                      <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
+                        {" "}
+                        Admin
+                      </div>
+                    )}
+                  </div>
+                </h1>
+              );
+            }
+          })}
+          <hr></hr>
+          <div className="text-center w-full ">
+            {/* {isUserAdmin ? (
             <button
             onClick={()=>{saveTeachersChanges()}}
               disabled={!buttonEnable}
@@ -99,9 +101,10 @@ const Professors = () => {
           ) : (
             <> </>
           )} */}
+          </div>
         </div>
       </div>
-    </div>
+    </AuthCheck>
   );
 };
 

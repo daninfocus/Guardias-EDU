@@ -174,6 +174,8 @@ export function GuardiasContextProvider({ children }: any) {
   };
 
   const addGuardia = (guardia: GuardiaModel) => {
+
+    //this is to update the state and show the new guardia on screen
     if (isGuardiaInCurrentWeek(guardia)) {
       if (
         guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0].isEmpty
@@ -189,6 +191,7 @@ export function GuardiasContextProvider({ children }: any) {
     }
   };
 
+  //this gathers the guardia response from local storage and puts them into the week array in there correct position
   const getAndSetGuardias = async () => {
     if (collegeId != null) {
       var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
@@ -199,50 +202,54 @@ export function GuardiasContextProvider({ children }: any) {
               .fill(null)
               .map(() => [{ isEmpty: true }] as Array<GuardiaModel>)
           );
+
       var localStorageGuardiaResponse = localStorage.getItem("guardiaResponse");
+      
       if (localStorageGuardiaResponse != null) {
+
         const guardiaResponse = JSON.parse(
           localStorageGuardiaResponse
         ) as Array<GuardiaModel>;
+
         guardiaResponse.forEach((element) => {
+
           element.dayOfGuardia = new Date(element.dayOfGuardia);
+
           if (isGuardiaInCurrentWeek(element)) {
             if (
               sortedArrayOfGuardiasResponse[element.hour - 1][
                 element.dayOfGuardia.getDay() - 1
               ][0].isEmpty
             ) {
+
               sortedArrayOfGuardiasResponse[element.hour - 1][
                 element.dayOfGuardia.getDay() - 1
               ][0] = element;
+
             } else {
+
               sortedArrayOfGuardiasResponse[element.hour - 1][
                 element.dayOfGuardia.getDay() - 1
               ].push(element);
+
             }
           }
         });
         
-      console.log(guardias);
         setGuardias([...sortedArrayOfGuardiasResponse]);
         setGuardiaStorageChanged(false);
       }
     }
   };
 
+  //gets guardia response snapshot and adds the response to the local storage, 
   const getGuardiasReponse = async () => {
     if (collegeId != undefined) {
-      var curr = new Date(); // get current date
-      var first = curr.getDate() - curr.getDay(); // First day is the day of the month - the day of the week
-      var last = first + 6; // last day is the first day + 6
-      var firstday = new Date(curr.setDate(first));
-      var lastday = new Date(curr.setDate(last));
-      firstday.setHours(0, 0, 0, 0);
-      lastday.setHours(0, 0, 0, 0);
       const q = query(
         collection(firestore, "guardias"),
         where("collegeId", "==", collegeId)
       );
+      //snapshot for realtime updates
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {
         const guardiaArray: Array<GuardiaModel> = [];
         for(const doc of querySnapshot.docs) {
@@ -273,14 +280,17 @@ export function GuardiasContextProvider({ children }: any) {
     }
   }, [college, user]);
 
+  //when the collegeid is recieved we wuery the db for the guardias
   useEffect(() => {
     getGuardiasReponse();
   }, [collegeId]);
 
+  //creates a new week if user clicked next week or previous week
   useEffect(() => {
     createWeek();
   }, [weekPos]);
 
+  //sets the guardias in the week array
   useEffect(() => {
     getAndSetGuardias();
   }, [collegeId, week, guardiaStorageChanged]);
@@ -317,8 +327,7 @@ export function GuardiasContextProvider({ children }: any) {
         isGuardiaInCurrentWeek,
         showGuardiaForm,
         setShowGuardiaForm,
-        openGuardiaToEdit
-    ,
+        openGuardiaToEdit,
         deleteSelectedGuardia,
         decrementWeek,
         incrementWeek,
