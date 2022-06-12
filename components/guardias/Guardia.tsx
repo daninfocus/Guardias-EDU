@@ -12,7 +12,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   const { user } = useContext(AuthContext);
   const { TODAY } = useContext(GuardiasContext);
   const { deleteSelectedGuardia } = useContext(GuardiasContext);
-  const { editSelectedGuardia } = useContext(GuardiasContext);
+  const { openGuardiaToEdit } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   //state
@@ -148,7 +148,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           labelFirstButton={"Editar"}
                           labelSecondButton={"Borrar"}
                           funcFirstButton={() => {
-                            editSelectedGuardia(selectedGuardia);
+                            openGuardiaToEdit(selectedGuardia);
                             setPressedNewGuardia(false);
                           }}
                           funcSecondButton={() => {
