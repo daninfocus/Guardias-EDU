@@ -40,7 +40,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   };
 
   const backgroundColor = () => {
-    if (prop.guardias[0].dayOfGuardia >= TODAY) {
+    if (prop.guardias[0].dayOfGuardia > TODAY) {
       if (prop.guardias[0].color != null) {
         switch (prop.guardias[0].color) {
           case 0:
