@@ -6,7 +6,7 @@ const DropdownOptions = (props:{simple:boolean,labelFirstButton:string,labelSeco
   return (
     <div className="text-right">
       <Menu as="div" className="relative inline-block text-left">
-        <div>
+        <div className="z-1">
           <Menu.Button className={props.simple?"inline-flex px-2 w-full justify-center rounded-md bg-black bg-opacity-20  text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75":"inline-flex w-full justify-center rounded-md bg-black bg-opacity-20 px-4 py-2 text-sm font-medium text-white hover:bg-opacity-30 focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75"}>
             Opciones
             <ChevronDownIcon
@@ -24,7 +24,7 @@ const DropdownOptions = (props:{simple:boolean,labelFirstButton:string,labelSeco
           leaveFrom="transform opacity-100 scale-100"
           leaveTo="transform opacity-0 scale-95"
         >
-          <Menu.Items className="absolute right-0 mt-2  origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
+          <Menu.Items className="z-50 absolute right-0 mt-2  origin-top-right divide-y divide-gray-100 rounded-md bg-white shadow-lg ring-1 ring-black ring-opacity-5 focus:outline-none">
             <div className="px-1 py-1 ">
               <Menu.Item>
                 <button  onClick={()=>props.funcFirstButton()} className="hover:bg-emerald-400 hover:text-white text-gray-900  group flex w-full items-center rounded-md px-2 py-2 text-sm">

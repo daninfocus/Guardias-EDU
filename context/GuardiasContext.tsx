@@ -5,7 +5,7 @@ import {
   editGuardia,
   getCollegeDataById,
   firestore,
-  getTeacherById,
+  getTeacherByEmail,
   addDocument,
 } from "../firebase/firestore";
 import GuardiaModel from "../@types/Guardia";
@@ -255,7 +255,7 @@ export function GuardiasContextProvider({ children }: any) {
         for(const doc of querySnapshot.docs) {
           var guardia = doc.data();
           var guardiaDate = guardia.dayOfGuardia.toDate();
-          guardia.teacher = await getTeacherById(guardia.teacherId);
+          guardia.teacher = await getTeacherByEmail(guardia.email);
           guardia.teacher.id = guardia.teacherId;
           delete guardia.teacherId;
           delete guardia.teacherName;
@@ -273,7 +273,8 @@ export function GuardiasContextProvider({ children }: any) {
   };
 
   useEffect(() => {
-    if (user != null && college.uidAdmins.includes(user.uid)) {
+    
+    if (user != null && college.admins.includes(user.email)) {
       setIsUserAdmin(true);
     } else {
       setIsUserAdmin(false);

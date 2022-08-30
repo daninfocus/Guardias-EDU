@@ -6,8 +6,10 @@ import DropdownOptions from "../DropdownOptions";
 import AuthContext from "../../context/AuthContext";
 import GuardiasContext from "../../context/GuardiasContext";
 import * as days from "../../shared/dates";
+import {datesAreOnSameDay,generateKey} from "../../logic/functions";
 
 const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
+  
   //context
   const { user } = useContext(AuthContext);
   const { TODAY } = useContext(GuardiasContext);
@@ -35,12 +37,9 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     openModal();
   };
 
-  const generateKey = (pre: any) => {
-    return `${pre}_${new Date().getTime()}`;
-  };
-
   const backgroundColor = () => {
-    if (prop.guardias[0].dayOfGuardia > TODAY) {
+    
+    if (datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)) {
       if (prop.guardias[0].color != null) {
         switch (prop.guardias[0].color) {
           case 0:

@@ -21,14 +21,20 @@ export const saveUser = async (user: User) => {
             name: user.displayName,
             email: user.email,
             photo: user.photoURL,
+            status: "Registered"
+        });
+    }else{
+        let ref = docs.docs[0].ref;
 
+        await updateDoc(ref, {
+            status: "Logged-in"
         });
     }
     return user;
 }
 
-export const doesUserHaveCollegeAssigned = async (uid: string) => {
-    const q = query(collection(firestore, "colleges"), where("teachers", "array-contains", uid), limit(1));
+export const doesUserHaveCollegeAssigned = async (email: string) => {
+    const q = query(collection(firestore, "colleges"), where("teachers", "array-contains", email), limit(1));
     const docs = await getDocs(q);
     return docs.docs[0];
 }
@@ -56,9 +62,8 @@ export const getCollegeDataById = async (collegeId: string) => {
     var college = docSnap.data() as College;
     var teachers: Array<Teacher> = [];
     if (college != undefined) {
-        for (const teacher of college.teachers!) {
-            var teacherObject = await getTeacherById(teacher.toString()) as Teacher;
-            teacherObject.id = teacher.toString();
+        for (const teacherEmail of college.teachers!) {
+            var teacherObject = await getTeacherByEmail(teacherEmail.toString()) as Teacher;
             teachers.push(teacherObject);
         }
         college.teachers = teachers;
@@ -66,28 +71,44 @@ export const getCollegeDataById = async (collegeId: string) => {
     }
 }
 
-export const getTeacherById = async (teacherId: string) => {
-    const q = query(collection(firestore, "users"), where("uid", "==", teacherId));
+export const teacherRef = async (email: string)=>{
+    const q = query(collection(firestore, "users"), where("email", "==", email));
     const docSnap = await getDocs(q);
-    var teacher = null;
-    if (!docSnap.empty) {
-        teacher = docSnap.docs[0].data()
-        return teacher;
-    }
-    return {
-        name: "Borrado",
-        email: "Borrado",
-        photo: "/no_user.png"
-    };
+    return docSnap;
 }
 
-export const deleteTeacherFromCollege = async (collegeId: string, teacherId: string) => {
+export const getTeacherByEmail = async (email: string) => {
+    
+    if(email){
+        let docSnap = await teacherRef(email);   
+        let teacher = null;
 
-    const ref = doc(firestore, 'colleges', collegeId);
+        if (!docSnap.empty) {
+            
+            teacher = docSnap.docs[0].data()
+            return teacher;
+            
+        }
+        
+    }else{
+        return {
+            status: "Waiting",
+            email: email,
+            photo: "/no_user.png"
+        };
+    }
+}
+
+export const deleteTeacherFromCollege = async (collegeId: string, teacher: Teacher) => {
+
+    const ref = await doc(firestore, 'colleges', collegeId);
     const docSnap = await getDoc(ref);
+
+    updateTeacherArray(collegeId,teacher.email);
+
     if (ref != null) {
         await updateDoc(ref, {
-            teachers: arrayRemove(teacherId)
+            teachers: arrayRemove(teacher.email)
         });
     }
     if (docSnap.exists()) {
@@ -96,13 +117,13 @@ export const deleteTeacherFromCollege = async (collegeId: string, teacherId: str
     return null;
 };
 
-export const addAdmin = async (collegeId: string, teacherId: string) => {
+export const addAdmin = async (collegeId: string, email: string) => {
     const ref = await getCollegeById(collegeId);
     const docSnap = await getDoc(ref);
 
     if (ref != null) {
         await updateDoc(ref, {
-            uidAdmins: arrayUnion(teacherId)
+            admins: arrayUnion(email)
         });
     }
     if (docSnap.exists()) {
@@ -112,18 +133,24 @@ export const addAdmin = async (collegeId: string, teacherId: string) => {
 }
 
 
-export const updateTeacherArray = async (collegeId: string, teacherid: string) => {
+export const updateTeacherArray = async (collegeId: string, email: string) => {
     const ref = await getCollegeById(collegeId);
     const docSnap = await getDoc(ref);
 
+    let teacherObject = await teacherRef(email);
+    
+    if(teacherObject.docs.length>0){
+        await updateDoc(teacherObject.docs[0].ref, {
+            status: "Baja"
+        }); 
+    }
+
     if (ref != null) {
-        //add teachers to array
         await updateDoc(ref, {
-            teachers: arrayUnion(teacherid)
+            teachers: arrayUnion(email)
         });
     }
     if (docSnap.exists()) {
-        // Convert to object
         return docSnap.data();
     }
     return null;

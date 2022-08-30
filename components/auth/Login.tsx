@@ -8,19 +8,28 @@ import LoadingButton from "@mui/lab/LoadingButton";
 function Login() {
   const router = useRouter();
   const [loading, setLoading] = useState(false);
-  const [buttonStyle, setButtonStyle]=useState("");
+  const [buttonStyle, setButtonStyle] = useState("");
 
   const LoginWithGoogle = async () => {
     setLoading(true);
     signInWithGoogle()
       .then(async (data) => {
-        const college = await doesUserHaveCollegeAssigned(data.uid);
-        setLoading(false);
-        
-        if (college != undefined) {
-          router.push("/" + college.id);
-        } else {
-          router.push("/college");
+        if(data){
+          const college = await doesUserHaveCollegeAssigned(data.email!.toString());
+          setLoading(false);
+
+          if (college != undefined) {
+            router.push("/" + college.id);
+          } else {
+            router.push("/college");
+          }
+        }else {
+          
+          setLoading(false);
+          toast("Tu dominio no corresponde con este instituto", {
+            icon: "⛔️",
+          });
+          router.push("/login");
         }
       })
       .catch((error) => {
@@ -32,20 +41,26 @@ function Login() {
   };
 
   useEffect(() => {
-    setButtonStyle("hover:bg-red-500 bg-white rounded-xl p-2.5 hover:text-white text-gray-700 font-bold");
-  }, [])
-  
+    setButtonStyle(
+      "hover:bg-red-500 bg-white rounded-xl p-2.5 hover:text-white text-gray-700 font-bold"
+    );
+  }, []);
 
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-green ">
-      <p className="font-normal text-5xl mb-16">Guardias-EDU <span className="text-xs">v.1 beta</span></p>
+      <p className="font-normal text-5xl mb-16">
+        Guardias-EDU <span className="text-xs">v.1</span>
+      </p>
       <iframe
         className="h-3/6"
         src="https://embed.lottiefiles.com/animation/101662"
       ></iframe>
-      <p className="text-base my-6">
-        Organiza tu tiempo libre con el de tus compañeros.
-      </p>
+      <div className="text-base my-6 text-center">
+        Sistemas de gestión para guardias de Institutos de Educación Secundaria.
+        <div className="text-xs text-center">
+          Diseñado y programado en el IES Fernando III - Martos (Jaén)
+        </div>
+      </div>
       <div className="flex bg-white rounded-xl p-2.5 hover:text-white text-gray-700 font-bold">
         <LoadingButton
           size="small"
@@ -97,6 +112,14 @@ function Login() {
           },
         }}
       />
+      <p className="my-4 text-xs text-center text-gray-400">
+        <span>
+          © {new Date().getFullYear()}{" "}
+          <a target="blank" href="https://www.danielwebb.dev/">
+            Daniel Webb
+          </a>
+        </span>
+      </p>
     </div>
   );
 }

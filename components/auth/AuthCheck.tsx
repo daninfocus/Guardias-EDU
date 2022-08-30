@@ -12,8 +12,8 @@ function AuthCheck({ children }: any) {
   useEffect(() => {
     async function checkLogin() {
       if (user) {
-        const college = await doesUserHaveCollegeAssigned(user.uid);
-
+        const college = await doesUserHaveCollegeAssigned(user.email);
+        console.log(college);
         if (college != undefined) {
           if (router.pathname.includes("professors")) {
             router.push("/professors?collegeId=" + college.id, undefined, {
@@ -31,6 +31,8 @@ function AuthCheck({ children }: any) {
         } else {
           router.push("/college");
         }
+      }else{
+        router.push("/login");
       }
     }
     checkLogin();

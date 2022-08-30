@@ -3,4 +3,5 @@ export default interface Teacher {
     name: string;
     email: string;
     photo: string;
+    status: string;
 }

@@ -17,7 +17,7 @@ import ListItemIcon from "@mui/material/ListItemIcon";
 import { IconButton } from "@mui/material";
 import AddCircleIcon from "@mui/icons-material/AddCircle";
 
-const CreateCollegeForm = (props: any) => {
+const CreateCollegeForm = () => {
   const router = useRouter();
 
   const { user } = useContext(AuthContext);
@@ -55,14 +55,14 @@ const CreateCollegeForm = (props: any) => {
 
   function newCollege() {
     if (college.length >= 5) {
-      if (classes.length > 2) {
+      if (classes.length >= 2) {
         const collegeObject: CollegeModel = {
           name: college,
           createdAt: new Date(),
           updatedAt: new Date(),
-          uidAdmins: [user.uid],
-          teachers: [user.uid],
-          classes: classes,
+          admins: [user.email],
+          teachers: [user.email],
+          classes: classes
         };
 
         var newCollege = addDocument("colleges", collegeObject).then((id) => {
@@ -92,7 +92,6 @@ const CreateCollegeForm = (props: any) => {
 
   const removeExtraSpace = (s: string) => s.trim().split(/ +/).join(" ");
 
-  if (props.selectedOption == "new-college") {
     return (
       <div className="static w-full">
         <Box
@@ -202,9 +201,6 @@ const CreateCollegeForm = (props: any) => {
         </p>
       </div>
     );
-  } else {
-    return <></>;
-  }
 };
 
 export default CreateCollegeForm;

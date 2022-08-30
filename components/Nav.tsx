@@ -5,6 +5,7 @@ import GuardiasContext from "../context/GuardiasContext";
 import College from "../@types/College";
 import AuthContext from "../context/AuthContext";
 import { deleteTeacherFromCollege } from "../firebase/firestore";
+import { route } from "next/dist/server/router";
 
 const Nav = (prop: { simpleNav: boolean }) => {
   const router = useRouter();
@@ -46,13 +47,13 @@ const Nav = (prop: { simpleNav: boolean }) => {
 
   const deleteUserFromCollege = async () => {
     if (college != undefined) {
-      if (college.teachers!.length > 0 || college.uidAdmins!.length > 0) {
+      if (college.teachers!.length > 0 || college.admins!.length > 0) {
         if (
           confirm(
             "Quieres darte de baja en este instituto? Podras unirte otra vez de nuevo."
           )
         ) {
-          await deleteTeacherFromCollege(college.id!, user.uid);
+          await deleteTeacherFromCollege(college.id!, user);
           logout();
         }
       } else {
@@ -78,6 +79,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 setShowGuardiaForm(true);
                 setIsNavOpen(false);
                 setPressedNewGuardia(true);
+                router.push("/" + college.id);
               }}
             >
               Registrar Falta
@@ -143,6 +145,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 setShowGuardiaForm(true);
                 setIsNavOpen(false);
                 setPressedNewGuardia(true);
+                router.push("/" + college.id);
               }}
             >
               Registrar Falta
@@ -183,7 +186,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                     Profesorado
                   </a>
                 </li>
-                {isUserAdmin ? (
+                {isUserAdmin && (
                   <>
                     <li className="text-gray-300">
                       <svg
@@ -210,8 +213,34 @@ const Nav = (prop: { simpleNav: boolean }) => {
                       </a>
                     </li>
                   </>
-                ) : (
-                  <></>
+                )}
+                {isUserAdmin && (
+                  <>
+                    <li className="text-gray-300">
+                      <svg
+                        xmlns="http://www.w3.org/2000/svg"
+                        fill="none"
+                        stroke="currentColor"
+                        className="w-4 h-4 current-fill"
+                        viewBox="0 0 24 24"
+                      >
+                        <path
+                          strokeLinecap="round"
+                          strokeLinejoin="round"
+                          strokeWidth="2"
+                          d="M12 5v0m0 7v0m0 7v0m0-13a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2zm0 7a1 1 0 110-2 1 1 0 010 2z"
+                        />
+                      </svg>
+                    </li>
+                    <li>
+                      <a
+                        className={selectedStyle("/classes")}
+                        onClick={() => classes()}
+                      >
+                        Pantalla sin login
+                      </a>
+                    </li>
+                  </>
                 )}
               </ul>
             </div>

@@ -10,8 +10,13 @@ var provider = new GoogleAuthProvider();
 export const signInWithGoogle = () => setPersistence(auth, browserSessionPersistence)
     .then(async () => {
         const res = await signInWithPopup(auth, provider);
-        saveUser(res.user as User);
-        return res.user;
+        if(res.user.email?.includes("@fernando3martos.com") || res.user.email==='danielwebb0099@gmail.com'){
+            saveUser(res.user as User);
+            return res.user;
+        }else{
+            logOut();
+            return null;
+        }
     });
 
 

@@ -76,6 +76,7 @@ const Classes = () => {
 
   return (
     <AuthCheck>
+      <title>Classes</title>
       <div>
         <Toaster
           position="bottom-center"

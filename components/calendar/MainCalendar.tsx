@@ -4,6 +4,7 @@ import GuardiasContext from "../../context/GuardiasContext";
 import GuardiaModel from "../../@types/Guardia";
 import * as days from "../../shared/dates";
 import Guardia from "../guardias/Guardia";
+import {generateKey,datesAreOnSameDay} from "../../logic/functions";
 
 const MainCalendar = () => {
 
@@ -37,10 +38,6 @@ const MainCalendar = () => {
       (week[COLS - 2].getMonth() === TODAY.getMonth() &&
         week[COLS - 2].getFullYear() == TODAY.getFullYear())
     );
-  };
-
-  const generateKey = (pre: any) => {
-    return `${pre}_${new Date().getTime()}`;
   };
 
   return (
@@ -123,9 +120,7 @@ const MainCalendar = () => {
                       {days.weekDaysShortES[index]}
                       <div
                         className={
-                          TODAY.getDate() === item.getDate() &&
-                          TODAY.getMonth() === item.getMonth() &&
-                          TODAY.getFullYear() === item.getFullYear()
+                            datesAreOnSameDay(TODAY,item)
                             ? "selected-day m-auto text-2xl text-white mt-2"
                             : "md:text-2xl text-base mt-2 h-[35px]"
                         }
@@ -141,8 +136,8 @@ const MainCalendar = () => {
               {guardias.map((row, indexRow) => {
                 return (
                   <tr className="border-b h-24" key={generateKey(indexRow)}>
-                    <td className=" first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {indexRow + 1}
+                    <td className="items-center text-center first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                      {indexRow + 1}º
                     </td>
                     {row.map((col, colIndex) => {
                       return (
