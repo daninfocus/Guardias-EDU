@@ -16,6 +16,7 @@ function Login() {
       .then(async (data) => {
         if(data){
           const college = await doesUserHaveCollegeAssigned(data.email!.toString());
+          console.log(college)
           setLoading(false);
 
           if (college != undefined) {

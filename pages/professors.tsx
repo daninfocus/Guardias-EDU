@@ -10,6 +10,7 @@ import {
 } from "../firebase/firestore";
 import DropdownOptions from "../components/DropdownOptions";
 import AuthCheck from "../components/auth/AuthCheck";
+import { addListener } from "process";
 
 const Professors = () => {
   const { user } = useContext(AuthContext);
@@ -46,36 +47,46 @@ const Professors = () => {
   };
 
   const saveTeachers = () => {
-    var teachersToAdd:any = teachersInput.split(";");
+    if(teachersInput.length > 5){
+    
+      var teachersToAdd:any = teachersInput.split(";");
+      console.log(teachersToAdd);
+      if (teachersToAdd.length > 1) {
+        teachersToAdd = teachersToAdd.map((item:string) => {if(validateEmail(removeExtraSpace(item)))removeExtraSpace(item)});
+        
+        teachersToAdd.forEach(async (element:string) => {
+            if(element){
+              college.teachers!.push({ email: element } as Teacher);
+              await updateTeacherArray(college.id!, element);
+            }
+          
+        });
+        setCollege({ ...college });
 
-    if (teachersToAdd.length > 0) {
-      teachersToAdd = teachersToAdd.map((item:string) => removeExtraSpace(item));
-
-      teachersToAdd.forEach(async (element:string) => {
-        // validateEmail(item)
-        college.teachers!.push({ email: element } as Teacher);
-        await updateTeacherArray(college.id!, element);
-      });
-      setCollege({ ...college });
-
+      }else{
+        teachersToAdd = removeExtraSpace(teachersToAdd[0]);
+        if(validateEmail(teachersToAdd)){
+          college.teachers!.push({ email: teachersToAdd } as Teacher);
+          setCollege({ ...college });
+          updateTeacherArray(college.id!, teachersToAdd);
+        }
+      }
     }else{
-      teachersToAdd = removeExtraSpace(teachersToAdd[0]);
-
-      college.teachers!.push({ email: teachersToAdd } as Teacher);
-      setCollege({ ...college });
-      updateTeacherArray(college.id!, teachersToAdd);
+      alert('Debes introducir correos validos')
     }
   };
 
-  // function validateEmail(mail:string) 
-  // {
-  //   if (/^\w+([\.-]?\w+)*@\w+([\.-]?\w+)*(\.\w{2,3})+$/.test(myForm.emailAddr.value))
-  //   {
-  //     return (true)
-  //   }
-  //     alert("You have entered an invalid email address!")
-  //     return (false)
-  // }
+  function validateEmail(mail:string) 
+  {
+    var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+
+    if (mail.match(validRegex)) {
+      return (true)
+    }
+    alert('Debes introducir correos validos')
+    return (false)
+    
+  }
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
     if (e.charCode === 13) {
@@ -136,7 +147,8 @@ const Professors = () => {
               // }
             }
           })}
-          <div>
+          {isUserAdmin && 
+          <div> 
             <input
               onKeyPress={(e) => onKeyUp(e)}
               type="textarea"
@@ -169,6 +181,7 @@ const Professors = () => {
               </div>
             </div>
           </div>
+          }
           <hr></hr>
           <div className="text-center w-full ">
             {/* {isUserAdmin ? (
