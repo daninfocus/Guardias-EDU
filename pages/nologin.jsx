@@ -92,7 +92,7 @@ const NoLogin = () => {
                             Guardar URL
                         </button>
                     </div>
-                    <div className={savedUrl?"text-emerald-600 font-semibold":""}>https://guardias-edu.vercel.app/nologin/{savedUrl?savedUrl:url}</div>
+                    <div className={savedUrl?"text-emerald-600 font-semibold":""}>https://gap.vercel.app/nologin/{savedUrl?savedUrl:url}</div>
                     
                 </div>
             </div>
