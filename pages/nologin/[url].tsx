@@ -71,7 +71,7 @@ const NoLoginPage = () => {
   };
   if (college && guardias) {
     return (
-      <div className="flex flex-col w-full h-full overflow-y-scroll sm:overflow-x-hidden sm:overflow-y-hidden">
+      <div className="flex flex-col w-full h-screen overflow-y-scroll sm:overflow-x-hidden sm:overflow-y-hidden">
         <div className="sm:-mx-6 lg:-mx-8 h-full">
           <div className="inline-block min-w-full h-full sm:px-6 lg:px-8">
             <table className="min-w-full table-auto h-full w-full">
