@@ -9,7 +9,7 @@ import {
   updateTeacherArray,
 } from "../firebase/firestore";
 import DropdownOptions from "../components/DropdownOptions";
-import AuthCheck from "../components/auth/AuthCheck";
+import AuthCheck from "../components/auth/AuthCheck"
 import { addListener } from "process";
 
 const Professors = () => {
@@ -99,6 +99,7 @@ const Professors = () => {
 
   return (
     <AuthCheck>
+      
       <title>{"Profesores"}</title>
       <div className="h-screen bg-gray-200 w-full">
         <Nav simpleNav={true} />
@@ -160,7 +161,7 @@ const Professors = () => {
               className="w-full justify-end flex p-2 items-center "
               onClick={() => saveTeachers()}
             >
-              <div className="right-0 w-min items-center rounded-xl  hover:bg-emerald-600 hover:shadow-md transition-all cursor-pointer hover:translate-y-1 bg-emerald-500 text-white px-8 py-2 font-semibold flex flex-row justify-between text-xs mb-5">
+              <div className="px-4 py-1 right-0 w-min items-center rounded-xl  hover:bg-emerald-600 hover:shadow-md transition-all cursor-pointer hover:translate-y-1 bg-emerald-500 text-white  font-semibold flex flex-row justify-between text-xs mb-5">
                 <span className="whitespace-nowrap px-2">
                   Añadir profesor/es{" "}
                 </span>

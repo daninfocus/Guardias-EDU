@@ -190,3 +190,20 @@ export const editGuardia = async (guardia: Guardia) => {
     });
     return data;
 }
+
+
+export const getNoLoginUrl = async (collegeId: Number) => {
+    
+    const q = query(collection(firestore, "no-login-url"), where("collegeId", "==", collegeId));
+    const docSnap = await getDocs(q);
+
+   
+    return docSnap.docs;
+}
+
+export const getNoLoginUrlByUrl = async (url: String) => {
+    
+    const q = query(collection(firestore, "no-login-url"), where("url", "==", url));
+    const docSnap = await getDocs(q);
+    return docSnap.docs;
+}

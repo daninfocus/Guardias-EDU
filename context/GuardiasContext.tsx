@@ -42,6 +42,7 @@ interface GuardiasContextInterface {
   isUserAdmin: Boolean;
   setCollege: Function;
   saveGuardia: Function;
+  setCollegeId: Function;
 }
 const GuardiasContext = createContext({} as GuardiasContextInterface);
 
@@ -54,10 +55,11 @@ export function GuardiasContextProvider({ children }: any) {
 
   //context
   const { user } = useContext(AuthContext);
-  var collegeId = router.query.collegeId;
+  
 
   //state
   const [isUserAdmin, setIsUserAdmin] = useState(false);
+  const [collegeId, setCollegeId] = useState(router.query.collegeId);
   const [college, setCollege] = useState<CollegeModel>(newCollege);
   const [guardias, setGuardias] = useState<Array<Array<Array<GuardiaModel>>>>(
     Array(ROWS)
@@ -193,7 +195,9 @@ export function GuardiasContextProvider({ children }: any) {
 
   //this gathers the guardia response from local storage and puts them into the week array in there correct position
   const getAndSetGuardias = async () => {
+    
     if (collegeId != null) {
+      
       var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
         Array(ROWS)
           .fill(null)
@@ -212,7 +216,6 @@ export function GuardiasContextProvider({ children }: any) {
         ) as Array<GuardiaModel>;
 
         guardiaResponse.forEach((element) => {
-
           element.dayOfGuardia = new Date(element.dayOfGuardia);
 
           if (isGuardiaInCurrentWeek(element)) {
@@ -244,7 +247,9 @@ export function GuardiasContextProvider({ children }: any) {
 
   //gets guardia response snapshot and adds the response to the local storage, 
   const getGuardiasReponse = async () => {
+    
     if (collegeId != undefined) {
+      
       const q = query(
         collection(firestore, "guardias"),
         where("collegeId", "==", collegeId)
@@ -255,7 +260,7 @@ export function GuardiasContextProvider({ children }: any) {
         for(const doc of querySnapshot.docs) {
           var guardia = doc.data();
           var guardiaDate = guardia.dayOfGuardia.toDate();
-          guardia.teacher = await getTeacherByEmail(guardia.email);
+          guardia.teacher = await getTeacherByEmail(guardia.teacherEmail);
           guardia.teacher.id = guardia.teacherId;
           delete guardia.teacherId;
           delete guardia.teacherName;
@@ -294,7 +299,7 @@ export function GuardiasContextProvider({ children }: any) {
   //sets the guardias in the week array
   useEffect(() => {
     getAndSetGuardias();
-  }, [collegeId, week, guardiaStorageChanged]);
+  }, [collegeId,college, week, guardiaStorageChanged]);
 
   useEffect(() => {
     async function fetchData() {
@@ -336,6 +341,7 @@ export function GuardiasContextProvider({ children }: any) {
         setPressedNewGuardia,
         pressedNewGuardia,
         isUserAdmin,
+        setCollegeId
       }}
     >
       {children}

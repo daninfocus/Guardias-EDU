@@ -13,19 +13,25 @@ function AuthCheck({ children }: any) {
     async function checkLogin() {
       if (user) {
         const college = await doesUserHaveCollegeAssigned(user.email);
-        console.log(college);
+        
         if (college != undefined) {
-          if (router.pathname.includes("professors")) {
-            router.push("/professors?collegeId=" + college.id, undefined, {
+          if (router.pathname.includes("nologin")) {
+            router.push("/nologin?collegeId=" + college.id, undefined, {
               scroll: true,
             });
-          } else {
-            if (router.pathname.includes("classes")) {
-              router.push("/classes?collegeId=" + college.id, undefined, {
+          }else{
+            if (router.pathname.includes("professors")) {
+              router.push("/professors?collegeId=" + college.id, undefined, {
                 scroll: true,
               });
             } else {
-              router.push("/" + college.id);
+              if (router.pathname.includes("classes")) {
+                router.push("/classes?collegeId=" + college.id, undefined, {
+                  scroll: true,
+                });
+              } else {
+                router.push("/" + college.id);
+              }
             }
           }
         } else {

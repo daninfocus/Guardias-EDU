@@ -49,9 +49,9 @@ function Login() {
 
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-green ">
-      <p className="font-normal text-5xl mb-16">
-        Guardias-EDU <span className="text-xs">v.1</span>
-      </p>
+
+      <div className="font-normal text-5xl mb-1 items-center">GAP</div>
+      <div className="text-xs">(Gestión de Ausencias de Profesorado)</div>
       <iframe
         className="h-3/6"
         src="https://embed.lottiefiles.com/animation/101662"

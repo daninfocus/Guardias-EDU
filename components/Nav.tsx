@@ -25,6 +25,10 @@ const Nav = (prop: { simpleNav: boolean }) => {
     logOut().then(() => router.push("/"));
   };
 
+  const noLoginScreen = () => {
+    router.push("/nologin/?collegeId=" + college.id);
+  };
+
   const classes = () => {
     router.push("/classes?collegeId=" + college.id);
   };
@@ -234,8 +238,8 @@ const Nav = (prop: { simpleNav: boolean }) => {
                     </li>
                     <li>
                       <a
-                        className={selectedStyle("/classes")}
-                        onClick={() => classes()}
+                        className={selectedStyle("/nologin")}
+                        onClick={() => noLoginScreen()}
                       >
                         Pantalla sin login
                       </a>

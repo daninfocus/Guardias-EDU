@@ -9,7 +9,7 @@ import * as days from "../../shared/dates";
 import {datesAreOnSameDay,generateKey} from "../../logic/functions";
 
 const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
-  
+    
   //context
   const { user } = useContext(AuthContext);
   const { TODAY } = useContext(GuardiasContext);
@@ -141,7 +141,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {user.uid == selectedGuardia.teacher!.id! ||
+                      {user && user.email == selectedGuardia.teacherEmail ||
                       isUserAdmin ? (
                         <DropdownOptions
                           labelFirstButton={"Editar"}

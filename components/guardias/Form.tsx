@@ -71,7 +71,7 @@ export default function Form() {
         dayOfGuardia: date,
         createdAt: new Date(),
         teacher: null,
-        teacherId: user.uid,
+        teacherEmail: user.email,
         collegeId: collegeId.toString(),
         updatedAt: null,
         tasks: tasks,
