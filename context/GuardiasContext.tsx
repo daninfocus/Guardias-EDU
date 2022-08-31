@@ -60,6 +60,7 @@ export function GuardiasContextProvider({ children }: any) {
   //state
   const [isUserAdmin, setIsUserAdmin] = useState(false);
   const [collegeId, setCollegeId] = useState(router.query.collegeId);
+  
   const [college, setCollege] = useState<CollegeModel>(newCollege);
   const [guardias, setGuardias] = useState<Array<Array<Array<GuardiaModel>>>>(
     Array(ROWS)
@@ -315,6 +316,11 @@ export function GuardiasContextProvider({ children }: any) {
     }
     fetchData();
   }, [collegeId]);
+
+  useEffect(() => {
+    setCollegeId(router.query.collegeId);
+  }, [router.query.collegeId])
+  
 
   return (
     <GuardiasContext.Provider
