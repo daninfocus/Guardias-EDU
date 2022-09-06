@@ -269,12 +269,12 @@ const Nav = (prop: { simpleNav: boolean }) => {
                   </a>
                 </span>
               </p>
-              <button
-                className="m-auto text-xs text-slate-600"
-                onClick={() => deleteUserFromCollege()}
-              >
-                Darte de baja en este Instituto
-              </button>
+                {/* <button
+                  className="m-auto text-xs text-slate-600"
+                  onClick={() => deleteUserFromCollege()}
+                >
+                  Darte de baja en este Instituto
+                </button> */}
             </div>
           </nav>
         </div>

@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { signInAnonymous, signInWithGoogle } from "../../firebase/auth";
+import { logOut, signInAnonymous, signInWithGoogle } from "../../firebase/auth";
 import { doesUserHaveCollegeAssigned } from "../../firebase/firestore";
 import { useRouter } from "next/router";
 import toast, { Toaster } from "react-hot-toast";
@@ -22,6 +22,10 @@ function Login() {
           if (college != undefined) {
             router.push("/" + college.id);
           } else {
+            await logOut();
+            toast("No estas asignado a ningun instituto habla con tu Coordinador TDE", {
+              icon: "⛔️",
+            });
             router.push("/login");
           }
         }else {
