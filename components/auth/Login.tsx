@@ -22,7 +22,7 @@ function Login() {
           if (college != undefined) {
             router.push("/" + college.id);
           } else {
-            router.push("/college");
+            router.push("/login");
           }
         }else {
           

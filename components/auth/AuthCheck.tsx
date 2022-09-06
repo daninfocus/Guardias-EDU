@@ -35,7 +35,7 @@ function AuthCheck({ children }: any) {
             }
           }
         } else {
-          router.push("/college");
+          router.push("/login");
         }
       }else{
         router.push("/login");

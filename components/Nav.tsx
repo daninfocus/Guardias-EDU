@@ -86,7 +86,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 router.push("/" + college.id);
               }}
             >
-              Registrar Falta
+              Registrar Ausencia
             </button>
           ) : (
             <></>
@@ -152,7 +152,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 router.push("/" + college.id);
               }}
             >
-              Registrar Falta
+              Registrar Ausencia
             </button>
 
             <hr className="visible md:hidden mb-9"></hr>

@@ -49,26 +49,29 @@ const Professors = () => {
   const saveTeachers = () => {
     if(teachersInput.length > 5){
     
-      var teachersToAdd:any = teachersInput.split(";");
-      console.log(teachersToAdd);
+      var teachersToAdd:Array<string|undefined> = teachersInput.split(";");
+      
       if (teachersToAdd.length > 1) {
-        teachersToAdd = teachersToAdd.map((item:string) => {if(validateEmail(removeExtraSpace(item)))removeExtraSpace(item)});
-        
-        teachersToAdd.forEach(async (element:string) => {
+
+        teachersToAdd = teachersToAdd.map((item:string|undefined) => {
+          if(item){
+            if(validateEmail(removeExtraSpace(item))) return removeExtraSpace(item)
+          }
+        });
+        teachersToAdd.forEach(async (element:string|undefined) => {
             if(element){
               college.teachers!.push({ email: element } as Teacher);
-              await updateTeacherArray(college.id!, element);
+              await updateTeacherArray(college.id!, element).then((item)=>console.log(item));
             }
-          
         });
         setCollege({ ...college });
 
       }else{
-        teachersToAdd = removeExtraSpace(teachersToAdd[0]);
-        if(validateEmail(teachersToAdd)){
-          college.teachers!.push({ email: teachersToAdd } as Teacher);
+        var teacherToAdd = removeExtraSpace(teachersToAdd[0]??'');
+        if(validateEmail(teacherToAdd)){
+          college.teachers!.push({ email: teacherToAdd } as Teacher);
           setCollege({ ...college });
-          updateTeacherArray(college.id!, teachersToAdd);
+          updateTeacherArray(college.id!, teacherToAdd);
         }
       }
     }else{
@@ -81,7 +84,9 @@ const Professors = () => {
     var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     if (mail.match(validRegex)) {
-      return (true)
+      if(mail.includes("@fernando3martos.com")){
+        return (true)
+      }
     }
     alert('Debes introducir correos validos')
     return (false)
