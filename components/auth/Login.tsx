@@ -17,7 +17,7 @@ function Login() {
         if(data){
           const college = await doesUserHaveCollegeAssigned(data.email!.toString());
           console.log(college)
-          setLoading(false);
+          
 
           if (college != undefined) {
             router.push("/" + college.id);
@@ -28,6 +28,7 @@ function Login() {
             });
             router.push("/login");
           }
+          setLoading(false);
         }else {
           
           setLoading(false);
