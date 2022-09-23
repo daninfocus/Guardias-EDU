@@ -17,7 +17,6 @@ const Professors = () => {
   const { college } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   const { setCollege } = useContext(GuardiasContext);
-console.log(college)
   const [buttonEnable, setButtonEnabled] = useState(false);
   const [teachersInput, setTeachersInput] = useState("");
 
@@ -58,7 +57,7 @@ console.log(college)
         });
         teachersToAdd.forEach(async (element:string|undefined) => {
             if(element){
-              college.teachers!.push({ email: element } as Teacher);
+              college.teachers!.push(element);
               await updateTeacherArray(college.id!, element).then((item)=>console.log(item));
             }
         });
@@ -67,7 +66,7 @@ console.log(college)
       }else{
         var teacherToAdd = removeExtraSpace(teachersToAdd[0]??'');
         if(validateEmail(teacherToAdd)){
-          college.teachers!.push({ email: teacherToAdd } as Teacher);
+          college.teachers!.push(teacherToAdd);
           setCollege({ ...college });
           updateTeacherArray(college.id!, teacherToAdd);
         }
