@@ -166,14 +166,10 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
     // const updateGuardiasField = async()=>{
     //   const docs = await getDocs(collection(firestore, "guardias"));
     //   docs.forEach(async (doc)=>{
-       
     //     let ref = await teacherRef(doc.data().teacherEmail)
-        
     //     await updateDoc(doc.ref,{teacherDocId:ref.docs[0].id})
     //   })
-      
     // }
-    
     // updateGuardiasField()
 
 
