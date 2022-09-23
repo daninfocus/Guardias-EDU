@@ -5,26 +5,25 @@ import {
   getCollegeDataById,
   getNoLoginUrlByUrl,
 } from "../../firebase/firestore";
-import GuardiasContext from "../../context/GuardiasContext";
+import GuardiasNoLoginContext from "../../context/GuardiasNoLoginContext";
 import "react-calendar/dist/Calendar.css";
 import GuardiaModel from "../../@types/Guardia";
 import * as days from "../../shared/dates";
 import Guardia from "../../components/guardias/Guardia";
 import { generateKey, datesAreOnSameDay } from "../../logic/functions";
 import CollegeModel from "../../@types/College";
+import { getDoc } from "firebase/firestore";
 
 const NoLoginPage = () => {
   //context
-  const { week } = useContext(GuardiasContext);
-  const { college } = useContext(GuardiasContext);
-  const { setCollege } = useContext(GuardiasContext);
-  const { setCollegeId } = useContext(GuardiasContext);
-  const { guardias } = useContext(GuardiasContext);
-  const { COLS } = useContext(GuardiasContext);
-  const { TODAY } = useContext(GuardiasContext);
-  const { isGuardiaInCurrentWeek } = useContext(GuardiasContext);
+  const { week } = useContext(GuardiasNoLoginContext);
+  const { college } = useContext(GuardiasNoLoginContext);
+  const { setCollege } = useContext(GuardiasNoLoginContext);
+  const { setCollegeId } = useContext(GuardiasNoLoginContext);
+  const { guardias } = useContext(GuardiasNoLoginContext);
+  const { COLS } = useContext(GuardiasNoLoginContext);
+  const { TODAY } = useContext(GuardiasNoLoginContext);
   const router = useRouter();
-
 
   const getData = async () => {
     let url = router.asPath.split("/")[2];
@@ -32,16 +31,15 @@ const NoLoginPage = () => {
     
     if (existingUrls[0]) {
       let collegeId = existingUrls[0].data().collegeId;
-      const response = await getCollegeDataById(collegeId.toString());
-      if (response != undefined) {
-        let college = response as CollegeModel;
+      const ref = await getCollegeDataById(collegeId.toString());
+      // let data =await getDoc(ref)
+      if (ref != undefined) {
+        let college = ref as CollegeModel;
         setCollege(college);
-        console.log(collegeId);
         setCollegeId(collegeId)
       }
     }
   };
-  
 
   useEffect(() => {
     getData();
@@ -69,6 +67,7 @@ const NoLoginPage = () => {
         week[COLS - 2].getFullYear() == TODAY.getFullYear())
     );
   };
+
   if (college && guardias) {
     return (
       <div className="flex flex-col w-full h-screen overflow-y-scroll sm:overflow-x-hidden sm:overflow-y-hidden">
@@ -124,11 +123,9 @@ const NoLoginPage = () => {
                             key={generateKey(colIndex)}
                             className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
                           >
-                            {isGuardiaInCurrentWeek(col[0]) ? (
+                            
                               <Guardia guardias={col} />
-                            ) : (
-                              <></>
-                            )}
+                            
                           </td>
                         );
                       })}

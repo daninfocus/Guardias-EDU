@@ -27,12 +27,13 @@ const Home = () => {
           },
         }}
       />
-      <div className="bg-gray-100 h-screen flex flex-col overflow-y-hidden overflow-x-hidden">
+      <div className="bg-gray-100 flex-1 flex flex-col overflow-x-hidden">
         <title>{"Guardias - " + college.name}</title>
         <Nav simpleNav={false} />
 
         {showGuardiaForm ? <Form /> : null}
         <MainCalendar />
+        <div className="h-[6px]"></div>
       </div>
     </AuthCheck>
   );

@@ -15,9 +15,7 @@ function Login() {
     signInWithGoogle()
       .then(async (data) => {
         if(data){
-          const college = await doesUserHaveCollegeAssigned(data.email!.toString());
-          console.log(college)
-          
+          const college = await doesUserHaveCollegeAssigned(data.email!.toString())          
 
           if (college != undefined) {
             router.push("/" + college.id);

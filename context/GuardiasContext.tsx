@@ -5,7 +5,7 @@ import {
   editGuardia,
   getCollegeDataById,
   firestore,
-  getTeacherByEmail,
+  getTeacherById,
   addDocument,
 } from "../firebase/firestore";
 import GuardiaModel from "../@types/Guardia";
@@ -34,6 +34,7 @@ interface GuardiasContextInterface {
   setShowGuardiaForm: Function;
   openGuardiaToEdit: Function;
   deleteSelectedGuardia: Function;
+  loadingGuardias: Boolean;
   decrementWeek: Function;
   incrementWeek: Function;
   saveEditedGuardia: Function;
@@ -76,7 +77,7 @@ export function GuardiasContextProvider({ children }: any) {
   const [guardiaToEdit, setGuardiaToEdit] = useState({} as GuardiaModel);
   const [pressedNewGuardia, setPressedNewGuardia] = useState(false);
   const [showGuardiaForm, setShowGuardiaForm] = useState(false);
-  const [guardiaStorageChanged, setGuardiaStorageChanged] = useState(false);
+  const [loadingGuardias, setLoadingGuardias] = useState(false);
 
   //functions
   const createWeek = (daysInWeek = COLS - 1) => {
@@ -136,12 +137,9 @@ export function GuardiasContextProvider({ children }: any) {
       confirm("¿Quieres borrar esta guardia?")
     ) {
       deleteGuardia(guardia).then(() => {
-        getGuardiasReponse();
         toast.success("Guardia borrado correctamente", {
           icon: "✅",
         });
-
-        getAndSetGuardias();
       });
     }
   };
@@ -153,7 +151,6 @@ export function GuardiasContextProvider({ children }: any) {
 
   const saveEditedGuardia = async (guardia: GuardiaModel) => {
     await editGuardia(guardia).then((data) => {
-      getGuardiasReponse();
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
@@ -166,7 +163,6 @@ export function GuardiasContextProvider({ children }: any) {
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
-      getGuardiasReponse();
       setShowGuardiaForm(false);
     });
     if (newGuardia == null) {
@@ -240,8 +236,9 @@ export function GuardiasContextProvider({ children }: any) {
           }
         });
         
+        
+        setLoadingGuardias(false);
         setGuardias([...sortedArrayOfGuardiasResponse]);
-        setGuardiaStorageChanged(false);
       }
     }
   };
@@ -249,7 +246,7 @@ export function GuardiasContextProvider({ children }: any) {
   //gets guardia response snapshot and adds the response to the local storage, 
   const getGuardiasReponse = async () => {
     
-    if (collegeId != undefined) {
+    if (collegeId != undefined && !loadingGuardias) {
       
       const q = query(
         collection(firestore, "guardias"),
@@ -261,7 +258,7 @@ export function GuardiasContextProvider({ children }: any) {
         for(const doc of querySnapshot.docs) {
           var guardia = doc.data();
           var guardiaDate = guardia.dayOfGuardia.toDate();
-          guardia.teacher = await getTeacherByEmail(guardia.teacherEmail);
+          guardia.teacher = await getTeacherById(guardia.teacherDocId);
           guardia.teacher.id = guardia.teacherId;
           delete guardia.teacherId;
           delete guardia.teacherName;
@@ -273,13 +270,12 @@ export function GuardiasContextProvider({ children }: any) {
           "guardiaResponse",
           JSON.stringify(guardiaArray)
         );
-        setGuardiaStorageChanged(true);
+        getAndSetGuardias();
       });
     }
   };
 
   useEffect(() => {
-    
     if (user != null && college.admins.includes(user.email)) {
       setIsUserAdmin(true);
     } else {
@@ -289,18 +285,26 @@ export function GuardiasContextProvider({ children }: any) {
 
   //when the collegeid is recieved we wuery the db for the guardias
   useEffect(() => {
-    getGuardiasReponse();
+
+    const getData = async()=>{
+      setLoadingGuardias(true);
+      await getAndSetGuardias();
+      
+
+      //COMMENT THIS AND GUARDIAS LOAD ON CALENDAR INSTANTLY, LEAVE IT AND TAKES HOWEVER LONG THE QUERY TAKES??????
+      getGuardiasReponse();
+    }
+    
+    if(collegeId!=undefined && user){
+      getData();
+    }
+
   }, [collegeId]);
 
   //creates a new week if user clicked next week or previous week
   useEffect(() => {
     createWeek();
   }, [weekPos]);
-
-  //sets the guardias in the week array
-  useEffect(() => {
-    getAndSetGuardias();
-  }, [collegeId,college, week, guardiaStorageChanged]);
 
   useEffect(() => {
     async function fetchData() {
@@ -325,6 +329,7 @@ export function GuardiasContextProvider({ children }: any) {
   return (
     <GuardiasContext.Provider
       value={{
+        loadingGuardias,
         saveGuardia,
         setCollege,
         guardias,

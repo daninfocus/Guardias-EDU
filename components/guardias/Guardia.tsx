@@ -38,8 +38,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   };
 
   const backgroundColor = () => {
-    
-    if (datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)) {
+   
+    if (prop.guardias[0] && prop.guardias[0].dayOfGuardia && datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)) {
       if (prop.guardias[0].color != null) {
         switch (prop.guardias[0].color) {
           case 0:
@@ -60,7 +60,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     return "font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 border-slate-500 text-slate-400  grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
   };
 
-  if (prop.guardias[0].id == "empty") return <></>;
+  if (prop.guardias[0].isEmpty) return <></>;
+
 
   return (
     <div className={backgroundColor()}>
@@ -179,7 +180,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                       </div>
                       {selectedGuardia!.moreInfo!.length > 0 ? (
                         <div className="mt-2 font-medium text-base">
-                          Información adicional:
+                          Aula:
                           <p className="ml-4 text-sm text-gray-500 ">
                             {selectedGuardia?.moreInfo}
                           </p>

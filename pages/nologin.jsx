@@ -20,7 +20,6 @@ const NoLogin = () => {
         if (url) {
             if (!hasUrl) {
                 let existingUrls = await getNoLoginUrlByUrl(url);
-                console.log(existingUrls)
                 if(existingUrls.length==0){
                     addDocument("no-login-url", {
                         url: url,
@@ -92,7 +91,7 @@ const NoLogin = () => {
                             Guardar URL
                         </button>
                     </div>
-                    <div className={savedUrl?"text-emerald-600 font-semibold":""}>https://gap.vercel.app/nologin/{savedUrl?savedUrl:url}</div>
+                    <a target="_blank" rel="noreferrer" href={`https://gap.vercel.app/nologin/${savedUrl?savedUrl:url}`} className={savedUrl?"text-emerald-600 font-semibold":""}>https://gap.vercel.app/nologin/{savedUrl?savedUrl:url}</a>
                     
                 </div>
             </div>

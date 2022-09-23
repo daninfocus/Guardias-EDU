@@ -18,7 +18,6 @@ const MainCalendar = () => {
   const { isGuardiaInCurrentWeek } = useContext(GuardiasContext);
 
   //functions
-
   const getMonthLabel = () => {
     if (week[0].getMonth() != week[COLS - 2].getMonth()) {
       return (
@@ -40,8 +39,9 @@ const MainCalendar = () => {
     );
   };
 
+
   return (
-    <div className="flex flex-col w-full h-full overflow-y-scroll sm:overflow-x-hidden sm:overflow-y-hidden">
+    <div className="flex flex-grow flex-col">
       <div className="w-full flex flex-row justify-between items-center">
         <button
           className="transition ease-in-out duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"

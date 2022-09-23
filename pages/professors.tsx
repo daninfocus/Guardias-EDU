@@ -17,17 +17,15 @@ const Professors = () => {
   const { college } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
   const { setCollege } = useContext(GuardiasContext);
-
+console.log(college)
   const [buttonEnable, setButtonEnabled] = useState(false);
   const [teachersInput, setTeachersInput] = useState("");
 
-  const deleteTeacher = async (teacher: Teacher) => {
+  const deleteTeacher = async (teacher: string) => {
     if (
       confirm(
         "¿Quieres borrar a " +
-          teacher.name +
-          " con correo: " +
-          teacher.email +
+          teacher +
           " ?"
       )
     ) {
@@ -40,9 +38,9 @@ const Professors = () => {
     }
   };
 
-  const makeAdmin = async (teacher: Teacher) => {
+  const makeAdmin = async (teacher: string) => {
     // college.admins.push(teacher.email!);
-    await addAdmin(college.id!, teacher.email!);
+    await addAdmin(college.id!, teacher);
     setCollege({ ...college });
   };
 
@@ -124,8 +122,8 @@ const Professors = () => {
                 return (
                   <div key={index}>
                     <div className="flex flex-row justify-between text-xs items-start mb-5">
-                      {teacher.email}
-                      {!college.admins.includes(teacher.email!) ? (
+                      {teacher}
+                      {!college.admins.includes(teacher) ? (
                         isUserAdmin ? (
                           <div>
                             <DropdownOptions

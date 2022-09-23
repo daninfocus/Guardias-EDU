@@ -62,11 +62,12 @@ export const getCollegeDataById = async (collegeId: string) => {
     var college = docSnap.data() as College;
     var teachers: Array<Teacher> = [];
     if (college != undefined) {
-        for (const teacherEmail of college.teachers!) {
-            var teacherObject = await getTeacherByEmail(teacherEmail.toString()) as Teacher;
-            teachers.push(teacherObject);
-        }
-        college.teachers = teachers;
+        // for (const teacherDocId of college.teachers!) {
+        //     var teacherObject = await getTeacherById(teacherDocId.toString()) as Teacher;
+        //     console.log(teacherObject)
+        //     teachers.push(teacherObject);
+        // }
+        // college.teachers = teachers;
         return college;
     }
 }
@@ -77,15 +78,17 @@ export const teacherRef = async (email: string)=>{
     return docSnap;
 }
 
-export const getTeacherByEmail = async (email: string) => {
+export const getTeacherById = async (id: string) => {
     
-    if(email){
-        let docSnap = await teacherRef(email);   
+    if(id){
+        const ref = await doc(firestore, "users",id)
+        const docSnap = await getDoc(ref);
+        // let docSnap = await teacherRef(email);   
         let teacher = null;
 
-        if (!docSnap.empty) {
+        if (docSnap) {
             
-            teacher = docSnap.docs[0].data()
+            teacher = docSnap.data()
             return teacher;
             
         }
@@ -93,22 +96,22 @@ export const getTeacherByEmail = async (email: string) => {
     }else{
         return {
             status: "Waiting",
-            email: email,
+            email: 'Loading',
             photo: "/no_user.png"
         };
     }
 }
 
-export const deleteTeacherFromCollege = async (collegeId: string, teacher: Teacher) => {
+export const deleteTeacherFromCollege = async (collegeId: string, email: string) => {
 
     const ref = await doc(firestore, 'colleges', collegeId);
     const docSnap = await getDoc(ref);
 
-    updateTeacherArray(collegeId,teacher.email);
+    updateTeacherArray(collegeId,email);
 
     if (ref != null) {
         await updateDoc(ref, {
-            teachers: arrayRemove(teacher.email)
+            teachers: arrayRemove(email)
         });
     }
     if (docSnap.exists()) {

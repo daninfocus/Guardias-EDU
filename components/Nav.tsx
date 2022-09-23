@@ -16,6 +16,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
   const { setShowGuardiaForm } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
+  const { loadingGuardias } = useContext(GuardiasContext);
 
   //state
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -75,7 +76,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
           {college.name}
         </div>
         <div className="flex flex-row justify-center">
-          {!prop.simpleNav ? (
+          {!prop.simpleNav && college && college.name != "Cargando..." ? (
             <button
               className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
               type="button"
@@ -142,6 +143,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                 </svg>
               </button>
             </div>
+            {college && college.name != "Cargando..." &&
             <button
               className="visible sm:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
               type="button"
@@ -153,7 +155,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               }}
             >
               Registrar Ausencia
-            </button>
+            </button>}
 
             <hr className="visible md:hidden mb-9"></hr>
             <div>

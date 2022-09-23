@@ -226,7 +226,7 @@ export default function Form() {
                           </div>
                           <div className="w-48 h-16">
                             <label htmlFor="classroom" className="text-sm">
-                              Clase
+                              Grupo
                             </label>
                             <SelectDialog
                               elements={college.classes}
