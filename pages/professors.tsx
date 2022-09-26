@@ -74,6 +74,7 @@ const Professors = () => {
           updateTeacherArray(college.id!, teacherToAdd);
         }
       }
+      
     }else{
       alert('Debes introducir correos validos')
     }
