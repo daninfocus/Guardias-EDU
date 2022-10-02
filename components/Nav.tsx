@@ -72,13 +72,13 @@ const Nav = (prop: { simpleNav: boolean }) => {
   return (
     <div className="w-full ">
       <nav className="relative px-3 py-2 grid grid-cols-3 justify-between items-center bg-gray-100 shadow-xl rounded-2xl">
-        <div className=" md:text-xl text-sm font-bold font-josefin ">
+        <div className=" md:text-xl text-sm font-bold font-josefin">
           {college.name}
         </div>
         <div className="flex flex-row justify-center">
           {!prop.simpleNav && college && college.name != "Cargando..." ? (
             <button
-              className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
+              className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center  py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
                 setShowGuardiaForm(true);
@@ -145,7 +145,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
             </div>
             {college && college.name != "Cargando..." &&
             <button
-              className="visible sm:hidden mx-auto mb-9 w-40 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
+              className="visible sm:hidden mx-auto mb-9 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
                 setShowGuardiaForm(true);

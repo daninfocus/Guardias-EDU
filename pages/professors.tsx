@@ -58,7 +58,7 @@ const Professors = () => {
         teachersToAdd.forEach(async (element:string|undefined) => {
             if(element){
               college.teachers!.push(element);
-              await updateTeacherArray(college.id!, element).then((item)=>console.log(item));
+              await updateTeacherArray(college.id!, element);
             }
         });
         setCollege({ ...college });
@@ -103,10 +103,10 @@ const Professors = () => {
     <AuthCheck>
       
       <title>{"Profesores"}</title>
-      <div className="h-screen bg-gray-200 w-full">
+      <div className=" bg-gray-200 w-full">
         <Nav simpleNav={true} />
         <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
-          {college.teachers?.map((teacher, index) => {
+          {college.teachers?.sort((item)=>college.admins.includes(item)?-1:1).map((teacher, index) => {
             if (teacher) {
               // if (!teacher.status) {
               //   return (

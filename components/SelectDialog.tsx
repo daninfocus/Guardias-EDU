@@ -4,6 +4,7 @@ import { CheckIcon, SelectorIcon } from "@heroicons/react/solid";
 import College from "../@types/College";
 
 const SelectDialog = (props: {
+  createOption: boolean;
   elements: Array<string>;
   hours: boolean;
   selected: string;
@@ -21,7 +22,7 @@ const SelectDialog = (props: {
         );
 
   return (
-    <div className="absolute w-48">
+    <div className="w-full">
       <Combobox value={props.selected} onChange={props.setSelected}>
         <div className="relative mt-1">
           <div className="relative w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
@@ -50,17 +51,17 @@ const SelectDialog = (props: {
                 <Combobox.Option
                   key={index}
                   className={({ active }) =>
-                    `relative cursor-default select-none py-2 pl-10 pr-4 ${
-                      active ? "bg-teal-600 text-white" : "text-gray-900"
-                    }`
+                    `relative cursor-default select-none py-2 pr-4 pl-3
+                    ${active ? "bg-teal-600 text-white  " : "text-gray-900"}
+                    `
                   }
                   value={item}
                 >
                   {({ selected, active }) => (
                     <>
                       <span
-                        className={`block truncate ${
-                          selected ? "font-medium" : "font-normal"
+                        className={` block truncate ${
+                          selected ? "pl-7 font-medium" : "font-normal"
                         }`}
                       >
                         {item}
@@ -78,7 +79,7 @@ const SelectDialog = (props: {
                   )}
                 </Combobox.Option>
               ))}
-              {!props.hours ? (
+              {props.createOption&&!props.hours ? (
                 query.length > 0 && (
                   <Combobox.Option
                     value={query}

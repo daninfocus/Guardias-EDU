@@ -51,6 +51,7 @@ export function GuardiasContextProvider({ children }: any) {
   const COLS = 6;
   const ROWS = 6;
   const TODAY = new Date();
+  TODAY.setHours(0,0,0,0);
   const newCollege = new CollegeModel();
   const router = useRouter();
 
@@ -82,17 +83,24 @@ export function GuardiasContextProvider({ children }: any) {
   //functions
   const createWeek = (daysInWeek = COLS - 1) => {
     let week = [];
-    var nextWeekDate = new Date(TODAY.getTime());
+    var nextWeekDate = new Date(TODAY);
+    console.log({nextWeekDate})
     var today =
       weekPos != 0
         ? new Date(nextWeekDate.setDate(TODAY.getDate() + weekPos * 7))
-        : new Date(TODAY.getTime());
+        : new Date(TODAY);
+        console.log({today})
     for (let i = 1; i < daysInWeek + 1; i++) {
+      if(i==daysInWeek){
+        today.setHours(21,59,59,999)
+      }
       const dayNum = today.getDate() - today.getDay() + i;
       const date = new Date(today.setDate(dayNum));
       week.push(date);
     }
+    
     setWeek([...week]);
+    getGuardiasReponse([...week]);
   };
 
   const incrementWeek = () => {
@@ -103,8 +111,9 @@ export function GuardiasContextProvider({ children }: any) {
     setWeekPos(weekPos - 1);
   };
 
-  const isGuardiaInCurrentWeek = (guardia: GuardiaModel) => {
-    if (!guardia.isEmpty) {
+  const isGuardiaInCurrentWeek = (guardia: GuardiaModel,week:Array<Date>) => {
+    
+    if (!guardia.isEmpty && week) {
       //if year is with-in the week
       if (
         guardia.dayOfGuardia.getFullYear() == week[0].getFullYear() ||
@@ -175,7 +184,7 @@ export function GuardiasContextProvider({ children }: any) {
   const addGuardia = (guardia: GuardiaModel) => {
 
     //this is to update the state and show the new guardia on screen
-    if (isGuardiaInCurrentWeek(guardia)) {
+    if (isGuardiaInCurrentWeek(guardia,week)) {
       if (
         guardias[guardia.hour - 1][guardia.dayOfGuardia.getDay() - 1][0].isEmpty
       ) {
@@ -191,7 +200,7 @@ export function GuardiasContextProvider({ children }: any) {
   };
 
   //this gathers the guardia response from local storage and puts them into the week array in there correct position
-  const getAndSetGuardias = async () => {
+  const getAndSetGuardias = async (week:Array<Date>) => {
     
     if (collegeId != null) {
       
@@ -207,7 +216,6 @@ export function GuardiasContextProvider({ children }: any) {
       var localStorageGuardiaResponse = localStorage.getItem("guardiaResponse");
       
       if (localStorageGuardiaResponse != null) {
-
         const guardiaResponse = JSON.parse(
           localStorageGuardiaResponse
         ) as Array<GuardiaModel>;
@@ -215,7 +223,7 @@ export function GuardiasContextProvider({ children }: any) {
         guardiaResponse.forEach((element) => {
           element.dayOfGuardia = new Date(element.dayOfGuardia);
 
-          if (isGuardiaInCurrentWeek(element)) {
+          if (isGuardiaInCurrentWeek(element, week)) {
             if (
               sortedArrayOfGuardiasResponse[element.hour - 1][
                 element.dayOfGuardia.getDay() - 1
@@ -236,7 +244,6 @@ export function GuardiasContextProvider({ children }: any) {
           }
         });
         
-        
         setLoadingGuardias(false);
         setGuardias([...sortedArrayOfGuardiasResponse]);
       }
@@ -244,13 +251,21 @@ export function GuardiasContextProvider({ children }: any) {
   };
 
   //gets guardia response snapshot and adds the response to the local storage, 
-  const getGuardiasReponse = async () => {
+  const getGuardiasReponse = async (week:Array<Date>) => {
     
     if (collegeId != undefined && !loadingGuardias) {
+      setLoadingGuardias(true);
       
+      var firstday = new Date(week[0]);
+      
+      var lastday =  new Date(week[4]);
+
+
       const q = query(
         collection(firestore, "guardias"),
-        where("collegeId", "==", collegeId)
+        where("collegeId", "==", collegeId),
+        where("dayOfGuardia", ">=", firstday),
+        where("dayOfGuardia", "<=", lastday)
       );
       //snapshot for realtime updates
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {
@@ -258,8 +273,7 @@ export function GuardiasContextProvider({ children }: any) {
         for(const doc of querySnapshot.docs) {
           var guardia = doc.data();
           var guardiaDate = guardia.dayOfGuardia.toDate();
-          guardia.teacher = await getTeacherById(guardia.teacherDocId);
-          guardia.teacher.id = guardia.teacherId;
+          // guardia.teacher = await getTeacherById(guardia.teacherDocId);
           delete guardia.teacherId;
           delete guardia.teacherName;
           guardia.id = doc.id;
@@ -270,7 +284,7 @@ export function GuardiasContextProvider({ children }: any) {
           "guardiaResponse",
           JSON.stringify(guardiaArray)
         );
-        getAndSetGuardias();
+        getAndSetGuardias(week);
       });
     }
   };
@@ -288,11 +302,11 @@ export function GuardiasContextProvider({ children }: any) {
 
     const getData = async()=>{
       setLoadingGuardias(true);
-      await getAndSetGuardias();
+      await getAndSetGuardias(week);
       
 
       //COMMENT THIS AND GUARDIAS LOAD ON CALENDAR INSTANTLY, LEAVE IT AND TAKES HOWEVER LONG THE QUERY TAKES??????
-      getGuardiasReponse();
+      getGuardiasReponse(week);
     }
     
     if(collegeId!=undefined && user){

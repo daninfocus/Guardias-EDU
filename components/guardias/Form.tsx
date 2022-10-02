@@ -17,6 +17,7 @@ import ColorPicker from "../ColorPicker";
 import SelectDialog from "../SelectDialog";
 import { Dialog, Transition } from "@headlessui/react";
 import GuardiasContext from "../../context/GuardiasContext";
+import { teacherRef } from "../../firebase/firestore";
 
 export default function Form() {
   const colors = [
@@ -31,6 +32,7 @@ export default function Form() {
   //context
   const { collegeId } = router.query;
   const { user } = useContext(AuthContext);
+  const { isUserAdmin } = useContext(GuardiasContext);
   const { addGuardia } = useContext(GuardiasContext);
   const { guardiaToEdit } = useContext(GuardiasContext);
   const { saveEditedGuardia } = useContext(GuardiasContext);
@@ -51,6 +53,7 @@ export default function Form() {
   const [selectedHour, setSelectedHour] = useState(hours[0]);
   const [tasks, setTasks] = useState("");
   const [moreInfo, setMoreInfo] = useState("");
+  const [selectedTeacher, setSelectedTeacher] = useState("");
 
   useEffect(() => {
     if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
@@ -63,15 +66,23 @@ export default function Form() {
     }
   }, [pressedNewGuardia]);
 
-  const submitGuardia = (e: React.SyntheticEvent) => {
+  const submitGuardia = async (e: React.SyntheticEvent) => {
     e.preventDefault();
 
     if (collegeId != undefined) {
+      let docId = '';
+      if(selectedTeacher){
+        let teacherObject = await teacherRef(selectedTeacher);
+        docId = teacherObject.docs[0].id
+      }else{
+        let teacherObject = await teacherRef(user.email);
+        docId = teacherObject.docs[0].id
+      }
       const guardia: Guardia = {
         dayOfGuardia: date,
         createdAt: new Date(),
-        teacher: null,
-        teacherEmail: user.email,
+        teacherDocId: docId,
+        teacherEmail: selectedTeacher?selectedTeacher:user.email,
         collegeId: collegeId.toString(),
         updatedAt: null,
         tasks: tasks,
@@ -190,15 +201,17 @@ export default function Form() {
                     as="h3"
                     className="text-lg p-3 font-medium leading-6 text-gray-900 flex flex-col justify-between"
                   >
-                    <div className="mb-3 flex flex-row items-center justify-center w-full">
-                      Color: &nbsp;
-                      <ColorPicker
-                        childClick={childClick}
-                        isOpen={isOpen}
-                        setSelectedColor={changeColor}
-                        selectedColor={selectedColor}
-                        colors={colors}
-                      />
+                    <div className="mb-3 flex flex-row items-center justify-between w-full">
+                      <div className="flex flex-row items-center">
+                        Color: &nbsp;
+                        <ColorPicker
+                          childClick={childClick}
+                          isOpen={isOpen}
+                          setSelectedColor={changeColor}
+                          selectedColor={selectedColor}
+                          colors={colors}
+                        />
+                      </div>
                     </div>
                     <form
                       className="h-full flex flex-col justify-between"
@@ -210,7 +223,20 @@ export default function Form() {
                         minDate={new Date()}
                         className="rounded-2xl mb-3 self-center"
                       />
-
+                      {isUserAdmin&&
+                        <div className="w-full h-16 z-50 mb-3">
+                          <label className="text-sm my-3">
+                            Profesor  
+                          </label>
+                          <SelectDialog
+                            createOption={false}
+                            elements={college.teachers!}
+                            hours={false}
+                            selected={selectedTeacher}
+                            setSelected={setSelectedTeacher}
+                          />
+                        </div>
+                      }
                       <div className="max-h-80 h-full flex flex-col justify-between">
                         <div className="flex sm:flex-row flex-col items-center justify-between mb-3">
                           <div className="w-48 h-16">
@@ -218,6 +244,7 @@ export default function Form() {
                               Hora:
                             </label>
                             <SelectDialog
+                              createOption={false}
                               elements={hours}
                               hours={true}
                               selected={selectedHour}
@@ -229,6 +256,7 @@ export default function Form() {
                               Grupo
                             </label>
                             <SelectDialog
+                              createOption={true}
                               elements={college.classes}
                               hours={false}
                               selected={selectedClass}
@@ -236,7 +264,6 @@ export default function Form() {
                             />
                           </div>
                         </div>
-
                         <div className="mb-3  p-2 w-full cursor-default overflow-hidden rounded-lg bg-white text-left shadow-md focus:outline-none focus-visible:ring-2 focus-visible:ring-white focus-visible:ring-opacity-75 focus-visible:ring-offset-2 focus-visible:ring-offset-teal-300 sm:text-sm">
                           <label htmlFor="tasks" className="text-sm my-3">
                             Tareas

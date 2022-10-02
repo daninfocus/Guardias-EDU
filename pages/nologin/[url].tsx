@@ -50,12 +50,12 @@ const NoLoginPage = () => {
   const getMonthLabel = () => {
     if (week[0].getMonth() != week[COLS - 2].getMonth()) {
       return (
-        days.monthNamesES[week[0].getMonth()] +
+        days.shortMonthNamesES[week[0].getMonth()] +
         "-" +
-        days.monthNamesES[week[4].getMonth()]
+        days.shortMonthNamesES[week[4].getMonth()]
       );
     } else {
-      return days.monthNamesES[week[0].getMonth()];
+      return days.shortMonthNamesES[week[0].getMonth()];
     }
   };
 

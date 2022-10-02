@@ -11,10 +11,7 @@ const NoLogin = () => {
     const [url, setUrl] = useState("");
     const [hasUrl, setHasUrl] = useState(false);
     const [savedUrl, setSavedUrl] = useState(null);
-
     const { college } = useContext(GuardiasContext);
-
-    const router = useRouter();
 
     const saveUrl = async () => {
         if (url) {
@@ -91,7 +88,7 @@ const NoLogin = () => {
                             Guardar URL
                         </button>
                     </div>
-                    <a target="_blank" rel="noreferrer" href={`https://gap.vercel.app/nologin/${savedUrl?savedUrl:url}`} className={savedUrl?"text-emerald-600 font-semibold":""}>https://gap.vercel.app/nologin/{savedUrl?savedUrl:url}</a>
+                    {typeof window !== "undefined"&&<a target="_blank" rel="noreferrer" href={`${window.location.protocol + '//' +window.location.host+window.location.pathname}/${savedUrl?savedUrl:url}`} className={savedUrl?"text-emerald-600 font-semibold":""}>{window.location.protocol + '//' +window.location.host+window.location.pathname}/{savedUrl?savedUrl:url}</a>}
                     
                 </div>
             </div>

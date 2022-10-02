@@ -7,6 +7,8 @@ import AuthContext from "../../context/AuthContext";
 import GuardiasContext from "../../context/GuardiasContext";
 import * as days from "../../shared/dates";
 import {datesAreOnSameDay,generateKey} from "../../logic/functions";
+import { getTeacherById, teacherRef } from "../../firebase/firestore";
+import Teacher from "../../@types/Teacher";
 
 const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     
@@ -22,6 +24,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     prop.guardias[0]
   );
   const [isOpen, setIsOpen] = useState(false);
+  const [teacherLoaded, setTeacherLoaded] = useState<Array<Teacher>|undefined>(undefined);
 
   //functions
   function closeModal() {
@@ -60,8 +63,23 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
     return "font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 border-slate-500 text-slate-400  grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
   };
 
-  if (prop.guardias[0].isEmpty) return <></>;
+  useEffect(()=>{
+    console.log(teacherLoaded)
+    
+    const getTeacher = async ()=>{
+      let teachers =[];
+      for (const guardia of prop.guardias){
+        let teacher = await getTeacherById(guardia.teacherDocId!);
+        guardia.teacher=teacher;
+        teachers.push(teacher as Teacher)
+      }
+      console.log(teachers)
+      setTeacherLoaded([...teachers]);
+    }
+    if(teacherLoaded===undefined)getTeacher()
+  },[])
 
+  if (prop.guardias[0].isEmpty || !teacherLoaded) return <></>;
 
   return (
     <div className={backgroundColor()}>
@@ -85,7 +103,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
             >
               <p>{element.classroom}</p>
               <p>&nbsp;&nbsp;&nbsp;&nbsp;</p>
-              <p>{element.teacher!.name}</p>
+              <p>{teacherLoaded![index].name?teacherLoaded![index].name:element.teacherEmail}</p>
             </div>
           );
         })}
@@ -126,8 +144,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                           blurDataURL="/profile_placeholder.png"
                           alt="icon"
                           src={
-                            selectedGuardia != undefined
-                              ? selectedGuardia.teacher!.photo
+                            selectedGuardia.teacher
+                              ? selectedGuardia.teacher.photo
                               : "/loading.gif"
                           }
                           className="-left-3 fixed rounded-2xl border-2 border-white ease-in duration-300"
@@ -166,7 +184,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                     >
                       <div>
                         <span className=" font-thin">Profesor/a: &nbsp;</span>
-                        {selectedGuardia.teacher!.name}
+                        {selectedGuardia.teacher?selectedGuardia.teacher!.name:selectedGuardia.teacherEmail}
                       </div>
                       <div className="text-base self-end">
                         <span className=" font-thin">Clase: &nbsp;</span>

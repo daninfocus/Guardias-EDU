@@ -123,18 +123,22 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
   //gets guardia response snapshot and adds the response to the local storage, 
   const getGuardiasReponse = async () => {
     if (collegeId != undefined && !loadingGuardias) {
-        
-      let start = new Date();
-      start.setUTCHours(-2,0,0,0);
+      setLoadingGuardias(true);
 
-      let end = new Date();
-      end.setUTCHours(21,59,59,999);
+      var firstday = new Date(week[0].setUTCHours(-2,0,0,0));
+
+      var lastday =  new Date(week[4].setUTCHours(21,59,59,999));
+
+
+      console.log({firstday})
+      console.log({lastday})
+
 
       const q = query(
         collection(firestore, "guardias"),
         where("collegeId", "==", collegeId),
-        where("dayOfGuardia", ">=", start),
-        where("dayOfGuardia", "<=", end)
+        where("dayOfGuardia", ">=", firstday),
+        where("dayOfGuardia", "<=", lastday)
       );
       //snapshot for realtime updates
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {

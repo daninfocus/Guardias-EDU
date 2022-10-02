@@ -30,3 +30,17 @@ export const monthNamesES = [
     "Noviembre",
     "Diciembre",
 ];
+export const shortMonthNamesES = [
+    "EN",
+    "FEB",
+    "MAR",
+    "ABR",
+    "MAY",
+    "JUN",
+    "JUL",
+    "AG",
+    "SEP",
+    "OCT",
+    "NOV",
+    "DIC",
+];

@@ -1,10 +1,11 @@
-import React, { useContext, useEffect, useState } from "react";
+import React, { CSSProperties, useContext, useEffect, useState } from "react";
 import "react-calendar/dist/Calendar.css";
 import GuardiasContext from "../../context/GuardiasContext";
 import GuardiaModel from "../../@types/Guardia";
 import * as days from "../../shared/dates";
 import Guardia from "../guardias/Guardia";
 import {generateKey,datesAreOnSameDay} from "../../logic/functions";
+import HashLoader from "react-spinners/HashLoader";
 
 const MainCalendar = () => {
 
@@ -13,6 +14,7 @@ const MainCalendar = () => {
   const { decrementWeek } = useContext(GuardiasContext);
   const { incrementWeek } = useContext(GuardiasContext);
   const { guardias } = useContext(GuardiasContext);
+  const { loadingGuardias } = useContext(GuardiasContext);
   const { COLS } = useContext(GuardiasContext);
   const { TODAY } = useContext(GuardiasContext);
   const { isGuardiaInCurrentWeek } = useContext(GuardiasContext);
@@ -21,12 +23,12 @@ const MainCalendar = () => {
   const getMonthLabel = () => {
     if (week[0].getMonth() != week[COLS - 2].getMonth()) {
       return (
-        days.monthNamesES[week[0].getMonth()] +
+        days.shortMonthNamesES[week[0].getMonth()] +
         "-" +
-        days.monthNamesES[week[4].getMonth()]
+        days.shortMonthNamesES[week[4].getMonth()]
       );
     } else {
-      return days.monthNamesES[week[0].getMonth()];
+      return days.shortMonthNamesES[week[0].getMonth()];
     }
   };
 
@@ -39,9 +41,21 @@ const MainCalendar = () => {
     );
   };
 
+  const override: CSSProperties = {
+    display: "block",
+    margin: "0 auto",
+    borderColor: "red",
+  };
+
+  
 
   return (
     <div className="flex flex-grow flex-col">
+      {loadingGuardias&&
+        <div className="z-40 absolute top-0 flex flex-col h-full w-full items-center justify-center ">
+          <HashLoader color="#36d7b7"/>
+        </div>
+      }
       <div className="w-full flex flex-row justify-between items-center">
         <button
           className="transition ease-in-out duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
@@ -103,8 +117,8 @@ const MainCalendar = () => {
                   scope="col"
                   className={
                     monthLabelStyle()
-                      ? "rounded-2xl w-[4%] bg-[#09a290] text-xs font-medium text-white first-column"
-                      : "border-r w-[4%] text-xs font-medium text-gray-900 first-column"
+                      ? "rounded-2xl w-[3%] bg-[#09a290] text-xs font-medium text-white first-column"
+                      : "border-r w-[3%] text-xs font-medium text-gray-900 first-column"
                   }
                 >
                   {getMonthLabel()}
@@ -134,9 +148,10 @@ const MainCalendar = () => {
             </thead>
             <tbody className="h-full">
               {guardias.map((row, indexRow) => {
+                
                 return (
                   <tr className="border-b h-24" key={generateKey(indexRow)}>
-                    <td className="items-center text-center first-column border-r w-[4%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
+                    <td className="items-center text-center first-column border-r w-[3%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indexRow + 1}º
                     </td>
                     {row.map((col, colIndex) => {
@@ -145,7 +160,7 @@ const MainCalendar = () => {
                           key={generateKey(colIndex)}
                           className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
                         >
-                          {isGuardiaInCurrentWeek(col[0]) ? (
+                          {isGuardiaInCurrentWeek(col[0],week) ? (
                             <Guardia
                               guardias={col}
                             />

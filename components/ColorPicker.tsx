@@ -34,7 +34,7 @@ const ColorPicker = (props: {
         </button>
 
         {props.isOpen ? (
-          <div className="ease-in duration-100 origin-top-right absolute right-0 mt-2 w-40 rounded-md shadow-lg">
+          <div className="z-50 ease-in duration-100 origin-top-left absolute right-50 mt-2 w-40 rounded-md shadow-lg">
             <div className="rounded-md bg-white shadow-xs px-4 py-3">
               <div className="flex flex-wrap -mx-2">
                 {props.colors.map((element, index) => {
