@@ -81,6 +81,7 @@ export default function Form() {
       const guardia: Guardia = {
         dayOfGuardia: date,
         createdAt: new Date(),
+        teacher:null,
         teacherDocId: docId,
         teacherEmail: selectedTeacher?selectedTeacher:user.email,
         collegeId: collegeId.toString(),

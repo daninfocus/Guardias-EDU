@@ -70,7 +70,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
       let teachers =[];
       for (const guardia of prop.guardias){
         let teacher = await getTeacherById(guardia.teacherDocId!);
-        guardia.teacher=teacher;
+        guardia.teacher=teacher as Teacher;
         teachers.push(teacher as Teacher)
       }
       console.log(teachers)
