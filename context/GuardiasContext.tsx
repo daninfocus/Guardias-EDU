@@ -84,12 +84,10 @@ export function GuardiasContextProvider({ children }: any) {
   const createWeek = (daysInWeek = COLS - 1) => {
     let week = [];
     var nextWeekDate = new Date(TODAY);
-    console.log({nextWeekDate})
     var today =
       weekPos != 0
         ? new Date(nextWeekDate.setDate(TODAY.getDate() + weekPos * 7))
         : new Date(TODAY);
-        console.log({today})
     for (let i = 1; i < daysInWeek + 1; i++) {
       if(i==daysInWeek){
         today.setHours(21,59,59,999)

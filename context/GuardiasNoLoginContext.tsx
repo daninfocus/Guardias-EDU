@@ -130,9 +130,6 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
       var lastday =  new Date(week[4].setUTCHours(21,59,59,999));
 
 
-      console.log({firstday})
-      console.log({lastday})
-
 
       const q = query(
         collection(firestore, "guardias"),
@@ -142,7 +139,6 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
       );
       //snapshot for realtime updates
       const unsubscribe = onSnapshot(q, async (querySnapshot) => {
-        console.log(querySnapshot)
         const guardiaArray: Array<GuardiaModel> = [];
         for(const doc of querySnapshot.docs) {
           var guardia = doc.data();

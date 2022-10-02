@@ -64,8 +64,6 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   };
 
   useEffect(()=>{
-    console.log(teacherLoaded)
-    
     const getTeacher = async ()=>{
       let teachers =[];
       for (const guardia of prop.guardias){
@@ -73,7 +71,6 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
         guardia.teacher=teacher as Teacher;
         teachers.push(teacher as Teacher)
       }
-      console.log(teachers)
       setTeacherLoaded([...teachers]);
     }
     if(teacherLoaded===undefined)getTeacher()
