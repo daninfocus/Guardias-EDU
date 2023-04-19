@@ -1,13 +1,8 @@
 import { Menu, Transition } from "@headlessui/react";
-import { Fragment, SVGProps, useEffect, useRef, useState, useContext } from "react";
+import { Fragment, SVGProps, useEffect, useRef, useState } from "react";
 import { ChevronDownIcon } from "@heroicons/react/solid";
-import GuardiasContext from "../context/GuardiasContext";
 
 const DropdownOptions = (props:{simple:boolean,labelFirstButton:string,labelSecondButton:string,funcFirstButton:Function, funcSecondButton:Function}) => {
-  
-  
-  const { isUserAdmin } = useContext(GuardiasContext);
-
   return (
     <div className="text-right">
       <Menu as="div" className="relative inline-block text-left">
@@ -42,20 +37,18 @@ const DropdownOptions = (props:{simple:boolean,labelFirstButton:string,labelSeco
                 </button>
               </Menu.Item>
             </div>
-            {isUserAdmin&&
-              <div className="px-1 py-1">
-                <Menu.Item>
-                  <button  onClick={()=>props.funcSecondButton()} className="hover:bg-red-300 hover:text-white text-gray-900  group flex w-full items-center rounded-md px-2 py-2 text-sm">
-                    <DeleteIcon
-                      color="#c23a5a"
-                      className="mr-2 h-5 w-5 "
-                      aria-hidden="true"
-                    />
-                    {props.labelSecondButton}
-                  </button>
-                </Menu.Item>
-              </div>
-            }
+            <div className="px-1 py-1">
+              <Menu.Item>
+                <button  onClick={()=>props.funcSecondButton()} className="hover:bg-red-300 hover:text-white text-gray-900  group flex w-full items-center rounded-md px-2 py-2 text-sm">
+                  <DeleteIcon
+                    color="#c23a5a"
+                    className="mr-2 h-5 w-5 "
+                    aria-hidden="true"
+                  />
+                  {props.labelSecondButton}
+                </button>
+              </Menu.Item>
+            </div>
           </Menu.Items>
         </Transition>
       </Menu>
