@@ -199,8 +199,7 @@ export function GuardiasContextProvider({ children }: any) {
 
   //this gathers the guardia response from local storage and puts them into the week array in there correct position
   const getAndSetGuardias = async (week:Array<Date>) => {
-    
-    if (collegeId != null) {
+    if (collegeId != null && !showGuardiaForm) {
       
       var sortedArrayOfGuardiasResponse: Array<Array<Array<GuardiaModel>>> =
         Array(ROWS)
@@ -251,7 +250,7 @@ export function GuardiasContextProvider({ children }: any) {
   //gets guardia response snapshot and adds the response to the local storage, 
   const getGuardiasReponse = async (week:Array<Date>) => {
     
-    if (collegeId != undefined && !loadingGuardias) {
+    if (collegeId != undefined && !loadingGuardias && !showGuardiaForm) {
       setLoadingGuardias(true);
       
       var firstday = new Date(week[0]);
@@ -298,17 +297,12 @@ export function GuardiasContextProvider({ children }: any) {
   //when the collegeid is recieved we wuery the db for the guardias
   useEffect(() => {
 
-    const getData = async()=>{
-      setLoadingGuardias(true);
-      await getAndSetGuardias(week);
+  
       
-
-      //COMMENT THIS AND GUARDIAS LOAD ON CALENDAR INSTANTLY, LEAVE IT AND TAKES HOWEVER LONG THE QUERY TAKES??????
-      getGuardiasReponse(week);
-    }
     
     if(collegeId!=undefined && user){
-      getData();
+      getGuardiasReponse(week);
+  
     }
 
   }, [collegeId]);

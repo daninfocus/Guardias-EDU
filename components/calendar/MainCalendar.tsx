@@ -19,6 +19,7 @@ const MainCalendar = () => {
   const { TODAY } = useContext(GuardiasContext);
   const { isGuardiaInCurrentWeek } = useContext(GuardiasContext);
 
+    useEffect(()=>{console.log(guardias)},[guardias])
   //functions
   const getMonthLabel = () => {
     if (week[0].getMonth() != week[COLS - 2].getMonth()) {
@@ -150,7 +151,7 @@ const MainCalendar = () => {
               {guardias.map((row, indexRow) => {
                 
                 return (
-                  <tr className="border-b h-24" key={generateKey(indexRow)}>
+                  <tr className="border-b" key={generateKey(indexRow)}>
                     <td className="items-center text-center first-column border-r w-[3%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
                       {indexRow + 1}º
                     </td>
@@ -158,15 +159,13 @@ const MainCalendar = () => {
                       return (
                         <td
                           key={generateKey(colIndex)}
-                          className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap"
+                          className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap overflow-y-scroll"
                         >
-                          {isGuardiaInCurrentWeek(col[0],week) ? (
+                          {isGuardiaInCurrentWeek(col[0],week) &&
                             <Guardia
                               guardias={col}
                             />
-                          ) : (
-                            <></>
-                          )}
+                          }
                         </td>
                       );
                     })}

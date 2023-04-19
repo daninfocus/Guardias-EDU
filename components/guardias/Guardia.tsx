@@ -19,6 +19,8 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   const { openGuardiaToEdit } = useContext(GuardiasContext);
   const { setPressedNewGuardia } = useContext(GuardiasContext);
   const { isUserAdmin } = useContext(GuardiasContext);
+  const { showGuardiaForm } = useContext(GuardiasContext);
+  const { guardias } = useContext(GuardiasContext);
   //state
   const [selectedGuardia, setSelectedGuardia] = useState<GuardiaModel>(
     prop.guardias[0]
@@ -42,21 +44,21 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
 
   const backgroundColor = () => {
    
-    if (prop.guardias[0] && prop.guardias[0].dayOfGuardia && datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)) {
+    if (prop.guardias[0] && prop.guardias[0].dayOfGuardia) {
       if (prop.guardias[0].color != null) {
         switch (prop.guardias[0].color) {
           case 0:
-            return " bg-custom-0 text-custom-6 border-custom-6 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-0 text-custom-6 border-custom-6 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
           case 1:
-            return " bg-custom-1 text-custom-7 border-custom-7 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-1 text-custom-7 border-custom-7 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
           case 2:
-            return " bg-custom-2 text-custom-8 border-custom-8 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-2 text-custom-8 border-custom-8 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
           case 3:
-            return " bg-custom-3 text-custom-9 border-custom-9 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-3 text-custom-9 border-custom-9 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
           case 4:
-            return " bg-custom-4 text-custom-10 border-custom-10 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-4 text-custom-10 border-custom-10 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
           case 5:
-            return " bg-custom-5 text-custom-11 border-custom-11 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 break-words overflow-hidden justify-items-stretch";
+            return (!datesAreOnSameDay(prop.guardias[0].dayOfGuardia,TODAY)&&"opacity-50")+" bg-custom-5 text-custom-11 border-custom-11 font-bold cursor-pointer border-l-4 hover:border-0 ease-in duration-100 grid grid-cols-3 gap-1 rounded-lg w-full h-full p-2 pr-0 break-words overflow-x-hidden justify-items-stretch";
         }
       }
     }
@@ -64,23 +66,25 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   };
 
   useEffect(()=>{
-    const getTeacher = async ()=>{
-      let teachers =[];
-      for (const guardia of prop.guardias){
-        let teacher = await getTeacherById(guardia.teacherDocId!);
-        guardia.teacher=teacher as Teacher;
-        teachers.push(teacher as Teacher)
+    if(!showGuardiaForm){
+      const getTeacher = async ()=>{
+        let teachers =[];
+        for (const guardia of prop.guardias){
+          let teacher = await getTeacherById(guardia.teacherDocId!);
+          guardia.teacher=teacher as Teacher;
+          teachers.push(teacher as Teacher)
+        }
+        setTeacherLoaded([...teachers]);
       }
-      setTeacherLoaded([...teachers]);
+      if(teacherLoaded===undefined)getTeacher()
     }
-    if(teacherLoaded===undefined)getTeacher()
-  },[])
+  },[guardias])
 
   if (prop.guardias[0].isEmpty || !teacherLoaded) return <></>;
 
   return (
-    <div className={backgroundColor()}>
-      <div className="text-white font-bold flex flex-row justify-start items-center text-xs h-5">
+    <div className={backgroundColor() + 'h-full'}>
+      <div className="text-white font-bold flex flex-row justify-start items-center text-xs h-3">
         <div className=" bg-red-400 rounded-full w-5 h-5">
           <div className="top-[2px] left-[6.5px] relative">
             {prop.guardias.length}{" "}
@@ -90,7 +94,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
           </div>
         </div>
       </div>
-      <div className="overflow-hidden col-span-3 max-h-28 flex flex-col justify-between">
+      <div className="overflow-y-scroll h-full overflow-x-hidden col-span-3 flex flex-col justify-between">
         {prop.guardias.map((element, index) => {
           return (
             <div
