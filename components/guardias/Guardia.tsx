@@ -161,7 +161,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {isUserAdmin || user.uid == selectedGuardia.teacher!.id ? (
+                      {isUserAdmin || (user && user.uid == selectedGuardia.teacher!.id) ? (
                         <DropdownOptions
                           labelFirstButton={"Editar"}
                           labelSecondButton={"Borrar"}
