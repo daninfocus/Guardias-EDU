@@ -81,7 +81,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
   },[guardias])
 
   if (prop.guardias[0].isEmpty || !teacherLoaded) return <></>;
-
+console.log(user, selectedGuardia)
   return (
     <div className={backgroundColor() + 'h-full'}>
       <div className="text-white font-bold flex flex-row justify-start items-center text-xs h-3">
@@ -161,7 +161,7 @@ const Guardia = (prop: { guardias: Array<GuardiaModel> }) => {
                         :&nbsp;
                         {selectedGuardia?.dayOfGuardia.toLocaleDateString()}
                       </span>
-                      {isUserAdmin || (user && user.uid == selectedGuardia.teacher!.id) ? (
+                      {isUserAdmin || (user && user.uid == selectedGuardia.teacher!.uid) ? (
                         <DropdownOptions
                           labelFirstButton={"Editar"}
                           labelSecondButton={"Borrar"}

@@ -140,7 +140,7 @@ export function GuardiasContextProvider({ children }: any) {
   const deleteSelectedGuardia = async (guardia: GuardiaModel) => {
     if (
       user &&
-      (user.uid == guardia.teacher!.id || isUserAdmin) &&
+      (user.uid == guardia.teacher!.uid || isUserAdmin) &&
       confirm("¿Quieres borrar esta guardia?")
     ) {
       deleteGuardia(guardia).then(() => {
