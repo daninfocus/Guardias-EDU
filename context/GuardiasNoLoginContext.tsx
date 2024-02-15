@@ -94,25 +94,25 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
         ) as Array<GuardiaModel>;
 
         guardiaResponse.forEach((element) => {
-          element.dayOfGuardia = new Date(element.dayOfGuardia);
+          // element.dayOfGuardia = new Date(element.dayOfGuardia);
 
-            if (
-                sortedArrayOfGuardiasResponse[element.hour - 1][
-                element.dayOfGuardia.getDay() - 1
-                ][0].isEmpty
-            ) {
+          //   if (
+          //       sortedArrayOfGuardiasResponse[element.hour - 1][
+          //       element.dayOfGuardia.getDay() - 1
+          //       ][0].isEmpty
+          //   ) {
 
-                sortedArrayOfGuardiasResponse[element.hour - 1][
-                element.dayOfGuardia.getDay() - 1
-                ][0] = element;
+          //       sortedArrayOfGuardiasResponse[element.hour - 1][
+          //       element.dayOfGuardia.getDay() - 1
+          //       ][0] = element;
 
-            } else {
+          //   } else {
 
-                sortedArrayOfGuardiasResponse[element.hour - 1][
-                element.dayOfGuardia.getDay() - 1
-                ].push(element);
+          //       sortedArrayOfGuardiasResponse[element.hour - 1][
+          //       element.dayOfGuardia.getDay() - 1
+          //       ].push(element);
 
-            }
+          //   }
         });
         setLoadingGuardias(false);
         setGuardias([...sortedArrayOfGuardiasResponse]);

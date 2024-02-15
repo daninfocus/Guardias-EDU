@@ -4,180 +4,201 @@ import GuardiasContext from "../../context/GuardiasContext";
 import GuardiaModel from "../../@types/Guardia";
 import * as days from "../../shared/dates";
 import Guardia from "../guardias/Guardia";
-import {generateKey,datesAreOnSameDay} from "../../logic/functions";
+import { generateKey, datesAreOnSameDay } from "../../logic/functions";
 import HashLoader from "react-spinners/HashLoader";
+import useCalendar from "../../context/CalendarContext";
+import useGuardias from "../../hooks/useGuardias";
+import CalendarContext from "../../context/CalendarContext";
+import CellButton from "../CellButton";
+import { PlusCircleIcon } from "@heroicons/react/solid";
+import FormContext from "../../context/FormContext";
 
 const MainCalendar = () => {
+  //context
+  const { guardias, addOrUpdateGuardia, removeGuardia, saveGuardia } =
+    useContext(GuardiasContext);
+  const {
+    currentWeek,
+    goToNextWeek,
+    goToPreviousWeek,
+    getGuardiasInSlot,
+    firstDayOfWeek,
+    showWeekends,
+    hoursInDay,
+    schedule,
+  } = useContext(CalendarContext);
+  const { isFormOpen, openForm, closeForm } = useContext(FormContext);
+  const weekLength = showWeekends ? 7 : 5;
 
-  //context 
-  const { week } = useContext(GuardiasContext);
-  const { decrementWeek } = useContext(GuardiasContext);
-  const { incrementWeek } = useContext(GuardiasContext);
-  const { guardias } = useContext(GuardiasContext);
-  const { loadingGuardias } = useContext(GuardiasContext);
-  const { COLS } = useContext(GuardiasContext);
-  const { TODAY } = useContext(GuardiasContext);
-  const { isGuardiaInCurrentWeek } = useContext(GuardiasContext);
+  const TODAY = new Date();
 
-    useEffect(()=>{console.log(guardias)},[guardias])
   //functions
-  const getMonthLabel = () => {
-    if (week[0].getMonth() != week[COLS - 2].getMonth()) {
-      return (
-        days.shortMonthNamesES[week[0].getMonth()] +
-        "-" +
-        days.shortMonthNamesES[week[4].getMonth()]
-      );
-    } else {
-      return days.shortMonthNamesES[week[0].getMonth()];
-    }
+  const getMonthLabel = (date: Date) => {
+    return days.shortMonthNamesES[date.getMonth()];
   };
 
   const monthLabelStyle = () => {
     return (
-      (week[0].getMonth() === TODAY.getMonth() &&
-        week[0].getFullYear() == TODAY.getFullYear()) ||
-      (week[COLS - 2].getMonth() === TODAY.getMonth() &&
-        week[COLS - 2].getFullYear() == TODAY.getFullYear())
+      (currentWeek[0].getMonth() === TODAY.getMonth() &&
+        currentWeek[0].getFullYear() == TODAY.getFullYear()) ||
+      (currentWeek[3].getMonth() === TODAY.getMonth() &&
+        currentWeek[3].getFullYear() == TODAY.getFullYear())
     );
   };
 
-  const override: CSSProperties = {
-    display: "block",
-    margin: "0 auto",
-    borderColor: "red",
-  };
+  const rowNumber = schedule ? schedule.length : 2;
+  const colNumber = currentWeek.length + 1;
 
-  
+  if (currentWeek.length == 0 || guardias.length == 0) {
+    return <></>;
+  } else {
+    return (
+      <div className="w-full grow min-h-0">
+        {guardias.length === 0 && (
+          <div className="z-40 absolute top-0 flex flex-col h-full w-full items-center justify-center">
+            <HashLoader color="#36d7b7" />
+          </div>
+        )}
 
-  return (
-    <div className="flex flex-grow flex-col">
-      {loadingGuardias&&
-        <div className="z-40 absolute top-0 flex flex-col h-full w-full items-center justify-center ">
-          <HashLoader color="#36d7b7"/>
-        </div>
-      }
-      <div className="w-full flex flex-row justify-between items-center">
-        <button
-          className="transition ease-in-out duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
-          onClick={() => decrementWeek()}
-        >
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
-            />
-          </svg>
-          Anterior
-        </button>
+        {/* Table */}
         <div
-          className={
-            monthLabelStyle()
-              ? "sm:hidden rounded-2xl  p-1 bg-[#09a290] text-xs font-medium text-white"
-              : "sm:hidden border-r text-xs font-medium text-gray-900"
-          }
+          className={`h-full w-full box-border relative`}
+          style={{
+            display: "grid",
+            gridTemplateColumns: "50px repeat(" + (colNumber - 1) + ", 1fr)",
+            gridTemplateRows: "50px repeat(" + rowNumber + ", 1fr)",
+            gridColumnGap: "0px",
+            gridRowGap: "0px",
+          }}
         >
-          {getMonthLabel()}-{week[0].getFullYear()}
-        </div>
-        <button
-          className="transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:bg-gray-500 hover:text-gray-100 rounded-2xl p-3 flex flex-row items-center"
-          onClick={() => incrementWeek()}
-        >
-          Siguiente
-          <svg
-            xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6"
-            fill="none"
-            viewBox="0 0 24 24"
-            stroke="currentColor"
-            strokeWidth={2}
+          {/* First Cell */}
+          <div
+            className={
+              monthLabelStyle()
+                ? " bg-[#09a290] text-xs font-medium text-white p-1 rounded-xl"
+                : " text-xs font-medium text-gray-900"
+            }
           >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              d="M13 5l7 7-7 7M5 5l7 7-7 7"
-            />
-          </svg>
-        </button>
-      </div>
+            {getMonthLabel(currentWeek[0])}
+            <div>{currentWeek[0].getFullYear()}</div>
+          </div>
 
-      <div className="sm:-mx-6 lg:-mx-8 h-full">
-        <div className="inline-block min-w-full h-full sm:px-6 lg:px-8">
-          <table className="min-w-full table-auto h-full w-full">
-            <thead className="border-b border-t">
-              <tr className="h-6 ">
-                <th
-                  scope="col"
-                  className={
-                    monthLabelStyle()
-                      ? "rounded-2xl w-[3%] bg-[#09a290] text-xs font-medium text-white first-column"
-                      : "border-r w-[3%] text-xs font-medium text-gray-900 first-column"
-                  }
-                >
-                  {getMonthLabel()}
-                  <div>{week[0].getFullYear()}</div>
-                </th>
-                {week.map((item, index) => {
-                  return (
-                    <th
-                      key={generateKey(index)}
-                      scope="col"
-                      className="border-r w-1/12 text-xs font-medium text-gray-900 px-6 h-full md:h-20"
-                    >
-                      {days.weekDaysShortES[index]}
-                      <div
-                        className={
-                            datesAreOnSameDay(TODAY,item)
-                            ? "selected-day m-auto text-2xl text-white mt-2"
-                            : "md:text-2xl text-base mt-2 h-[35px]"
-                        }
-                      >
-                        {item.getDate().toString()}
-                      </div>
-                    </th>
-                  );
-                })}
-              </tr>
-            </thead>
-            <tbody className="h-full">
-              {guardias.map((row, indexRow) => {
-                
+          {/* Week Day Columns */}
+          {currentWeek.map((item, index) => (
+            <div
+              key={generateKey(index)}
+              className=" text-xs font-medium text-gray-900 px-6 border-gray-200 border-t border-r border-[1px] relative"
+            >
+              {index == 0 && <PrevButton goToPreviousWeek={goToPreviousWeek} />}
+              {days.weekDaysShortES[item.getDay()]}
+              <div
+                className={
+                  datesAreOnSameDay(TODAY, item)
+                    ? "text-white text-base bg-[#09a290] p-1 rounded-md"
+                    : "text-base"
+                }
+              >
+                {item.getDate().toString()}
+              </div>
+              {index == currentWeek.length - 1 && (
+                <NextButton goToNextWeek={goToNextWeek} />
+              )}
+            </div>
+          ))}
+          {/* Time Slots Rows*/}
+          {schedule.map((slot: any, indexRow: number) => (
+            <React.Fragment key={generateKey(indexRow)}>
+              <div className=" text-xs font-medium text-black left-0 border-gray-200 border-t border-r ">
+                {slot.start.hours + ":" + slot.start.minutes}
+              </div>
+
+              {currentWeek.map((day, indexDay) => {
                 return (
-                  <tr className="border-b" key={generateKey(indexRow)}>
-                    <td className="items-center text-center first-column border-r w-[3%] px-6 py-4 whitespace-nowrap text-sm font-medium text-gray-900">
-                      {indexRow + 1}º
-                    </td>
-                    {row.map((col, colIndex) => {
-                      return (
-                        <td
-                          key={generateKey(colIndex)}
-                          className="border-r w-1/12 text-sm text-gray-900 font-light whitespace-nowrap overflow-y-scroll"
-                        >
-                          {isGuardiaInCurrentWeek(col[0],week) &&
-                            <Guardia
-                              guardias={col}
-                            />
-                          }
-                        </td>
-                      );
-                    })}
-                  </tr>
+                  <div
+                    key={generateKey(day)}
+                    className=" border-gray-200 border-t border-r overflow-hidden relative flex"
+                  >
+                    {/* {guardias[indexDay] && ( */}
+                    <>
+                      <Guardia guardias={guardias[indexDay][indexRow]} />
+
+                      <div
+                        className={`${
+                          guardias[indexDay][indexRow] &&
+                          guardias[indexDay][indexRow].length > 0
+                            ? "w-1/3"
+                            : "w-full"
+                        } h-full hover:bg-zinc-300 hover:cursor-pointer rounded-md flex items-center justify-center group`}
+                        onClick={() => {
+                          day.setHours(slot.start.hours);
+                          day.setMinutes(slot.start.minutes + 1);
+                          day.setSeconds(0);
+                          openForm();
+                        }}
+                      >
+                        <span className="group-hover:visible invisible text-white text-xl">
+                          +
+                        </span>
+                      </div>
+                    </>
+                    {/* )} */}
+                  </div>
                 );
               })}
-            </tbody>
-          </table>
+            </React.Fragment>
+          ))}
         </div>
       </div>
-    </div>
-  );
+    );
+  }
 };
 
 export default MainCalendar;
+
+const PrevButton = ({ goToPreviousWeek }: any) => {
+  return (
+    <button
+      className="top-0 left-0 absolute w-full h-full transition ease-in-out duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex flex-row items-center"
+      onClick={() => goToPreviousWeek()}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 group-hover:h-8 group-hover:w-8 transform transition-all ease-in-out duration-200"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M11 19l-7-7 7-7m8 14l-7-7 7-7"
+        />
+      </svg>
+    </button>
+  );
+};
+
+const NextButton = ({ goToNextWeek }: any) => {
+  return (
+    <button
+      className="top-0 left-0 absolute w-full h-full flex justify-end transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex-row items-center"
+      onClick={() => goToNextWeek()}
+    >
+      <svg
+        xmlns="http://www.w3.org/2000/svg"
+        className="h-6 w-6 group-hover:h-8 group-hover:w-8 transform transition-all ease-in-out duration-200"
+        fill="none"
+        viewBox="0 0 24 24"
+        stroke="currentColor"
+        strokeWidth={2}
+      >
+        <path
+          strokeLinecap="round"
+          strokeLinejoin="round"
+          d="M13 5l7 7-7 7M5 5l7 7-7 7"
+        />
+      </svg>
+    </button>
+  );
+};

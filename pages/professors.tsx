@@ -13,10 +13,8 @@ import AuthCheck from "../components/auth/AuthCheck"
 import { addListener } from "process";
 
 const Professors = () => {
-  const { user } = useContext(AuthContext);
-  const { college } = useContext(GuardiasContext);
-  const { isUserAdmin } = useContext(GuardiasContext);
-  const { setCollege } = useContext(GuardiasContext);
+  
+  const { college, user, isUserAdmin } = useContext(AuthContext)
   const [buttonEnable, setButtonEnabled] = useState(false);
   const [teachersInput, setTeachersInput] = useState("");
 
@@ -31,7 +29,7 @@ const Professors = () => {
       const collegeAux = college;
       collegeAux.teachers!.splice(college.teachers!.indexOf(teacher), 1);
       await deleteTeacherFromCollege(college.id!, teacher);
-      setCollege({ ...collegeAux });
+      // setCollege({ ...collegeAux });
 
       setButtonEnabled(true);
     }
@@ -40,7 +38,7 @@ const Professors = () => {
   const makeAdmin = async (teacher: string) => {
     // college.admins.push(teacher.email!);
     await addAdmin(college.id!, teacher);
-    setCollege({ ...college });
+    // setCollege({ ...college });
   };
 
   const saveTeachers = () => {
@@ -61,13 +59,13 @@ const Professors = () => {
               await updateTeacherArray(college.id!, element);
             }
         });
-        setCollege({ ...college });
+        // setCollege({ ...college });
 
       }else{
         var teacherToAdd = removeExtraSpace(teachersToAdd[0]??'');
         if(validateEmail(teacherToAdd)){
           college.teachers!.push(teacherToAdd);
-          setCollege({ ...college });
+          // setCollege({ ...college });
           updateTeacherArray(college.id!, teacherToAdd);
         }
       }
@@ -81,9 +79,9 @@ const Professors = () => {
     var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     if (mail.match(validRegex)) {
-      if(mail.includes("@fernando3martos.com")){
-        return (true)
-      }
+      // if(mail.includes("@fernando3martos.com")){
+      return (true)
+      // }
     }
     alert('Debes introducir correos validos')
     return (false)
@@ -103,7 +101,7 @@ const Professors = () => {
     <AuthCheck>
       
       <title>{"Profesores"}</title>
-      <div className=" bg-gray-200 w-full">
+      <div className=" bg-gray-200 w-full h-full">
         <Nav simpleNav={true} />
         <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
           {college.teachers?.sort((item)=>college.admins.includes(item)?-1:1).map((teacher, index) => {
@@ -123,7 +121,7 @@ const Professors = () => {
                     <div className="flex flex-row justify-between text-xs items-start mb-5">
                       {teacher}
                       {!college.admins.includes(teacher) ? (
-                        isUserAdmin ? (
+                        isUserAdmin() ? (
                           <div>
                             <DropdownOptions
                               simple={true}
@@ -150,7 +148,7 @@ const Professors = () => {
               // }
             }
           })}
-          {isUserAdmin && 
+          {isUserAdmin() && 
           <div> 
             <input
               onKeyPress={(e) => onKeyUp(e)}

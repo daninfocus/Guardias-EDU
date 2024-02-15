@@ -50,9 +50,9 @@ const College = () => {
   }, [selectedOption]);
 
   async function addTeacherToCollege(collegeId: string) {
-    if (collegeId != "") {
+    if (collegeId != "" && user && user.email) {
       setHasError(false);
-      const college = await updateTeacherArray(collegeId, user);
+      const college = await updateTeacherArray(collegeId, user.email);
 
       if (college != null) {
         toast.success("Te has registrado correctamente en " + college.name, {
@@ -72,7 +72,7 @@ const College = () => {
 
   return (
     <>
-      <Image src="/logo.jpg" width="100" height="83" ></Image>
+      <Image src="/logo.jpg" width="100" height="83" alt="logo" ></Image>
       <div className="h-screen m-auto w-2/3 p-6">
         <div className="mt-44 h-1/4 flex flex-col items-center justify-evenly w-full">
           <title>Intitutos - Lista</title>

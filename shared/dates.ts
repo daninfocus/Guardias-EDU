@@ -1,4 +1,4 @@
-export const weekDays = ["MON", "TUE", "WED", "THU", "FRI", "SAT", "SUN"];
+export const weekDays = ["SUN", "MON", "TUE", "WED", "THU", "FRI", "SAT"];
 export const monthNames = [
     "January",
     "February",
@@ -14,7 +14,7 @@ export const monthNames = [
     "December",
 ];
 
-export const weekDaysShortES = ["LUN", "MAR", "MIÉ", "JUE", "VIE", "SAB", "DOM"];
+export const weekDaysShortES = ["DOM", "LUN", "MAR", "MIÉ", "JUE", "VIE", "SAB"];
 export const weekDaysLongES = [ "Domingo","Lunes", "Martes", "Miércoles", "Jueves", "Viernes", "Sábado"];
 export const monthNamesES = [
     "Enero",
@@ -31,7 +31,7 @@ export const monthNamesES = [
     "Diciembre",
 ];
 export const shortMonthNamesES = [
-    "EN",
+    "ENE",
     "FEB",
     "MAR",
     "ABR",

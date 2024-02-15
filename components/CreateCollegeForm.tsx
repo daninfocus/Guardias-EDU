@@ -55,14 +55,15 @@ const CreateCollegeForm = () => {
 
   function newCollege() {
     if (college.length >= 5) {
-      if (classes.length >= 2) {
+      if (classes.length >= 2 && user && user.email) {
         const collegeObject: CollegeModel = {
           name: college,
           createdAt: new Date(),
           updatedAt: new Date(),
           admins: [user.email],
           teachers: [user.email],
-          classes: classes
+          classes: classes,
+          schedule: []
         };
 
         var newCollege = addDocument("colleges", collegeObject).then((id) => {

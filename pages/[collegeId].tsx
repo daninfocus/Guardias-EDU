@@ -1,4 +1,4 @@
-import React, { useContext } from "react";
+import React, { useContext, useEffect } from "react";
 import AuthCheck from "../components/auth/AuthCheck";
 import { GuardiasContextProvider } from "../context/GuardiasContext";
 import CollegeModel from "../@types/College";
@@ -9,11 +9,12 @@ import AuthContext from "../context/AuthContext";
 import toast, { Toaster } from "react-hot-toast";
 import MainCalendar from "../components/calendar/MainCalendar";
 import Nav from "../components/Nav";
+import FormContext from "../context/FormContext";
 
 const Home = () => {
-  const { college } = useContext(GuardiasContext);
-  const { showGuardiaForm } = useContext(GuardiasContext);
-  const { setShowGuardiaForm } = useContext(GuardiasContext);
+  const { college } = useContext(AuthContext);
+  const { isFormOpen, openForm, closeForm } = useContext(FormContext);
+
   return (
     <AuthCheck>
       <Toaster
@@ -27,13 +28,12 @@ const Home = () => {
           },
         }}
       />
-      <div className="bg-gray-100 flex-1 flex flex-col overflow-x-hidden">
+      <div className="bg-gray-100 flex flex-col overflow-hidden h-screen">
         <title>{"Guardias - " + college.name}</title>
         <Nav simpleNav={false} />
 
-        {showGuardiaForm ? <Form /> : null}
+        {isFormOpen ? <Form /> : null}
         <MainCalendar />
-        <div className="h-[6px]"></div>
       </div>
     </AuthCheck>
   );

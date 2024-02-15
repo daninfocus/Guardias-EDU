@@ -9,7 +9,7 @@
     height: 35px;
     width: 35px;
     background-color: rgb(9, 162, 144);
-    border-radius: 50%;
+    border-radius: 20%;
 }
 
 @media screen and (max-width: 640px) {
@@ -18,7 +18,7 @@
         width: 25px;
         font-size: 18px;
         background-color: rgb(9, 162, 144);
-        border-radius: 50%;
+        border-radius: 20%;
     }
 }
 
@@ -92,3 +92,40 @@
   background-color: #a8bbbf;
 }
 
+
+
+.ltr {
+  text-align: left;
+}
+
+.rtl {
+  text-align: right;
+}
+
+.editor-placeholder {
+  color: #999;
+  overflow: hidden;
+  position: absolute;
+  top: 15px;
+  left: 15px;
+  user-select: none;
+  pointer-events: none;
+}
+
+.editor-paragraph {
+  margin: 0 0 15px 0;
+  position: relative;
+}
+
+.tiptap p.is-editor-empty:first-child::before {
+  color: #adb5bd;
+  content: attr(data-placeholder);
+  float: left;
+  height: 0;
+  pointer-events: none;
+}
+
+.ProseMirror {        
+  min-height: 100px;
+  overflow: scroll;
+}
