@@ -21,7 +21,7 @@ import { teacherRef } from "../../firebase/firestore";
 import FormContext from "../../context/FormContext";
 import CalendarContext from "../../context/CalendarContext";
 import { isDateInSlot } from "../../logic/functions";
-import {CloseButton} from './form-components/CloseButton' 
+import { CloseButton } from "./form-components/CloseButton";
 import { ColorPickerSection } from "./form-components/ColorPickerSection";
 import { CalendarSection } from "./form-components/CalendarSelection";
 import { TeacherSelectionSection } from "./form-components/TeacherSelection";
@@ -62,27 +62,28 @@ export default function Form() {
   const [selectedColor, setSelectedColor] = useState(
     Math.floor(Math.random() * 6)
   );
-  const [date, setDate] = useState<Date>(selectedDate ? selectedDate : new Date());
+  const [date, setDate] = useState<Date>(
+    selectedDate ? selectedDate : new Date()
+  );
 
   useEffect(() => {
-    console.log({date}, selectedDate)
+    console.log({ date }, selectedDate);
+  }, [date]);
 
-  }, [date])
-  
   const [isOpen, setIsOpen] = useState(false);
   const [selectedClass, setSelectedClass] = useState(college.classes[0]);
 
   const hours = schedule.map((item: any, index: number) => {
     return (
-      (item.label ? item.label : '')+
+      (item.label ? item.label : "") +
       " " +
-      item.start.hours.toString().padStart(2, '0') +
+      item.start.hours.toString().padStart(2, "0") +
       ":" +
-      item.start.minutes.toString().padStart(2, '0')  +
+      item.start.minutes.toString().padStart(2, "0") +
       "\t-\t" +
-      item.end.hours.toString().padStart(2, '0')  +
+      item.end.hours.toString().padStart(2, "0") +
       ":" +
-      item.end.minutes.toString().padStart(2, '0') 
+      item.end.minutes.toString().padStart(2, "0")
     );
   });
 
@@ -169,9 +170,8 @@ export default function Form() {
   };
 
   useEffect(() => {
-    console.log(tasks)
-  }, [tasks])
-  
+    console.log(tasks);
+  }, [tasks]);
 
   return (
     <>
@@ -186,12 +186,18 @@ export default function Form() {
         <Dialog as="div" className="relative z-10" onClose={() => closeForm()}>
           <div className="fixed inset-0 bg-black bg-opacity-25" />
           <div className="fixed inset-0 overflow-y-auto">
-            <div className="flex min-h-full items-center justify-center p-4 text-center">
+            <div className="flex min-h-full items-center justify-center md:p-4 text-center">
               <Dialog.Panel className="transform overflow-hidden rounded-2xl bg-white text-left align-middle shadow-xl transition-all">
                 <div className="bg-slate-600 flex justify-between items-center p-3 rounded-t-2xl">
                   <p className="text-slate-200 font-medium">
                     Día seleccionado:{" "}
-                    <span className="font-light">{selectedDate?.toLocaleDateString() + "-" + selectedDate?.getHours()+ ":" + selectedDate?.getMinutes()}</span>
+                    <span className="font-light">
+                      {selectedDate?.toLocaleDateString() +
+                        "-" +
+                        selectedDate?.getHours() +
+                        ":" +
+                        selectedDate?.getMinutes()}
+                    </span>
                   </p>
                   <CloseButton onClick={() => closeForm()} />
                 </div>
@@ -199,7 +205,7 @@ export default function Form() {
                   as="h3"
                   className="text-lg font-medium leading-6 text-gray-900"
                 >
-                  <form className=" bg-white p-4 rounded-lg grid grid-cols-3">
+                  <form className=" bg-white p-4 rounded-lg flex sm:flex-row flex-col h-full">
                     <div className="flex flex-col p-2">
                       <ColorPickerSection
                         selectedColor={selectedColor}
@@ -208,8 +214,7 @@ export default function Form() {
                       />
                       <CalendarSection date={date} setDate={setDate} />
                     </div>
-                    <TipTapEditor>
-                    </TipTapEditor>
+                    <TipTapEditor />
                     <div className="flex flex-col p-2">
                       {isUserAdmin() && (
                         <TeacherSelectionSection
@@ -250,12 +255,3 @@ export default function Form() {
     </>
   );
 }
-
-
-
-
-
-
-
-
-

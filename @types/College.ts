@@ -1,3 +1,4 @@
+import { ScheduleType } from "../context/CalendarContext";
 import Teacher from "./Teacher";
 class College {
   id?: string;
@@ -7,7 +8,7 @@ class College {
   admins: Array<string>;
   teachers: Array<string> | undefined;
   classes: string[];
-  schedule: Array<Object>;
+  schedule: ScheduleType;
 
   constructor() {
     this.name = "Cargando...";

@@ -68,7 +68,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
   return (
     <div className="w-full">
       <nav className="relative px-3 py-2 grid grid-cols-3 justify-between items-center bg-gray-100 shadow-xl rounded-2xl">
-        <div className="flex flex-row justify-start">
+        <div className="flex flex-row justify-start z-50">
           <button
             onClick={() => setIsNavOpen(!isNavOpen)}
             className="navbar-burger flex items-center  p-3"
@@ -127,7 +127,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
 
       <div
         onClick={() => setIsNavOpen(false)}
-        className={`navbar-backdrop fixed inset-0 bg-gray-800 transform duration-150 ${
+        className={`navbar-backdrop fixed inset-0 bg-gray-800 transform duration-150 z-30 ${
           isNavOpen ? "visible opacity-25" : "invisible opacity-0"
         }`}
       ></div>

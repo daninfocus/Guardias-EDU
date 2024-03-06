@@ -33,7 +33,7 @@ const MenuBar = () => {
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
-        Bullet List
+        Lista con viñetas
       </button>
       <button
         type="button"
@@ -43,7 +43,7 @@ const MenuBar = () => {
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
-        Ordered List
+        Lista Ordenada
       </button>
       <button
         type="button"
@@ -54,7 +54,7 @@ const MenuBar = () => {
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
-        Bold
+        Negrita
       </button>
       <button
         type="button"
@@ -65,7 +65,7 @@ const MenuBar = () => {
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
-        Italic
+        Itálica
       </button>
       <button
         type="button"
@@ -76,7 +76,7 @@ const MenuBar = () => {
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
-        Strike
+        Tachado
       </button>
     </>
   );
@@ -107,7 +107,7 @@ const extensions = [
     emptyEditorClass: "is-editor-empty",
   }),
 ];
-const TipTapEditor = (props: { children: ReactNode }) => {
+const TipTapEditor = () => {
 
   return (
     <div className="h-full w-full">
@@ -116,10 +116,10 @@ const TipTapEditor = (props: { children: ReactNode }) => {
         extensions={extensions}
         editorProps={{
           attributes: {
-            class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full p-3",
+            class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full max-h-72 p-3",
           },
         }}>
-          {props.children}
+          <input type="hidden" value={'null'} />
         </EditorProvider>
     </div>
   );

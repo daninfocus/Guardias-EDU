@@ -16,7 +16,7 @@ export const FormFooter: React.FC<FormFooterProps> = ({
   isSubmitDisabled = false,
 }) => {
   return (
-    <div className="flex flex-row p-2 justify-end space-x-3 mt-4">
+    <div className="flex flex-row p-2 justify-end space-x-3 mt-auto">
       <button
         type="button"
         className="px-4 py-2 bg-gray-300 rounded hover:bg-gray-400"

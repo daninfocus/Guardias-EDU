@@ -15,7 +15,36 @@ interface CalendarContextType {
   firstDayOfWeek: Number;
   showWeekends: Boolean;
   hoursInDay: Number;
-  schedule: Array<Object>;
+  schedule: ScheduleType;
+}
+
+export interface TimeSlotType {
+  start: {
+    hours: any;
+    minutes: any;
+  };
+  end: {
+    hours: any;
+    minutes: any;
+  };
+  label: string;
+  durationMinutes: any;
+}
+
+export type ScheduleType = TimeSlotType[]
+
+
+export const scheduleStructure : TimeSlotType = {
+  start: {
+    hours: "",
+    minutes: "",
+  },
+  end: {
+    hours: "",
+    minutes: "",
+  },
+  label: "",
+  durationMinutes: "",
 }
 
 const defaultSchedule = [
@@ -161,7 +190,7 @@ export const CalendarContextProvider = ({
   const [firstDayOfWeek, setFirstDayOfWeek] = useState(1);
   const [showWeekends, setShowWeekends] = useState(false);
   const [hoursInDay, setHoursInDay] = useState(6);
-  const [schedule, setSchedule] = useState(college.schedule);
+  const [schedule, setSchedule] = useState<ScheduleType>(college.schedule);
   const [currentWeek, setCurrentWeek] = useState(
     getWeekDates(new Date(), firstDayOfWeek, showWeekends)
   );

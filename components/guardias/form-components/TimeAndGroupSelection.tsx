@@ -39,7 +39,7 @@ export const TimeAndGroupSelection: React.FC<TimeAndGroupSelectionProps> = ({
       {/* Group Selection */}
       <div className="w-full sm:w-48">
         <label htmlFor="classroom" className="text-sm block mb-1">
-          Grupo:
+          Lugar:
         </label>
         <select
           className="w-full h-8 border-[1px] border-gray-300 shadow-sm sm:text-sm rounded-md focus:ring-indigo-500 focus:border-indigo-500"

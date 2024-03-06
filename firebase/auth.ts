@@ -1,4 +1,4 @@
-import { getAuth, GoogleAuthProvider, setPersistence, browserSessionPersistence, signInAnonymously, signInWithPopup, signOut, signInWithRedirect, getRedirectResult } from 'firebase/auth';
+import { getAuth, GoogleAuthProvider, setPersistence, browserSessionPersistence, signInAnonymously, signInWithPopup, signOut, getRedirectResult } from 'firebase/auth';
 import firebase from './firebase';
 import {User} from '@firebase/auth-types';
 import { saveUser } from "./firestore";

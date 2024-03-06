@@ -65,8 +65,8 @@ const MainCalendar = () => {
           className={`h-full w-full box-border relative`}
           style={{
             display: "grid",
-            gridTemplateColumns: "50px repeat(" + (colNumber - 1) + ", 1fr)",
-            gridTemplateRows: "50px repeat(" + rowNumber + ", 1fr)",
+            gridTemplateColumns: "auto repeat(" + (colNumber - 1) + ", 1fr)",
+            gridTemplateRows: "50px 10px repeat(" + rowNumber + ", 1fr)",
             gridColumnGap: "0px",
             gridRowGap: "0px",
           }}
@@ -75,27 +75,27 @@ const MainCalendar = () => {
           <div
             className={
               monthLabelStyle()
-                ? " bg-[#09a290] text-xs font-medium text-white p-1 rounded-xl"
-                : " text-xs font-medium text-gray-900"
+                ? " bg-[#09a290] sm:text-xs text-[9px] font-medium text-white sm:p-2 p-1 pt-2 rounded-xl"
+                : " sm:text-xs text-[9px] font-medium text-gray-900"
             }
           >
             {getMonthLabel(currentWeek[0])}
             <div>{currentWeek[0].getFullYear()}</div>
           </div>
 
-          {/* Week Day Columns */}
+          {/* Week Day Rows */}
           {currentWeek.map((item, index) => (
             <div
               key={generateKey(index)}
-              className=" text-xs font-medium text-gray-900 px-6 border-gray-200 border-t border-r border-[1px] relative"
+              className="text-xs font-medium text-gray-900 px-6 relative border-gray-200 border-r text-center pt-2"
             >
               {index == 0 && <PrevButton goToPreviousWeek={goToPreviousWeek} />}
               {days.weekDaysShortES[item.getDay()]}
               <div
                 className={
                   datesAreOnSameDay(TODAY, item)
-                    ? "text-white text-base bg-[#09a290] p-1 rounded-md"
-                    : "text-base"
+                    ? "text-white text-base bg-[#09a290]  rounded-md "
+                    : "text-base h-[120%]"
                 }
               >
                 {item.getDate().toString()}
@@ -105,20 +105,31 @@ const MainCalendar = () => {
               )}
             </div>
           ))}
+
+          {/* Blank row under week days row */}
+          <div className="border-gray-200 border-r"/>
+          {currentWeek.map((item, index) => (
+            <div
+              key={generateKey(index)}
+              className="border-r border-b"
+            >
+            </div>
+          ))}
+          
           {/* Time Slots Rows*/}
           {schedule.map((slot: any, indexRow: number) => (
             <React.Fragment key={generateKey(indexRow)}>
-              <div className=" text-xs font-medium text-black left-0 border-gray-200 border-t border-r ">
-                {slot.start.hours + ":" + slot.start.minutes}
+              <div className={`relative text-xs font-medium text-black sm:pl-2 border-gray-200 border-r`}>
+                <span className="absolute -top-[6px]">{slot.start.hours + ":" + slot.start.minutes}</span>
               </div>
 
               {currentWeek.map((day, indexDay) => {
                 return (
                   <div
                     key={generateKey(day)}
-                    className=" border-gray-200 border-t border-r overflow-hidden relative flex"
+                    className={`overflow-hidden relative flex border-gray-200 border-r ${indexRow > 0 && 'border-t'}`}
                   >
-                    {/* {guardias[indexDay] && ( */}
+                    {guardias[indexDay] && (
                     <>
                       <Guardia guardias={guardias[indexDay][indexRow]} />
 
@@ -141,7 +152,7 @@ const MainCalendar = () => {
                         </span>
                       </div>
                     </>
-                    {/* )} */}
+                    )}
                   </div>
                 );
               })}
@@ -158,7 +169,7 @@ export default MainCalendar;
 const PrevButton = ({ goToPreviousWeek }: any) => {
   return (
     <button
-      className="top-0 left-0 absolute w-full h-full transition ease-in-out duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex flex-row items-center"
+      className="top-0 left-0 absolute w-full h-[120%] transition ease-in-out duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex flex-row items-center"
       onClick={() => goToPreviousWeek()}
     >
       <svg
@@ -182,7 +193,7 @@ const PrevButton = ({ goToPreviousWeek }: any) => {
 const NextButton = ({ goToNextWeek }: any) => {
   return (
     <button
-      className="top-0 left-0 absolute w-full h-full flex justify-end transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex-row items-center"
+      className="top-0 left-0 absolute w-full h-[120%] flex justify-end transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex-row items-center"
       onClick={() => goToNextWeek()}
     >
       <svg
