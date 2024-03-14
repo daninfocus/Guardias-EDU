@@ -1,9 +1,15 @@
-@import url('https://fonts.googleapis.com/css2?family=Nunito&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Josefin+Sans:wght@200&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Rubik:ital,wght@0,300..900;1,300..900&display=swap');
+
 @tailwind base;
 @tailwind components;
 @tailwind utilities;
-@tailwindcss forms;
+
+@layer base {
+    html {
+        background-color: violet;
+        font-family: 'Rubik', cursive;
+    }
+}
 
 .selected-day {
     height: 35px;

@@ -17,7 +17,7 @@ const TimeInput: React.FC<TimeInputProps> = ({
 
 
   return (
-    <span className="flex flex-row">
+    <span className="flex flex-row items-center">
       <input      
         onChange={(e) =>
           endSlot
@@ -41,7 +41,7 @@ const TimeInput: React.FC<TimeInputProps> = ({
             ? newSchedule.end.hours
             : newSchedule.start.hours
         }
-        className="w-5 appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200 text-end"
+        className="shadow-sm rounded-sm p-2 w-8 appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200 text-end"
         type="number"
         placeholder={
           endSlot
@@ -75,7 +75,7 @@ const TimeInput: React.FC<TimeInputProps> = ({
             ? newSchedule.end.minutes
             : newSchedule.start.minutes
         }
-        className="w-5 appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200"
+        className="shadow-sm rounded-sm p-2 w-8 appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline bg-gray-200"
         type="number"
         placeholder={lastTimeSlot.end.minutes}
         max={59}

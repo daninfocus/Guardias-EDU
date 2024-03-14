@@ -2,14 +2,14 @@ import React, { createContext, useState, ReactNode } from "react";
 
 interface FormContextType {
   isFormOpen: boolean;
-  openForm: () => void;
+  openForm: (date: Date) => void;
   closeForm: () => void;
   selectedDate?: Date;
 }
 
 const defaultContextValue: FormContextType = {
   isFormOpen: false,
-  openForm: () => {},
+  openForm: (date: Date) => {},
   closeForm: () => {},
   selectedDate: new Date(),
 };

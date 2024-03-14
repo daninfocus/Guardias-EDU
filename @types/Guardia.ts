@@ -1,5 +1,6 @@
 import Teacher from "./Teacher";
 import College from "./College";
+import { JSONContent } from "@tiptap/react";
 
 export default interface Guardia {
     id?: string,
@@ -9,7 +10,7 @@ export default interface Guardia {
     teacherDocId: string | null;
     teacherEmail: string | null;
     collegeId: string;
-    tasks: string;
+    tasks: JSONContent | undefined;
     moreInfo: string | null;
     classroom: string;
     hour: number;

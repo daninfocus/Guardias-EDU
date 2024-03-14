@@ -1,8 +1,10 @@
-import React, { ReactNode, useEffect } from "react";
+import React, { ReactNode, useEffect, useMemo } from "react";
 import {
+  Editor,
   EditorContent,
   EditorProvider,
   FloatingMenu,
+  JSONContent,
   useCurrentEditor,
   useEditor,
 } from "@tiptap/react";
@@ -11,14 +13,13 @@ import BulletList from "@tiptap/extension-bullet-list";
 import Ordered from "@tiptap/extension-ordered-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import Color from "@tiptap/extension-color";
+import { generateHTML } from "@tiptap/html";
 
-type TipTapEditorProps = {
-  setTasks: any;
+type MenuBarProps = {
+  editor: Editor | null;
 };
 
-const MenuBar = () => {
-  const { editor } = useCurrentEditor();
-
+const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
   if (!editor) {
     return null;
   }
@@ -39,7 +40,7 @@ const MenuBar = () => {
         type="button"
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
         className={
-          (editor.isActive("itemList") ? "bg-black text-white " : "") +
+          (editor.isActive("orderedList") ? "bg-black text-white " : "") +
           "border-[1px] border-gray-300 rounded-md px-2 m-1"
         }
       >
@@ -81,46 +82,82 @@ const MenuBar = () => {
     </>
   );
 };
-const extensions = [
-  StarterKit.configure({
-    bulletList: {
-      keepMarks: true,
-      keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+
+interface TipTapProps {
+  setState: React.Dispatch<React.SetStateAction<JSONContent>>;
+  content: JSONContent | undefined;
+}
+
+const TipTapEditor: React.FC<TipTapProps> = ({ setState, content }) => {
+  const html = useMemo(() => {
+    if (content) {
+      return generateHTML(content, [
+        StarterKit,
+        BulletList,
+        Ordered,
+        Placeholder,
+      ]);
+    }
+  }, [content]);
+
+  const editor = useEditor({
+    content: html,
+    editable: content !== undefined ? false : true,
+    enableInputRules: content !== undefined ? false : true,
+    onUpdate({ editor }) {
+      setState(editor.getJSON());
     },
-    orderedList: {
-      keepMarks: true,
-      keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+    extensions: [
+      StarterKit.configure({
+        bulletList: {
+          keepMarks: true,
+          keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+        },
+        orderedList: {
+          keepMarks: true,
+          keepAttributes: false, // TODO : Making this as `false` becase marks are not preserved when I try to preserve attrs, awaiting a bit of help
+        },
+      }),
+      BulletList.configure({
+        HTMLAttributes: {
+          class: "list-disc",
+        },
+      }),
+      Ordered.configure({
+        HTMLAttributes: {
+          class: "list-decimal",
+        },
+      }),
+      Placeholder.configure({
+        placeholder: "Empiece a escribir...",
+        emptyEditorClass: "is-editor-empty",
+      }),
+    ],
+    editorProps: {
+      attributes: {
+        class:
+          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none rounded-md h-full min-w-max max-h-72 p-3",
+      },
     },
-  }),
-  BulletList.configure({
-    HTMLAttributes: {
-      class: "list-disc",
-    },
-  }),
-  Ordered.configure({
-    HTMLAttributes: {
-      class: "list-decimal",
-    },
-  }),
-  Placeholder.configure({
-    placeholder: "Empiece a escribir...",
-    emptyEditorClass: "is-editor-empty",
-  }),
-];
-const TipTapEditor = () => {
+  });
+
+  useEffect(() => {
+    if (!editor) {
+      return undefined;
+    }
+  }, [editor]);
+
+  if (!editor) {
+    return null;
+  }
 
   return (
     <div className="h-full w-full">
-      <EditorProvider
-        slotBefore={<MenuBar />}
-        extensions={extensions}
-        editorProps={{
-          attributes: {
-            class: "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full max-h-72 p-3",
-          },
-        }}>
-          <input type="hidden" value={'null'} />
-        </EditorProvider>
+      {!content && <MenuBar editor={editor} />}
+      <EditorContent
+        editor={editor}
+        className={`${!content ?  'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full max-h-72 p-3 overflow-hidden' : 'overflow-hidden'} `}
+      />
     </div>
   );
 };

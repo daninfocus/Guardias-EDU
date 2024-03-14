@@ -29,6 +29,7 @@ import { TimeAndGroupSelection } from "./form-components/TimeAndGroupSelection";
 import { TextAreaSection } from "./form-components/TextAreaSection";
 import FormFooter from "./form-components/FormFooter";
 import TipTapEditor from "./form-components/TipTapEditor";
+import { JSONContent } from "@tiptap/react";
 
 export default function Form() {
   const colors = [
@@ -48,30 +49,7 @@ export default function Form() {
   const { college } = useContext(AuthContext);
   const { guardias, addOrUpdateGuardia, removeGuardia, saveGuardia } =
     useContext(GuardiasContext);
-  const {
-    currentWeek,
-    goToNextWeek,
-    goToPreviousWeek,
-    firstDayOfWeek,
-    showWeekends,
-    hoursInDay,
-    schedule,
-  } = useContext(CalendarContext);
-
-  //state
-  const [selectedColor, setSelectedColor] = useState(
-    Math.floor(Math.random() * 6)
-  );
-  const [date, setDate] = useState<Date>(
-    selectedDate ? selectedDate : new Date()
-  );
-
-  useEffect(() => {
-    console.log({ date }, selectedDate);
-  }, [date]);
-
-  const [isOpen, setIsOpen] = useState(false);
-  const [selectedClass, setSelectedClass] = useState(college.classes[0]);
+  const { schedule } = useContext(CalendarContext);
 
   const hours = schedule.map((item: any, index: number) => {
     return (
@@ -94,16 +72,27 @@ export default function Form() {
         : -1;
     });
 
-  useEffect(() => {
-    setSelectedHour(hours[getSelectedTimeSlot()]);
-  }, [selectedDate]);
-
+  //state
+  const [selectedColor, setSelectedColor] = useState(
+    Math.floor(Math.random() * 6)
+  );
+  const [date, setDate] = useState<Date>(
+    selectedDate ? selectedDate : new Date()
+  );
+  const [isOpen, setIsOpen] = useState(false);
+  const [selectedClass, setSelectedClass] = useState(college.classes[0]);
   const [selectedHour, setSelectedHour] = useState(
     hours[getSelectedTimeSlot()]
   );
-  const [tasks, setTasks] = useState("");
+  const [tasks, setTasks] = useState<JSONContent>();
   const [moreInfo, setMoreInfo] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState("");
+
+
+
+  useEffect(() => {
+    setSelectedHour(hours[getSelectedTimeSlot()]);
+  }, [selectedDate]);
 
   // useEffect(() => {
   //   if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
@@ -169,10 +158,6 @@ export default function Form() {
     setIsOpen(true);
   };
 
-  useEffect(() => {
-    console.log(tasks);
-  }, [tasks]);
-
   return (
     <>
       <Toaster
@@ -214,7 +199,7 @@ export default function Form() {
                       />
                       <CalendarSection date={date} setDate={setDate} />
                     </div>
-                    <TipTapEditor />
+                    <TipTapEditor setState={setTasks}/>
                     <div className="flex flex-col p-2">
                       {isUserAdmin() && (
                         <TeacherSelectionSection

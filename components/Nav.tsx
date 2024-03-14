@@ -7,12 +7,17 @@ import AuthContext from "../context/AuthContext";
 import { deleteTeacherFromCollege } from "../firebase/firestore";
 import FormContext from "../context/FormContext";
 import Image from "next/image";
+import { PrevButton } from "./calendar/buttons/PrevButton";
+import CalendarContext from "../context/CalendarContext";
+import { NextButton } from "./calendar/buttons/NextButton";
+import GoToTodayButton from "./calendar/buttons/GoToTodayButton";
 const Nav = (prop: { simpleNav: boolean }) => {
   const router = useRouter();
 
   //context
   const { college, user, isUserAdmin } = useContext(AuthContext);
   const { isFormOpen, openForm, closeForm } = useContext(FormContext);
+  const { goToNextWeek, goToPreviousWeek, goToToday} = useContext(CalendarContext);
 
   //state
   const [isNavOpen, setIsNavOpen] = useState(false);
@@ -34,8 +39,8 @@ const Nav = (prop: { simpleNav: boolean }) => {
     router.push("/" + college.id, undefined, { scroll: true });
   };
 
-  const professors = () => {
-    router.push("/professors?collegeId=" + college.id, undefined, {
+  const workforce = () => {
+    router.push("/workforce?collegeId=" + college.id, undefined, {
       scroll: true,
     });
   };
@@ -67,8 +72,12 @@ const Nav = (prop: { simpleNav: boolean }) => {
 
   return (
     <div className="w-full">
-      <nav className="relative px-3 py-2 grid grid-cols-3 justify-between items-center bg-gray-100 shadow-xl rounded-2xl">
-        <div className="flex flex-row justify-start z-50">
+      <nav className="relative px-3 py-2 grid justify-between items-center bg-gray-100 shadow-xl rounded-2xl"
+        style={{
+          gridTemplateColumns: "80px repeat(3, 1fr)",
+        }}
+      >
+        <div className="flex flex-row justify-start z-40">
           <button
             onClick={() => setIsNavOpen(!isNavOpen)}
             className="navbar-burger flex items-center  p-3"
@@ -81,7 +90,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               <path d="M0 3h20v2H0V3zm0 6h20v2H0V9zm0 6h20v2H0v-2z"></path>
             </svg> */}
             <div
-              className={`flex flex-col z-50 transform transition-all duration-300 ${
+              className={`flex flex-col z-40 transform transition-all duration-300 ${
                 isNavOpen ? "translate-x-80" : ""
               }`}
             >
@@ -103,6 +112,15 @@ const Nav = (prop: { simpleNav: boolean }) => {
             </div>
           </button>
         </div>
+
+        {!prop.simpleNav &&
+          <div className="flex flex-row gap-2">
+            <PrevButton goToPreviousWeek={goToPreviousWeek} />
+            <GoToTodayButton goToToday={goToToday}/>
+            <NextButton goToNextWeek={goToNextWeek} />
+          </div>
+        }
+        
         <div className="flex flex-row justify-center">
           {!prop.simpleNav && college && college.name != "Cargando..." ? (
             <button
@@ -120,7 +138,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
             <></>
           )}
         </div>
-        <div className=" md:text-xl text-sm font-bold font-josefin flex flex-row justify-end">
+        <div className=" md:text-xl text-sm font-bold flex flex-row justify-end">
           {college.name}
         </div>
       </nav>
@@ -133,7 +151,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
       ></div>
 
       <nav
-        className={`navbar-menu absolute top-0 z-40 transition-transform duration-300  transform h-full w-full ${
+        className={`navbar-menu absolute top-0 z-30 transition-transform duration-300  transform h-full w-full ${
           isNavOpen ? "translate-x-0" : "-translate-x-full"
         } fixed top-0 left-0 bottom-0 flex flex-col md:w-5/6 w-full md:max-w-sm py-4 px-4 bg-white border-r overflow-y-auto`}
       >
@@ -188,10 +206,10 @@ const Nav = (prop: { simpleNav: boolean }) => {
             </li>
             <li>
               <a
-                className={selectedStyle("/professors")}
-                onClick={() => professors()}
+                className={selectedStyle("/workforce")}
+                onClick={() => workforce()}
               >
-                Profesorado
+                Personal
               </a>
             </li>
             {isUserAdmin() && (
@@ -217,7 +235,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
                     className={selectedStyle("/schedule")}
                     onClick={() => classes()}
                   >
-                    Editar Clases
+                    Clases y Horario
                   </a>
                 </li>
               </>

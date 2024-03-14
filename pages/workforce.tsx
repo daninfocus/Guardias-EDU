@@ -9,23 +9,16 @@ import {
   updateTeacherArray,
 } from "../firebase/firestore";
 import DropdownOptions from "../components/DropdownOptions";
-import AuthCheck from "../components/auth/AuthCheck"
+import AuthCheck from "../components/auth/AuthCheck";
 import { addListener } from "process";
 
-const Professors = () => {
-  
-  const { college, user, isUserAdmin } = useContext(AuthContext)
+const Workforce = () => {
+  const { college, user, isUserAdmin } = useContext(AuthContext);
   const [buttonEnable, setButtonEnabled] = useState(false);
   const [teachersInput, setTeachersInput] = useState("");
 
   const deleteTeacher = async (teacher: string) => {
-    if (
-      confirm(
-        "¿Quieres borrar a " +
-          teacher +
-          " ?"
-      )
-    ) {
+    if (confirm("¿Quieres borrar a " + teacher + " ?")) {
       const collegeAux = college;
       collegeAux.teachers!.splice(college.teachers!.indexOf(teacher), 1);
       await deleteTeacherFromCollege(college.id!, teacher);
@@ -42,50 +35,47 @@ const Professors = () => {
   };
 
   const saveTeachers = () => {
-    if(teachersInput.length > 5){
-    
-      var teachersToAdd:Array<string|undefined> = teachersInput.split(";");
-      
-      if (teachersToAdd.length > 1) {
+    if (teachersInput.length > 5) {
+      var teachersToAdd: Array<string | undefined> = teachersInput.split(";");
 
-        teachersToAdd = teachersToAdd.map((item:string|undefined) => {
-          if(item){
-            if(validateEmail(removeExtraSpace(item))) return removeExtraSpace(item)
+      if (teachersToAdd.length > 1) {
+        teachersToAdd = teachersToAdd.map((item: string | undefined) => {
+          if (item) {
+            if (validateEmail(removeExtraSpace(item)))
+              return removeExtraSpace(item);
           }
         });
-        teachersToAdd.forEach(async (element:string|undefined) => {
-            if(element){
-              college.teachers!.push(element);
-              await updateTeacherArray(college.id!, element);
-            }
+        teachersToAdd.forEach(async (element: string | undefined) => {
+          if (element) {
+            college.teachers!.push(element);
+            await updateTeacherArray(college.id!, element);
+          }
         });
         // setCollege({ ...college });
-
-      }else{
-        var teacherToAdd = removeExtraSpace(teachersToAdd[0]??'');
-        if(validateEmail(teacherToAdd)){
+      } else {
+        var teacherToAdd = removeExtraSpace(teachersToAdd[0] ?? "");
+        if (validateEmail(teacherToAdd)) {
           college.teachers!.push(teacherToAdd);
           // setCollege({ ...college });
           updateTeacherArray(college.id!, teacherToAdd);
         }
       }
-    }else{
-      alert('Debes introducir correos validos')
+    } else {
+      alert("Debes introducir correos validos");
     }
   };
 
-  function validateEmail(mail:string) 
-  {
-    var validRegex = /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
+  function validateEmail(mail: string) {
+    var validRegex =
+      /^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9-]+(?:\.[a-zA-Z0-9-]+)*$/;
 
     if (mail.match(validRegex)) {
       // if(mail.includes("@fernando3martos.com")){
-      return (true)
+      return true;
       // }
     }
-    alert('Debes introducir correos validos')
-    return (false)
-    
+    alert("Debes introducir correos validos");
+    return false;
   }
 
   const onKeyUp = (e: React.KeyboardEvent<HTMLDivElement>) => {
@@ -99,12 +89,12 @@ const Professors = () => {
 
   return (
     <AuthCheck>
-      
       <title>{"Profesores"}</title>
-      <div className=" bg-gray-200 w-full h-full">
-        <Nav simpleNav={true} />
-        <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
-          {college.teachers?.sort((item)=>college.admins.includes(item)?-1:1).map((teacher, index) => {
+      <Nav simpleNav={true} />
+      <div className="mt-5 m-auto md:w-1/2 h-auto text-left rounded-xl shadow-2xl p-5 bg-gray-100">
+        {college.teachers
+          ?.sort((item) => (college.admins.includes(item) ? -1 : 1))
+          .map((teacher, index) => {
             if (teacher) {
               // if (!teacher.status) {
               //   return (
@@ -116,40 +106,40 @@ const Professors = () => {
               //   );
               // }
               // if (teacher.status == "Logged-in") {
-                return (
-                  <div key={index}>
-                    <div className="flex flex-row justify-between text-xs items-start mb-5">
-                      {teacher}
-                      {!college.admins.includes(teacher) ? (
-                        isUserAdmin() ? (
-                          <div>
-                            <DropdownOptions
-                              simple={true}
-                              labelFirstButton="Admin"
-                              labelSecondButton="Borrar"
-                              funcFirstButton={() => makeAdmin(teacher)}
-                              funcSecondButton={() => {
-                                deleteTeacher(teacher);
-                              }}
-                            />
-                          </div>
-                        ) : (
-                          <></>
-                        )
-                      ) : (
-                        <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
-                          {" "}
-                          Admin
+              return (
+                <div key={index}>
+                  <div className="flex flex-row justify-between text-xs items-start mb-5">
+                    {teacher}
+                    {!college.admins.includes(teacher) ? (
+                      isUserAdmin() ? (
+                        <div>
+                          <DropdownOptions
+                            simple={true}
+                            labelFirstButton="Admin"
+                            labelSecondButton="Borrar"
+                            funcFirstButton={() => makeAdmin(teacher)}
+                            funcSecondButton={() => {
+                              deleteTeacher(teacher);
+                            }}
+                          />
                         </div>
-                      )}
-                    </div>
+                      ) : (
+                        <></>
+                      )
+                    ) : (
+                      <div className="rounded-xl bg-blue-400 px-4 text-sm font-medium">
+                        {" "}
+                        Admin
+                      </div>
+                    )}
                   </div>
-                );
+                </div>
+              );
               // }
             }
           })}
-          {isUserAdmin() && 
-          <div> 
+        {isUserAdmin() && (
+          <div>
             <input
               onKeyPress={(e) => onKeyUp(e)}
               type="textarea"
@@ -182,10 +172,10 @@ const Professors = () => {
               </div>
             </div>
           </div>
-          }
-          <hr></hr>
-          <div className="text-center w-full ">
-            {/* {isUserAdmin ? (
+        )}
+        <hr></hr>
+        <div className="text-center w-full ">
+          {/* {isUserAdmin ? (
             <button
             onClick={()=>{saveTeachersChanges()}}
               disabled={!buttonEnable}
@@ -200,11 +190,10 @@ const Professors = () => {
           ) : (
             <> </>
           )} */}
-          </div>
         </div>
       </div>
     </AuthCheck>
   );
 };
 
-export default Professors;
+export default Workforce;

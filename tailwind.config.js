@@ -41,10 +41,6 @@ module.exports = {
           11: "#637891"
         }
       },
-    },
-    fontFamily: {
-      'body': ['"Nunito"'],
-      'josefin': ['Josefin Sans'],
     }
   },
   plugins: [],

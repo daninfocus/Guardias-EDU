@@ -16,6 +16,7 @@ interface CalendarContextType {
   showWeekends: Boolean;
   hoursInDay: Number;
   schedule: ScheduleType;
+  goToToday: Function;
 }
 
 export interface TimeSlotType {
@@ -155,6 +156,7 @@ const CalendarContext = createContext<CalendarContextType>({
   showWeekends: false,
   hoursInDay: 6,
   schedule: defaultSchedule,
+  goToToday: Function,
 });
 
 // Utility function to get dates for the week given a reference date
@@ -207,6 +209,10 @@ export const CalendarContextProvider = ({
     setCurrentWeek(getWeekDates(prevWeekStart));
   };
 
+  const goToToday = () => {
+    setCurrentWeek(getWeekDates(new Date()));
+  };
+
   const getGuardiasInSlot = (day: number, slot: any) => {
     const guardias = JSON.parse(
       localStorage.getItem("guardias") ?? "[]"
@@ -214,9 +220,8 @@ export const CalendarContextProvider = ({
 
     const guardiasArray = guardias.filter((item: Guardia) => {
       const dayOfGuardia = new Date(item.dayOfGuardia);
-      console.log(dayOfGuardia, slot, day)
+      
       if(isDateInSlot(dayOfGuardia, slot, day)){
-        console.log(item)
         return item
       }
     });
@@ -240,6 +245,7 @@ export const CalendarContextProvider = ({
         showWeekends,
         hoursInDay,
         schedule,
+        goToToday
       }}
     >
       {children}

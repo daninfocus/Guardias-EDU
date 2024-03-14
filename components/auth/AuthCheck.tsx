@@ -20,8 +20,8 @@ function AuthCheck({ children }: any) {
               scroll: true,
             });
           }else{
-            if (router.pathname.includes("professors")) {
-              router.push("/professors?collegeId=" + college.id, undefined, {
+            if (router.pathname.includes("workforce")) {
+              router.push("/workforce?collegeId=" + college.id, undefined, {
                 scroll: true,
               });
             } else {

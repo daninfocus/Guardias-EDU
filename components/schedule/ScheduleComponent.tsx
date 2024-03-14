@@ -3,16 +3,16 @@ import CalendarContext, {
   ScheduleType,
   TimeSlotType,
   scheduleStructure,
-} from "../context/CalendarContext";
-import { updateTimeSlotsForCollege } from "../firebase/firestore";
+} from "../../context/CalendarContext";
+import { updateTimeSlotsForCollege } from "../../firebase/firestore";
 import { ChevronRightRounded } from "@mui/icons-material";
-import AuthContext from "../context/AuthContext";
+import AuthContext from "../../context/AuthContext";
 import toast from "react-hot-toast";
 import { start } from "repl";
 import { ArrowUpIcon, TrashIcon } from "@heroicons/react/solid";
-import TimeInput from "./TimeInput";
+import TimeInput from "../TimeInput";
 
-const TimeSlotInput = () => {
+const ScheduleComponent = () => {
   const { schedule } = useContext(CalendarContext);
   const { college, user, isUserAdmin } = useContext(AuthContext);
 
@@ -35,8 +35,10 @@ const TimeSlotInput = () => {
   };
 
   useEffect(() => {
-    saveTimeSlots();
-    setNewSchedule(scheduleStructure);
+    if (newSchedule !== scheduleStructure) {
+      saveTimeSlots();
+      setNewSchedule(scheduleStructure);
+    }
   }, [scheduleState]);
 
   const save = () => {
@@ -82,7 +84,7 @@ const TimeSlotInput = () => {
   };
 
   return (
-    <div className="bg-gray-200 rounded-lg p-5  w-full lg:m-0 lg:w-56 m-auto">
+    <div className="bg-gray-200 rounded-lg p-5  w-full lg:m-0 lg:w-1/3 h-min m-auto">
       <div className="bg-white rounded-lg p-4 text-gray-700">
         {scheduleState.map((slot: any, index) => {
           return (
@@ -113,11 +115,11 @@ const TimeSlotInput = () => {
         })}
       </div>
       <div className="my-4 flex flex-col">
-        <span className="flex flex-row justify-between">
+        <span className="flex flex-row items-center relative">
           <input
             onChange={(e) => checkLabel(e)}
             value={newSchedule.label}
-            className="bg-gray-200 w-5  appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
+            className="bg-gray-200 shadow-sm rounded-sm p-2 w-8  appearance-none text-gray-700 leading-tight focus:outline-none focus:shadow-outline"
             type="text"
             placeholder="x"
           />
@@ -136,7 +138,7 @@ const TimeSlotInput = () => {
             endSlot={true}
           />
           <span
-            className="bg-white rounded-lg flex items-center justify-center  focus:outline-none focus:shadow-outline shadow cursor-pointer"
+            className="place-self-stretch h-full right-0 absolute bg-white rounded-lg flex items-center justify-center  focus:outline-none focus:shadow-outline shadow cursor-pointer"
             onClick={() => save()}
           >
             <ChevronRightRounded />
@@ -147,4 +149,4 @@ const TimeSlotInput = () => {
   );
 };
 
-export default TimeSlotInput;
+export default ScheduleComponent;

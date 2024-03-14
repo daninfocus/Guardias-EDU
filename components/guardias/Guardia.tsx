@@ -135,6 +135,7 @@ const Guardia: React.FC<GuardiaProps> = ({ guardias }) => {
 
       <GuardiaSidebar
         openGuardias={openGuardias}
+        setOpenGuardias={()=>setOpenGuardias(false)}
         guardias={guardias}
         backgroundColor={backgroundColor}
         openGuardia={openGuardia}

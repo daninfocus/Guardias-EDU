@@ -17,6 +17,7 @@
     "@tiptap/extension-color": "^2.2.1",
     "@tiptap/extension-ordered-list": "^2.2.1",
     "@tiptap/extension-placeholder": "^2.2.1",
+    "@tiptap/html": "^2.2.4",
     "@tiptap/pm": "^2.2.1",
     "@tiptap/react": "^2.2.1",
     "@tiptap/starter-kit": "^2.2.1",
