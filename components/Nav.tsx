@@ -127,7 +127,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
               className="shadow-md sm:block sm:visible hidden invisible text-xs sm:text-sm self-center  py-2 px-6 bg-orange-500 hover:bg-orange-600 text-white font-bold rounded-xl transition duration-200"
               type="button"
               onClick={() => {
-                openForm();
+                openForm(new Date());
                 setIsNavOpen(false);
                 router.push("/" + college.id);
               }}
@@ -168,7 +168,7 @@ const Nav = (prop: { simpleNav: boolean }) => {
             className="visible sm:hidden mx-auto mb-9 py-2 px-6 bg-orange-500 hover:bg-orange-600 text-sm text-white font-bold rounded-xl transition duration-200"
             type="button"
             onClick={() => {
-              openForm();
+              openForm(new Date());
               setIsNavOpen(false);
               router.push("/" + college.id);
             }}

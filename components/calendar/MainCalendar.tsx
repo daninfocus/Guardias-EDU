@@ -141,7 +141,6 @@ const MainCalendar = () => {
                           day.setHours(parseInt(slot.start.hours));
                           day.setMinutes(parseInt(slot.start.minutes) + 1);
                           day.setSeconds(0);
-                          console.log({day, slot})
                           openForm(day);
                         }}
                       >

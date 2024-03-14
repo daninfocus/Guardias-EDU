@@ -199,7 +199,7 @@ export default function Form() {
                       />
                       <CalendarSection date={date} setDate={setDate} />
                     </div>
-                    <TipTapEditor setState={setTasks}/>
+                    <TipTapEditor setState={setTasks} content={tasks}/>
                     <div className="flex flex-col p-2">
                       {isUserAdmin() && (
                         <TeacherSelectionSection
