@@ -125,9 +125,9 @@ export function GuardiasNoLoginContextProvider({ children }: any) {
     if (collegeId != undefined && !loadingGuardias) {
       setLoadingGuardias(true);
 
-      var firstday = new Date(week[0].setUTCHours(-2,0,0,0));
+      var firstday = new Date(week[0].setHours(-2,0,0,0));
 
-      var lastday =  new Date(week[4].setUTCHours(21,59,59,999));
+      var lastday =  new Date(week[4].setHours(21,59,59,999));
 
 
 

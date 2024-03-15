@@ -1,20 +1,7 @@
-import { User } from "firebase/auth";
-import React, {
-  Fragment,
-  SyntheticEvent,
-  useContext,
-  useEffect,
-  useState,
-} from "react";
-import Calendar from "react-calendar";
-import College from "../../@types/College";
+import React, { useContext, useEffect, useState } from "react";
 import Guardia from "../../@types/Guardia";
-import toast, { Toaster } from "react-hot-toast";
-import router, { useRouter } from "next/router";
+import router from "next/router";
 import AuthContext from "../../context/AuthContext";
-import * as days from "../../shared/dates";
-import ColorPicker from "../ColorPicker";
-import SelectDialog from "../SelectDialog";
 import { Dialog, Transition } from "@headlessui/react";
 import GuardiasContext from "../../context/GuardiasContext";
 import { teacherRef } from "../../firebase/firestore";
@@ -25,11 +12,13 @@ import { CloseButton } from "./form-components/CloseButton";
 import { ColorPickerSection } from "./form-components/ColorPickerSection";
 import { CalendarSection } from "./form-components/CalendarSelection";
 import { TeacherSelectionSection } from "./form-components/TeacherSelection";
-import { TimeAndGroupSelection } from "./form-components/TimeAndGroupSelection";
 import { TextAreaSection } from "./form-components/TextAreaSection";
 import FormFooter from "./form-components/FormFooter";
 import TipTapEditor from "./form-components/TipTapEditor";
 import { JSONContent } from "@tiptap/react";
+import GuardiaTimeSelection from "./form-components/GuardiaTimeSelection";
+import { Toaster } from "react-hot-toast";
+import { GuardiaGroupSelection } from "./form-components/TimeAndGroupSelection";
 
 export default function Form() {
   const colors = [
@@ -44,11 +33,9 @@ export default function Form() {
   //context
   const { collegeId } = router.query;
   const { user, isUserAdmin } = useContext(AuthContext);
-  const { isFormOpen, openForm, closeForm, selectedDate } =
-    useContext(FormContext);
+  const { closeForm, selectedDate } = useContext(FormContext);
   const { college } = useContext(AuthContext);
-  const { guardias, addOrUpdateGuardia, removeGuardia, saveGuardia } =
-    useContext(GuardiasContext);
+  const { saveGuardia } = useContext(GuardiasContext);
   const { schedule } = useContext(CalendarContext);
 
   const hours = schedule.map((item: any, index: number) => {
@@ -79,31 +66,28 @@ export default function Form() {
   const [date, setDate] = useState<Date>(
     selectedDate ? selectedDate : new Date()
   );
-  const [isOpen, setIsOpen] = useState(false);
+
   const [selectedClass, setSelectedClass] = useState(college.classes[0]);
-  const [selectedHour, setSelectedHour] = useState(
-    hours[getSelectedTimeSlot()]
+  const [selectedHourIndex, setSelectedHourIndex] = useState(
+    getSelectedTimeSlot()
   );
+
   const [tasks, setTasks] = useState<JSONContent>();
   const [moreInfo, setMoreInfo] = useState("");
   const [selectedTeacher, setSelectedTeacher] = useState("");
 
-
-
   useEffect(() => {
-    setSelectedHour(hours[getSelectedTimeSlot()]);
+    setSelectedHourIndex(getSelectedTimeSlot());
   }, [selectedDate]);
 
-  // useEffect(() => {
-  //   if (!pressedNewGuardia && guardiaToEdit.classroom != undefined) {
-  //     setSelectedClass(guardiaToEdit.classroom);
-  //     setSelectedHour(guardiaToEdit.hour.toString());
-  //     setSelectedColor(guardiaToEdit.color);
-  //     setDate(guardiaToEdit.dayOfGuardia);
-  //     setTasks(guardiaToEdit.tasks);
-  //     setMoreInfo(guardiaToEdit.moreInfo==null?"":guardiaToEdit.moreInfo);
-  //   }
-  // }, [pressedNewGuardia]);
+  useEffect(() => {
+    if (schedule[selectedHourIndex]) {
+      date.setHours(parseInt(schedule[selectedHourIndex].start.hours));
+      date.setMinutes(parseInt(schedule[selectedHourIndex].start.minutes) + 1);
+      date.setSeconds(0);
+      setDate(new Date(date));
+    }
+  }, [selectedHourIndex]);
 
   const submitGuardia = async (e: React.SyntheticEvent) => {
     e.preventDefault();
@@ -128,34 +112,17 @@ export default function Form() {
         tasks: tasks,
         moreInfo: moreInfo,
         classroom: selectedClass,
-        hour: parseInt(selectedHour),
+        hour: selectedHourIndex,
         color: selectedColor,
         isEmpty: false,
       };
       saveGuardia(guardia);
-      // if (!pressedNewGuardia || !showGuardiaForm) {
-      //   guardia.id = guardiaToEdit.id;
-      //   saveEditedGuardia(guardia);
-      // } else {
-      //   saveGuardia(guardia);
-      // }
+      closeForm();
     }
   };
 
   const changeColor = (number: number) => {
     setSelectedColor(number);
-  };
-
-  const handleClickOutside = (
-    event: React.MouseEvent<HTMLDivElement, MouseEvent>
-  ) => {
-    event.stopPropagation();
-    setIsOpen(false);
-  };
-
-  const childClick = (event: MouseEvent) => {
-    event.stopPropagation();
-    setIsOpen(true);
   };
 
   return (
@@ -199,7 +166,7 @@ export default function Form() {
                       />
                       <CalendarSection date={date} setDate={setDate} />
                     </div>
-                    <TipTapEditor setState={setTasks} content={tasks}/>
+                    <TipTapEditor setState={setTasks} content={null} />
                     <div className="flex flex-col p-2">
                       {isUserAdmin() && (
                         <TeacherSelectionSection
@@ -208,10 +175,12 @@ export default function Form() {
                           teachers={college.teachers}
                         />
                       )}
-                      <TimeAndGroupSelection
-                        selectedHour={selectedHour}
-                        setSelectedHour={setSelectedHour}
+                      <GuardiaTimeSelection
+                        selectedHourIndex={selectedHourIndex}
+                        setSelectedHourIndex={setSelectedHourIndex}
                         hours={hours}
+                      />
+                      <GuardiaGroupSelection
                         selectedClass={selectedClass}
                         setSelectedClass={setSelectedClass}
                         classes={college.classes}

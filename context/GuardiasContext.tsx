@@ -56,12 +56,15 @@ export const GuardiasContextProvider = ({
           .map(() => [] as Array<Guardia>)
       )
   );
-  
+
   const [loading, setLoading] = useState(false);
 
   useEffect(() => {
+    fetchGuardias();
+  }, [collegeId, currentWeek, schedule]);
+
+  const fetchGuardias = () => {
     if (!collegeId || !schedule) return;
-    setLoading(true);
 
     // Fetch guardias from Firebase
     getGuardias(currentWeek, collegeId).then((data) => {
@@ -70,13 +73,14 @@ export const GuardiasContextProvider = ({
       setGuardias(guardiasSortedIntoWeek);
       setLoading(false);
     });
-  }, [collegeId, currentWeek, schedule]);
+  };
 
   const saveGuardia = (guardia: Guardia) => {
     var newGuardia = addDocument("guardias", guardia).then((id) => {
       toast.success("Guardia guardado correctamente", {
         icon: "✅",
       });
+      fetchGuardias();
       closeForm();
     });
     if (newGuardia == null) {

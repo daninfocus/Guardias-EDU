@@ -208,7 +208,7 @@ export const getGuardias = async (week: Date[], collegeId: string | string[]): P
     try {
         const [firstDay, lastDay] = [week[0], week[week.length - 1]].map(d => new Date(d));
         firstDay.setHours(0,0,0)
-        lastDay.setHours(11,59,59)
+        lastDay.setHours(23,59,59)
         
         const q = query(collection(firestore, "guardias")
             ,where('collegeId', '==', collegeId)

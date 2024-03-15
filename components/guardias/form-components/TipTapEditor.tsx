@@ -14,6 +14,7 @@ import Ordered from "@tiptap/extension-ordered-list";
 import Placeholder from "@tiptap/extension-placeholder";
 import Color from "@tiptap/extension-color";
 import { generateHTML } from "@tiptap/html";
+import { NULL } from "sass";
 
 type MenuBarProps = {
   editor: Editor | null;
@@ -85,7 +86,7 @@ const MenuBar: React.FC<MenuBarProps> = ({ editor }) => {
 
 interface TipTapProps {
   setState: React.Dispatch<React.SetStateAction<JSONContent>>;
-  content: JSONContent | undefined;
+  content: JSONContent | null;
 }
 
 const TipTapEditor: React.FC<TipTapProps> = ({ setState, content }) => {
@@ -101,9 +102,9 @@ const TipTapEditor: React.FC<TipTapProps> = ({ setState, content }) => {
   }, [content]);
 
   const editor = useEditor({
-    content: html,
-    editable: content !== undefined ? false : true,
-    enableInputRules: content !== undefined ? false : true,
+    content: content !== null ? html : "",
+    editable: content !== null ? false : true,
+    enableInputRules: content !== null ? false : true,
     onUpdate({ editor }) {
       setState(editor.getJSON());
     },
@@ -136,7 +137,7 @@ const TipTapEditor: React.FC<TipTapProps> = ({ setState, content }) => {
     editorProps: {
       attributes: {
         class:
-          "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none rounded-md h-full min-w-max max-h-72 p-3",
+        !content ? "prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none rounded-md h-full min-w-max max-h-72 p-3 " : "!overflow-hidden",
       },
     },
   });
@@ -155,8 +156,13 @@ const TipTapEditor: React.FC<TipTapProps> = ({ setState, content }) => {
     <div className="h-full w-full">
       {!content && <MenuBar editor={editor} />}
       <EditorContent
+        style={{ overflow: "hidden" }}
         editor={editor}
-        className={`${!content ?  'prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full max-h-72 p-3 overflow-hidden' : 'overflow-hidden'} `}
+        className={`${
+          !content
+            ? " prose prose-sm sm:prose lg:prose-lg xl:prose-2xl mx-auto focus:outline-none border-[1px] border-black rounded-md h-full min-w-72 max-h-72 p-3 "
+            : " prose prose-sm sm:prose lg:prose-lg xl:prose-2xl min-w-max "
+        } `}
       />
     </div>
   );

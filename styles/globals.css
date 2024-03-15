@@ -6,7 +6,6 @@
 
 @layer base {
     html {
-        background-color: violet;
         font-family: 'Rubik', cursive;
     }
 }

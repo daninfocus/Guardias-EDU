@@ -28,6 +28,7 @@ const AreasComponent = () => {
       classes.splice(index, 1);
       setClasses([...classes]);
       setButtonEnabled(true);
+      saveClasses();
     }
   };
 

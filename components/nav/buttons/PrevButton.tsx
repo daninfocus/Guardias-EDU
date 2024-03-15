@@ -3,7 +3,7 @@ import React from "react";
 export const PrevButton = ({ goToPreviousWeek }: any) => {
     return (
       <button
-        className="text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex flex-row items-center"
+        className="text-lg text-gray-600 hover:shadow-md p-2 group rounded-2xl flex flex-row items-center"
         onClick={() => goToPreviousWeek()}
       >
         <svg

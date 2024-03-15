@@ -18,7 +18,7 @@ const ScheduleComponent = () => {
 
   const [newSchedule, setNewSchedule] =
     useState<TimeSlotType>(scheduleStructure);
-  const [scheduleState, setSchedule] = useState<ScheduleType>(schedule);
+  const [scheduleState, setScheduleState] = useState<ScheduleType>(schedule);
 
   const saveTimeSlots = () => {
     updateTimeSlotsForCollege(college.id!, scheduleState).then((data) => {
@@ -51,14 +51,14 @@ const ScheduleComponent = () => {
     // Update the durationMinutes property in the newSchedule object
     newSchedule.durationMinutes = durationMinutes;
 
-    setSchedule([...scheduleState, newSchedule]);
+    setScheduleState([...scheduleState, newSchedule]);
   };
 
   const deleteTimeSlot = (index: number) => {
     if (confirm("¿Quieres borrar este horario?") && isUserAdmin()) {
       scheduleState.splice(index, 1);
 
-      setSchedule([...scheduleState]);
+      setScheduleState([...scheduleState]);
     }
   };
 
@@ -68,7 +68,8 @@ const ScheduleComponent = () => {
       schedule.splice(index, 1);
       schedule.splice(index - 1, 0, element);
 
-      setSchedule([...schedule]);
+      setScheduleState([...schedule]);
+      saveTimeSlots();
     }
   };
 

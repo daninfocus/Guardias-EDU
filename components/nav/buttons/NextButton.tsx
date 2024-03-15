@@ -3,7 +3,7 @@ import React from "react";
 export const NextButton = ({ goToNextWeek }: any) => {
     return (
       <button
-        className="flex justify-end transition ease-in-out delay-150 duration-200 text-lg text-gray-600 hover:shadow-2xl shadow-black group rounded-2xl flex-row items-center"
+        className="text-lg text-gray-600 hover:shadow-md p-2 group rounded-2xl flex flex-row items-center"
         onClick={() => goToNextWeek()}
       >
         <svg

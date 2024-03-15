@@ -2,6 +2,7 @@ import { useContext } from "react";
 import Guardia from "../@types/Guardia";
 import CalendarContext from "../context/CalendarContext";
 import { checkTargetForNewValues } from "framer-motion";
+import { auth } from "../firebase/auth";
 
 interface TimeSlot {
     hours: number;
@@ -52,10 +53,6 @@ function isTimeBeforeEnd(date:Date, end:any) {
 }
 
 function isWithinTimeSlot(date:Date, slot:any) {
-    // console.log(slot)
-    // console.log(isSameDayOfWeek(date, slot.dayOfWeek))
-    // console.log(isTimeAfterStart(date, slot.start))
-    // console.log(isTimeBeforeEnd(date, slot.end))
     return isSameDayOfWeek(date, slot.dayOfWeek) &&
            isTimeAfterStart(date, slot.start) &&
            isTimeBeforeEnd(date, slot.end);
@@ -72,18 +69,16 @@ export const getGuardiaCoords = (week: Date[], slots: any, date: Date) => {
 
     slots.forEach((slot: any, index: number) => {
         if (isDateInSlot(date, slot, date.getDay())) {
-            console.log('y')
             y = index
         }
     });
 
     week.forEach((day, index) => {
         if (isSameDayOfWeek(date, day.getDay())){
-            console.log('x')
             x = index
         }
     })
-    
+    console.log(x, y)
     return { x, y }
 }
 
@@ -103,8 +98,8 @@ export const sortGuardias = (guardias: Guardia[], week: Date[], slots: any): Gua
     // Iterate over each guardia
     guardias.forEach(guardia => {
         const { x, y } = getGuardiaCoords(week, slots, guardia.dayOfGuardia)
-        console.log({ x, y })
-        if (x > 0 && y > 0) {
+        
+        if (x > -1 && y > -1) {
             weekArray[x][y].push(guardia);
         }
 
