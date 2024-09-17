@@ -8,7 +8,8 @@ import Login from "../components/auth/Login";
 const Home: NextPage = () => {
   return (
     <AuthCheck>
-      <Login />
+      <a href="https://guadias-sync.vercel.app">Ir a GAP 2.0</a>
+      {/* <Login /> */}
     </AuthCheck>
   );
 };
