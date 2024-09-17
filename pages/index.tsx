@@ -8,7 +8,7 @@ import Login from "../components/auth/Login";
 const Home: NextPage = () => {
   return (
     <AuthCheck>
-      <a href="https://guadias-sync.vercel.app">Ir a GAP 2.0</a>
+      <a href="https://guardias-sync.vercel.app/en/calendar?showToday=false">Ir a GAP 2.0</a>
       {/* <Login /> */}
     </AuthCheck>
   );

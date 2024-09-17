@@ -49,19 +49,9 @@ function Login() {
 
   return (
     <div className="flex flex-col h-screen items-center justify-center bg-green ">
-      <div className="font-normal text-5xl mb-1 items-center">GAP</div>
-      <div className="text-xs">(Gestión de Ausencias de Profesorado)</div>
-      <iframe
-        className="h-3/6"
-        src="https://embed.lottiefiles.com/animation/101662"
-      ></iframe>
-      <div className="text-base my-6 text-center">
-        Sistemas de gestión para guardias de Institutos de Educación Secundaria.
-        <div className="text-xs text-center">
-          Diseñado y programado en el IES Fernando III - Martos (Jaén)
-        </div>
-      </div>
-      <div className="px-6 sm:px-0 max-w-sm">
+
+      <a href="https://guardias-sync.vercel.app" className="text-4xl bg-gray-200 p-5 rounded-md border-2 border-gray-500 m-auto">Ir a GAP 2.0</a>
+      {/* <div className="px-6 sm:px-0 max-w-sm">
         <button
           type="button"
           className="text-white w-full  bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center justify-between dark:focus:ring-[#4285F4]/55 mr-2 mb-2"
@@ -95,8 +85,8 @@ function Login() {
             color: "#fff",
           },
         }}
-      />
-      <p className="my-4 text-xs text-center text-gray-400">
+      /> */}
+      <p className="my-4 text-xs text-center text-gray-400 mt-auto">
         <span>
           © {new Date().getFullYear()}{" "}
           <a target="blank" href="https://www.danielwebb.dev/">
